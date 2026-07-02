@@ -1,0 +1,578 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Case Against Robocalls | RoboCallMeNot</title>
+<meta name="description" content="See what robocalls are really costing you — then file the report. RoboCallMeNot sends one-tap reports to the FTC, FCC, and FBI's IC3.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Zilla+Slab:wght@400;600;700&family=Public+Sans:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --kraft: #dbd3ba;
+    --kraft-light: #f2ede0;
+    --paper: #f8f5ea;
+    --ink: #202a3a;
+    --ink-soft: #4a5468;
+    --stamp: #a63a2e;
+    --stamp-dark: #822c22;
+    --teal: #2f6e62;
+    --teal-dark: #234f46;
+    --gray: #6b6558;
+    --line: #c9bf9e;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    background:var(--kraft);
+    background-image:
+      radial-gradient(circle at 15% 8%, rgba(255,255,255,0.35) 0%, transparent 45%),
+      radial-gradient(circle at 85% 92%, rgba(0,0,0,0.05) 0%, transparent 40%);
+    color:var(--ink);
+    font-family:'Public Sans', sans-serif;
+    line-height:1.5;
+  }
+  h1,h2,h3{
+    font-family:'Zilla Slab', serif;
+    margin:0;
+    color:var(--ink);
+  }
+  .mono{ font-family:'IBM Plex Mono', monospace; }
+  a{ color:inherit; }
+  .wrap{ max-width:960px; margin:0 auto; padding:0 24px; }
+
+  /* NAV */
+  nav{
+    position:sticky; top:0; z-index:50;
+    background:var(--ink); color:var(--paper);
+    border-bottom:3px solid var(--stamp);
+  }
+  nav .wrap{
+    display:flex; align-items:center; justify-content:space-between;
+    padding:14px 24px;
+  }
+  .brand{
+    font-family:'Zilla Slab', serif; font-weight:700; font-size:1.05rem;
+    letter-spacing:0.02em;
+  }
+  .brand span{ color:#e8b199; }
+  .navlinks{ display:flex; gap:22px; font-size:0.85rem; }
+  .navlinks a{
+    text-decoration:none; color:var(--paper); opacity:0.8;
+    padding:6px 10px; border-radius:14px 14px 4px 4px;
+    transition:opacity .15s, background .15s;
+  }
+  .navlinks a:hover, .navlinks a:focus-visible{ opacity:1; background:rgba(255,255,255,0.08); }
+
+  /* HERO */
+  header.hero{
+    padding:72px 0 64px;
+    position:relative;
+    overflow:hidden;
+  }
+  header.hero::after{
+    content:"";
+    position:absolute; left:0; right:0; bottom:0; height:14px;
+    background:repeating-linear-gradient(90deg, var(--line) 0 10px, transparent 10px 20px);
+    opacity:0.6;
+  }
+  .eyebrow{
+    display:inline-flex; align-items:center; gap:10px;
+    font-family:'IBM Plex Mono', monospace; font-size:0.78rem;
+    letter-spacing:0.08em; text-transform:uppercase;
+    color:var(--stamp-dark); background:var(--paper);
+    border:1.5px solid var(--stamp); padding:6px 14px;
+    border-radius:3px; margin-bottom:22px;
+  }
+  .eyebrow .dot{
+    width:7px; height:7px; border-radius:50%; background:var(--stamp);
+    animation:pulse 1.6s infinite;
+  }
+  @keyframes pulse{ 0%,100%{opacity:1;} 50%{opacity:0.25;} }
+
+  h1.headline{
+    font-size:clamp(2.1rem, 4.6vw, 3.4rem);
+    font-weight:700; line-height:1.08; max-width:16ch;
+    margin-bottom:22px;
+  }
+  .sub{
+    font-size:1.08rem; color:var(--ink-soft); max-width:56ch; margin-bottom:32px;
+  }
+  .ticker{
+    display:inline-flex; flex-direction:column; gap:4px;
+    background:var(--paper); border:1px solid var(--line);
+    border-left:4px solid var(--teal);
+    padding:14px 20px; border-radius:2px; margin-bottom:34px;
+  }
+  .ticker .label{ font-size:0.72rem; text-transform:uppercase; letter-spacing:0.06em; color:var(--gray); }
+  .ticker .num{ font-family:'IBM Plex Mono', monospace; font-size:1.5rem; font-weight:600; color:var(--teal-dark); }
+
+  .cta-row{ display:flex; gap:14px; flex-wrap:wrap; }
+  .btn{
+    display:inline-block; font-family:'Public Sans', sans-serif; font-weight:700;
+    font-size:0.95rem; padding:14px 26px; border-radius:4px;
+    text-decoration:none; cursor:pointer; border:2px solid transparent;
+    transition:transform .12s ease, box-shadow .12s ease;
+  }
+  .btn:hover{ transform:translateY(-1px); }
+  .btn:active{ transform:translateY(0); }
+  .btn-primary{ background:var(--stamp); color:var(--paper); box-shadow:3px 3px 0 var(--stamp-dark); }
+  .btn-primary:hover{ box-shadow:4px 5px 0 var(--stamp-dark); }
+  .btn-ghost{ background:transparent; border-color:var(--ink); color:var(--ink); }
+  .btn-ghost:hover{ background:var(--ink); color:var(--paper); }
+
+  /* SECTION SHELL */
+  section{ padding:64px 0; }
+  .exhibit-tag{
+    font-family:'IBM Plex Mono', monospace; font-size:0.78rem; letter-spacing:0.08em;
+    text-transform:uppercase; color:var(--teal-dark); margin-bottom:10px; display:block;
+  }
+  .section-title{ font-size:clamp(1.6rem, 3vw, 2.2rem); margin-bottom:14px; max-width:22ch; }
+  .section-lede{ color:var(--ink-soft); max-width:60ch; margin-bottom:40px; font-size:1.02rem; }
+
+  /* EXHIBIT A - STATS */
+  .stat-grid{
+    display:grid; grid-template-columns:repeat(2,1fr); gap:18px;
+  }
+  .stat-card{
+    background:var(--paper); border:1px solid var(--line);
+    border-radius:3px; padding:24px 22px; position:relative;
+  }
+  .stat-card::before{
+    content:attr(data-tag);
+    position:absolute; top:14px; right:16px;
+    font-family:'IBM Plex Mono', monospace; font-size:0.68rem;
+    color:var(--gray); letter-spacing:0.05em;
+  }
+  .stat-num{
+    font-family:'Zilla Slab', serif; font-weight:700; color:var(--stamp-dark);
+    font-size:clamp(1.7rem, 3vw, 2.1rem); margin-bottom:8px; display:block;
+  }
+  .stat-desc{ color:var(--ink-soft); font-size:0.95rem; }
+  .stat-source{
+    display:block; margin-top:10px; font-size:0.72rem; color:var(--gray);
+    font-family:'IBM Plex Mono', monospace;
+  }
+
+  /* EXHIBIT B - CALCULATOR */
+  .file-folder{
+    background:var(--paper); border:1px solid var(--line); border-radius:4px;
+    box-shadow:0 10px 0 -6px rgba(0,0,0,0.08), 0 2px 8px rgba(0,0,0,0.06);
+    padding:36px; position:relative;
+  }
+  .file-folder::before{
+    content:"ROBOCALLMENOT — INTAKE FORM";
+    position:absolute; top:-13px; left:28px; background:var(--ink); color:var(--paper);
+    font-family:'IBM Plex Mono', monospace; font-size:0.68rem; letter-spacing:0.06em;
+    padding:5px 12px; border-radius:2px;
+  }
+  .calc-inputs{ display:grid; grid-template-columns:1fr 1fr; gap:28px; margin-bottom:8px; }
+  .field label{
+    display:block; font-size:0.85rem; font-weight:600; margin-bottom:10px; color:var(--ink);
+  }
+  .field .hint{ font-weight:400; color:var(--gray); font-size:0.78rem; display:block; margin-top:4px; }
+  input[type=range]{ width:100%; accent-color:var(--teal); }
+  .range-readout{
+    font-family:'IBM Plex Mono', monospace; font-weight:600; color:var(--teal-dark);
+    font-size:1.1rem; margin-top:6px; display:inline-block;
+  }
+  .dollar-input{
+    display:flex; align-items:center; border:1.5px solid var(--line); border-radius:3px;
+    background:var(--kraft-light); overflow:hidden;
+  }
+  .dollar-input span{ padding:10px 12px; color:var(--gray); font-family:'IBM Plex Mono',monospace; }
+  .dollar-input input{
+    border:none; background:transparent; padding:10px 8px 10px 0; font-family:'IBM Plex Mono', monospace;
+    font-size:1rem; width:100%; outline:none; color:var(--ink);
+  }
+
+  .ledger{
+    margin-top:30px; border-top:1.5px dashed var(--line); padding-top:26px;
+    display:grid; gap:10px;
+  }
+  .ledger-row{
+    display:flex; justify-content:space-between; align-items:baseline;
+    font-family:'IBM Plex Mono', monospace; font-size:0.94rem;
+    border-bottom:1px dotted var(--line); padding-bottom:8px;
+  }
+  .ledger-row .k{ color:var(--ink-soft); }
+  .ledger-row .v{ font-weight:600; color:var(--ink); }
+  .ledger-row.highlight .v{ color:var(--stamp-dark); font-size:1.05rem; }
+
+  .stamp-wrap{ display:flex; justify-content:flex-end; margin-top:18px; min-height:90px; align-items:center; }
+  .stamp{
+    border:3px solid var(--stamp); color:var(--stamp); border-radius:50%;
+    width:110px; height:110px; display:flex; align-items:center; justify-content:center;
+    text-align:center; font-family:'IBM Plex Mono', monospace; font-weight:700;
+    font-size:0.72rem; letter-spacing:0.04em; transform:rotate(-14deg) scale(0.7);
+    opacity:0; transition:transform .35s ease, opacity .35s ease;
+  }
+  .stamp.show{ opacity:0.9; transform:rotate(-14deg) scale(1); }
+
+  /* EXHIBIT C - STEPS */
+  .steps{ display:grid; grid-template-columns:repeat(3,1fr); gap:20px; }
+  .step{
+    background:var(--paper); border:1px solid var(--line); border-radius:3px; padding:26px 22px;
+  }
+  .step .step-num{
+    font-family:'Zilla Slab', serif; font-weight:700; color:var(--teal); font-size:1.6rem;
+    margin-bottom:10px; display:block;
+  }
+  .step h3{ font-size:1.05rem; margin-bottom:8px; }
+  .step p{ color:var(--ink-soft); font-size:0.92rem; margin:0; }
+
+  /* EXHIBIT D - PRICING */
+  .verdict{
+    background:var(--ink); color:var(--paper); border-radius:6px; padding:48px 40px;
+  }
+  .verdict .exhibit-tag{ color:#8fd6c4; }
+  .verdict .section-title{ color:var(--paper); }
+  .verdict .section-lede{ color:#c7cbd6; }
+  .price-grid{ display:grid; grid-template-columns:1fr 1fr; gap:22px; margin-top:20px; }
+  .price-card{
+    background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.18);
+    border-radius:5px; padding:28px 24px; display:flex; flex-direction:column;
+  }
+  .price-card.featured{ border-color:var(--stamp); background:rgba(166,58,46,0.12); }
+  .price-tag{ font-size:0.75rem; text-transform:uppercase; letter-spacing:0.08em; color:#9aa4b8; margin-bottom:6px; }
+  .price-amount{ font-family:'Zilla Slab', serif; font-weight:700; font-size:2rem; margin-bottom:4px; }
+  .price-amount sup{ font-size:0.9rem; font-weight:500; color:#c7cbd6; }
+  .price-card ul{ list-style:none; padding:0; margin:18px 0 24px; font-size:0.88rem; color:#dfe2ea; }
+  .price-card li{ padding:5px 0 5px 20px; position:relative; }
+  .price-card li::before{ content:"—"; position:absolute; left:0; color:#8fd6c4; }
+  .price-card .btn{ margin-top:auto; text-align:center; }
+
+  footer{
+    padding:40px 0 60px; text-align:center; color:var(--gray); font-size:0.82rem;
+  }
+  footer .fine{ max-width:60ch; margin:14px auto 0; font-size:0.75rem; line-height:1.6; }
+
+  /* HERO ILLUSTRATION */
+  .hero-grid{ display:grid; grid-template-columns:1.15fr 0.85fr; gap:36px; align-items:center; }
+  .hero-illo{ width:100%; height:auto; }
+  .inline-app-link{
+    color:var(--teal-dark); font-weight:700; text-decoration:underline;
+    text-decoration-color:var(--teal); text-underline-offset:3px;
+  }
+  .inline-app-link:hover{ color:var(--stamp-dark); text-decoration-color:var(--stamp); }
+
+  /* SERIES CROSS-LINKS */
+  .series-nav{ padding:56px 0 8px; }
+  .series-grid{ display:grid; grid-template-columns:repeat(2,1fr); gap:18px; }
+  .series-card{
+    background:var(--paper); border:1px solid var(--line); border-radius:3px;
+    padding:22px; text-decoration:none; display:block; transition:transform .12s ease;
+  }
+  .series-card:hover{ transform:translateY(-2px); border-color:var(--teal); }
+  .series-card .exhibit-tag{ margin-bottom:8px; }
+  .series-card h3{ font-size:1.05rem; margin-bottom:8px; color:var(--ink); }
+  .series-card p{ font-size:0.88rem; color:var(--ink-soft); margin:0; }
+
+  @media (max-width:720px){
+    .navlinks{ display:none; }
+    .hero-grid{ grid-template-columns:1fr; }
+    .hero-illo{ max-width:260px; margin:0 auto; }
+    .stat-grid{ grid-template-columns:1fr; }
+    .calc-inputs{ grid-template-columns:1fr; }
+    .steps{ grid-template-columns:1fr; }
+    .price-grid{ grid-template-columns:1fr; }
+    .series-grid{ grid-template-columns:1fr; }
+    .verdict{ padding:34px 22px; }
+    .file-folder{ padding:26px 20px; }
+  }
+  @media (prefers-reduced-motion: reduce){
+    *{ animation-duration:0.001ms !important; transition-duration:0.001ms !important; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="wrap">
+    <div class="brand">ROBOCALL<span>MENOT</span></div>
+    <div class="navlinks">
+      <a href="#exhibit-a">The Problem</a>
+      <a href="#exhibit-b">Calculate</a>
+      <a href="#exhibit-c">How It Works</a>
+      <a href="#exhibit-d">Get Protected</a>
+      <a href="index.html">All Posts</a>
+    </div>
+  </div>
+</nav>
+
+<header class="hero">
+  <div class="wrap hero-grid">
+    <div>
+      <div class="eyebrow"><span class="dot"></span> Case File No. RCN-2026 — Open</div>
+      <h1 class="headline">Your phone has a paper trail. Robocallers are counting on you never filing it.</h1>
+      <p class="sub">Every spam call that hits your phone is evidence — a timestamp, a spoofed number, a script. <a href="https://dancing-entremet-2f50e3.netlify.app" class="inline-app-link">RoboCallMeNot</a> turns that evidence into a one-tap report to the FTC, FCC, and the FBI's IC3, before you've even finished being annoyed.</p>
+      <div class="ticker">
+        <span class="label">Est. robocalls placed nationwide since you opened this page</span>
+        <span class="num mono" id="tickerNum">0</span>
+      </div>
+      <div class="cta-row">
+        <a href="#exhibit-b" class="btn btn-primary">Calculate what it's costing you</a>
+        <a href="https://dancing-entremet-2f50e3.netlify.app" class="btn btn-ghost">Open the app</a>
+      </div>
+    </div>
+    <svg class="hero-illo" viewBox="0 0 380 360" xmlns="http://www.w3.org/2000/svg">
+      <ellipse cx="190" cy="330" rx="140" ry="14" fill="#000" opacity="0.06"/>
+      <g transform="rotate(-4 190 180)">
+        <path d="M40 90 L340 90 L320 300 Q318 312 306 312 L74 312 Q62 312 60 300 Z" fill="#f2ede0" stroke="#202a3a" stroke-width="2.5"/>
+        <path d="M40 90 L100 60 L280 60 L340 90 Z" fill="#e4dcc4" stroke="#202a3a" stroke-width="2.5"/>
+        <line x1="78" y1="150" x2="302" y2="150" stroke="#c9bf9e" stroke-width="2"/>
+        <line x1="78" y1="180" x2="302" y2="180" stroke="#c9bf9e" stroke-width="2"/>
+        <line x1="78" y1="210" x2="260" y2="210" stroke="#c9bf9e" stroke-width="2"/>
+      </g>
+      <g transform="translate(140 100)">
+        <rect x="0" y="0" width="80" height="150" rx="14" fill="#202a3a"/>
+        <rect x="7" y="14" width="66" height="112" rx="3" fill="#f8f5ea"/>
+        <circle cx="40" cy="139" r="6" fill="#4a5468"/>
+        <line x1="18" y1="30" x2="62" y2="30" stroke="#c9bf9e" stroke-width="3"/>
+        <line x1="18" y1="42" x2="52" y2="42" stroke="#c9bf9e" stroke-width="3"/>
+        <circle cx="40" cy="80" r="18" fill="none" stroke="#a63a2e" stroke-width="3"/>
+        <circle cx="40" cy="80" r="18" fill="none" stroke="#a63a2e" stroke-width="3" opacity="0.5">
+          <animate attributeName="r" values="18;30;18" dur="2.2s" repeatCount="indefinite"/>
+          <animate attributeName="opacity" values="0.5;0;0.5" dur="2.2s" repeatCount="indefinite"/>
+        </circle>
+      </g>
+      <g transform="translate(230 40) rotate(10)">
+        <circle cx="0" cy="0" r="30" fill="none" stroke="#a63a2e" stroke-width="3"/>
+        <text x="0" y="5" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="11" font-weight="700" fill="#a63a2e">FTC</text>
+      </g>
+      <g transform="translate(300 90) rotate(-8)">
+        <circle cx="0" cy="0" r="26" fill="none" stroke="#2f6e62" stroke-width="3"/>
+        <text x="0" y="4" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="9.5" font-weight="700" fill="#2f6e62">FCC</text>
+      </g>
+      <g transform="translate(305 165) rotate(6)">
+        <circle cx="0" cy="0" r="27" fill="none" stroke="#822c22" stroke-width="3"/>
+        <text x="0" y="-2" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="8" font-weight="700" fill="#822c22">FBI</text>
+        <text x="0" y="8" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="7" font-weight="700" fill="#822c22">IC3</text>
+      </g>
+      <path d="M220 60 Q245 70 258 90" stroke="#6b6558" stroke-width="1.5" stroke-dasharray="3 4" fill="none"/>
+      <path d="M220 100 Q265 105 290 105" stroke="#6b6558" stroke-width="1.5" stroke-dasharray="3 4" fill="none"/>
+      <path d="M220 150 Q265 160 292 165" stroke="#6b6558" stroke-width="1.5" stroke-dasharray="3 4" fill="none"/>
+    </svg>
+  </div>
+</header>
+
+<section id="exhibit-a">
+  <div class="wrap">
+    <span class="exhibit-tag">Exhibit A</span>
+    <h2 class="section-title">The scale of the problem</h2>
+    <p class="section-lede">Robocalls aren't a personal annoyance — they're a documented national pattern. Here's what the federal government's own numbers say about 2025–2026.</p>
+    <div class="stat-grid">
+      <div class="stat-card" data-tag="FIG. 1">
+        <span class="stat-num">~13 / mo</span>
+        <span class="stat-desc">The average number of robocalls received per person, per month, as of April 2026 — 4.2 billion calls nationwide in that month alone.</span>
+        <span class="stat-source">Source: YouMail Robocall Index, via Congressional Research Service</span>
+      </div>
+      <div class="stat-card" data-tag="FIG. 2">
+        <span class="stat-num">1 in 32,571</span>
+        <span class="stat-desc">That's roughly how many robocalls received in 2025 actually got reported to the FTC. Almost everything goes undocumented.</span>
+        <span class="stat-source">Source: FTC Do Not Call complaint data, 2025</span>
+      </div>
+      <div class="stat-card" data-tag="FIG. 3">
+        <span class="stat-num">92%</span>
+        <span class="stat-desc">Share of Americans who've received an unwanted spam call. This isn't a niche problem — it's nearly universal.</span>
+        <span class="stat-source">Source: FTC National Do Not Call Registry data</span>
+      </div>
+      <div class="stat-card" data-tag="FIG. 4">
+        <span class="stat-num">2 of 3</span>
+        <span class="stat-desc">Do Not Call complaints that involve a robocall specifically, out of 2.6 million total violations reported in 2025.</span>
+        <span class="stat-source">Source: FTC Do Not Call Registry Data Book, FY2025</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="exhibit-b">
+  <div class="wrap">
+    <span class="exhibit-tag">Exhibit B</span>
+    <h2 class="section-title">Your case, by the numbers</h2>
+    <p class="section-lede">Answer two questions. We'll show you what robocalls are actually costing you a year — and how many reports that adds up to.</p>
+
+    <div class="file-folder">
+      <div class="calc-inputs">
+        <div class="field">
+          <label for="callsPerDay">Robocalls you get per day
+            <span class="range-readout" id="callsReadout">4</span>
+          </label>
+          <input type="range" id="callsPerDay" min="0" max="15" value="4" step="1">
+          <span class="hint">Slide to match roughly what your phone sees now.</span>
+        </div>
+        <div class="field">
+          <label for="hourlyWage">What's your time worth, per hour?</label>
+          <div class="dollar-input">
+            <span>$</span>
+            <input type="number" id="hourlyWage" value="25" min="0" step="1">
+          </div>
+          <span class="hint">Used only to estimate the value of time lost — nothing is stored or sent anywhere.</span>
+        </div>
+      </div>
+
+      <a href="#" class="btn btn-primary" id="fileBtn" style="margin-top:10px;">File the report →</a>
+
+      <div class="ledger" id="ledgerOut" style="display:none;">
+        <div class="ledger-row"><span class="k">Robocalls this week</span><span class="v mono" id="outWeek">—</span></div>
+        <div class="ledger-row"><span class="k">Robocalls this month</span><span class="v mono" id="outMonth">—</span></div>
+        <div class="ledger-row"><span class="k">Robocalls this year</span><span class="v mono" id="outYear">—</span></div>
+        <div class="ledger-row"><span class="k">Est. hours lost per year</span><span class="v mono" id="outHours">—</span></div>
+        <div class="ledger-row highlight"><span class="k">Est. value of that time</span><span class="v mono" id="outValue">—</span></div>
+        <div class="ledger-row highlight"><span class="k">Reports you could file with RoboCallMeNot</span><span class="v mono" id="outReports">—</span></div>
+        <div class="stamp-wrap"><div class="stamp" id="stampEl">CASE<br>OPEN</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="exhibit-c">
+  <div class="wrap">
+    <span class="exhibit-tag">Exhibit C</span>
+    <h2 class="section-title">How RoboCallMeNot files your case</h2>
+    <p class="section-lede">Three taps, three agencies, one entry.</p>
+    <div class="steps">
+      <div class="step">
+        <span class="step-num">01</span>
+        <h3>Log it</h3>
+        <p>Open the app the moment a robocall comes in, or add it after the fact. The number, time, and details get captured right on your device.</p>
+      </div>
+      <div class="step">
+        <span class="step-num">02</span>
+        <h3>Select agencies</h3>
+        <p>Choose any combination of the FTC, FCC, and the FBI's IC3. One entry can go to all three — no retyping the same complaint three times.</p>
+      </div>
+      <div class="step">
+        <span class="step-num">03</span>
+        <h3>File it</h3>
+        <p>One tap sends your report where it needs to go. Your local log stays encrypted (AES-256) on your own device — not on our servers. <a href="https://dancing-entremet-2f50e3.netlify.app" class="inline-app-link">Try it on your next call</a>.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="exhibit-d">
+  <div class="wrap">
+    <div class="verdict">
+      <span class="exhibit-tag">The Verdict</span>
+      <h2 class="section-title">Stop letting the calls go unrecorded</h2>
+      <p class="section-lede">Two ways to get RoboCallMeNot on your phone. Both include one-tap filing to the FTC, FCC, and FBI's IC3.</p>
+      <div class="price-grid">
+        <div class="price-card featured">
+          <span class="price-tag">Lifetime access</span>
+          <div class="price-amount">One-time <sup>payment</sup></div>
+          <ul>
+            <li>Pay once, use it for good</li>
+            <li>All future updates included</li>
+            <li>No recurring charge to track</li>
+          </ul>
+          <a href="https://buy.stripe.com/28E4gzebK27Ngsy6AJ43S00" class="btn btn-primary">Get lifetime access</a>
+        </div>
+        <div class="price-card">
+          <span class="price-tag">Monthly plan</span>
+          <div class="price-amount">Billed <sup>monthly</sup></div>
+          <ul>
+            <li>Lower cost to start</li>
+            <li>Cancel anytime from Settings</li>
+            <li>Same full feature set</li>
+          </ul>
+          <a href="https://buy.stripe.com/5kQ6oHffO7s74JQ4sB43S01" class="btn btn-ghost">Start monthly</a>
+        </div>
+      </div>
+      <p style="margin-top:26px; font-size:0.85rem; color:#9aa4b8;">
+        Already purchased? <a href="https://dancing-entremet-2f50e3.netlify.app" style="text-decoration:underline;">Open the app</a> and activate with your license key.
+      </p>
+    </div>
+  </div>
+</section>
+
+<section class="series-nav">
+  <div class="wrap">
+    <span class="exhibit-tag">More From the Case File</span>
+    <div class="series-grid">
+      <a href="anatomy-of-a-spoofed-call.html" class="series-card">
+        <span class="exhibit-tag">Read next</span>
+        <h3>Anatomy of a Spoofed Call</h3>
+        <p>How scammers fake your own area code, and the tells that give them away.</p>
+      </a>
+      <a href="protecting-your-parents.html" class="series-card">
+        <span class="exhibit-tag">Read next</span>
+        <h3>The Robocall Tax on Your Parents</h3>
+        <p>Why older adults get targeted hardest, and how to help without hovering.</p>
+      </a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div class="brand" style="justify-content:center; display:inline-flex;">ROBOCALL<span>MENOT</span></div>
+    <p style="margin-top:8px;">A product of RAC Express Shop</p>
+    <p class="fine">Figures cited above are estimates drawn from published FTC, FCC, and YouMail Robocall Index research current as of 2026, and are provided for illustration. The calculator's time-per-call and reporting estimates are approximations, not guarantees of savings. Questions? <a href="mailto:admin@racexpressshop.com" style="text-decoration:underline;">admin@racexpressshop.com</a></p>
+  </div>
+</footer>
+
+<script>
+  // Ambient ticker: ~1,600 robocalls/second nationally (April 2026, YouMail Robocall Index)
+  (function(){
+    const el = document.getElementById('tickerNum');
+    let count = 0;
+    const perSecond = 1600;
+    const stepMs = 100;
+    const increment = perSecond * (stepMs / 1000);
+    setInterval(() => {
+      count += increment;
+      el.textContent = Math.round(count).toLocaleString('en-US');
+    }, stepMs);
+  })();
+
+  // Calculator
+  (function(){
+    const callsSlider = document.getElementById('callsPerDay');
+    const callsReadout = document.getElementById('callsReadout');
+    const wageInput = document.getElementById('hourlyWage');
+    const fileBtn = document.getElementById('fileBtn');
+    const ledgerOut = document.getElementById('ledgerOut');
+    const stampEl = document.getElementById('stampEl');
+    const SECONDS_PER_CALL = 25; // estimate: notice, glance, decide, dismiss
+
+    callsSlider.addEventListener('input', () => {
+      callsReadout.textContent = callsSlider.value;
+    });
+
+    function currency(n){
+      return '$' + n.toLocaleString('en-US', {maximumFractionDigits:0});
+    }
+
+    fileBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      const perDay = parseFloat(callsSlider.value) || 0;
+      const wage = parseFloat(wageInput.value) || 0;
+
+      const perWeek = perDay * 7;
+      const perMonth = perDay * 30;
+      const perYear = perDay * 365;
+      const hoursLost = (perYear * SECONDS_PER_CALL) / 3600;
+      const valueLost = hoursLost * wage;
+
+      document.getElementById('outWeek').textContent = Math.round(perWeek).toLocaleString('en-US');
+      document.getElementById('outMonth').textContent = Math.round(perMonth).toLocaleString('en-US');
+      document.getElementById('outYear').textContent = Math.round(perYear).toLocaleString('en-US');
+      document.getElementById('outHours').textContent = hoursLost.toFixed(1) + ' hrs';
+      document.getElementById('outValue').textContent = currency(valueLost);
+      document.getElementById('outReports').textContent = Math.round(perYear).toLocaleString('en-US') + ' / yr';
+
+      ledgerOut.style.display = 'grid';
+      stampEl.classList.remove('show');
+      void stampEl.offsetWidth; // restart animation
+      setTimeout(() => stampEl.classList.add('show'), 120);
+
+      ledgerOut.scrollIntoView({behavior:'smooth', block:'nearest'});
+    });
+  })();
+</script>
+
+</body>
+</html>
