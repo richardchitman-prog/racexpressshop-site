@@ -1,4 +1,10 @@
 {
-  "next_index": 0,
-  "published": []
+  "next_index": 1,
+  "published": [
+    {
+      "slug": "the-reports-that-never-get-filed",
+      "topic_id": "underreporting-gap",
+      "date": "2026-07-02"
+    }
+  ]
 }
