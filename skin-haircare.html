@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Browse affordable skin and hair care products at RAC Express Shop. Quality beauty products at prices that work for everyone." />
+  <title>Skin &amp; Hair Care — RAC Express Shop</title>
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; font-size: 16px; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+      line-height: 1.6; color: #333; background-color: #fff;
+    }
+    :root {
+      --primary-navy: #1A237E;
+      --primary-sky: #29B6F6;
+      --text-dark: #333333;
+      --text-light: #666666;
+      --background-light: #f8f9fa;
+      --border-radius: 8px;
+      --shadow-subtle: 0 2px 8px rgba(0,0,0,0.1);
+      --shadow-hover: 0 4px 16px rgba(0,0,0,0.15);
+      --transition: all 0.3s ease;
+      --max-width: 1200px;
+    }
+    .container { max-width: var(--max-width); margin: 0 auto; padding: 0 20px; }
+    .btn {
+      display: inline-block; padding: 12px 24px; min-height: 44px; min-width: 44px;
+      border: none; border-radius: var(--border-radius); text-decoration: none;
+      font-weight: 600; text-align: center; cursor: pointer; transition: var(--transition);
+      font-size: 16px; line-height: 1.4;
+    }
+    .btn-primary { background-color: var(--primary-sky); color: white; }
+    .btn-primary:hover, .btn-primary:focus { background-color: #1976D2; box-shadow: var(--shadow-hover); transform: translateY(-2px); }
+    .btn-outline { background-color: transparent; color: white; border: 2px solid white; }
+    .btn-outline:hover, .btn-outline:focus { background-color: white; color: var(--primary-navy); }
+    *:focus { outline: 2px solid var(--primary-sky); outline-offset: 2px; }
+
+    /* HEADER */
+    .header { background-color: white; box-shadow: var(--shadow-subtle); position: fixed; top: 0; left: 0; right: 0; z-index: 1000; }
+    .header-container { display: flex; justify-content: space-between; align-items: center; padding: 15px 20px; max-width: var(--max-width); margin: 0 auto; }
+    .logo { display: flex; align-items: center; }
+    .logo img { height: 50px; width: auto; transition: var(--transition); }
+    .logo img:hover { opacity: 0.8; }
+    .nav { display: flex; list-style: none; gap: 30px; }
+    .nav a { color: var(--text-dark); text-decoration: none; font-weight: 500; transition: var(--transition); padding: 8px 0; }
+    .nav a:hover, .nav a:focus { color: var(--primary-sky); }
+    .nav a.active { color: var(--primary-sky); border-bottom: 2px solid var(--primary-sky); }
+    .hamburger { display: none; flex-direction: column; background: none; border: none; cursor: pointer; padding: 8px; gap: 4px; }
+    .hamburger span { width: 25px; height: 3px; background-color: var(--text-dark); transition: var(--transition); }
+    .hamburger.active span:nth-child(1) { transform: rotate(45deg) translate(6px,6px); }
+    .hamburger.active span:nth-child(2) { opacity: 0; }
+    .hamburger.active span:nth-child(3) { transform: rotate(-45deg) translate(6px,-6px); }
+
+    /* HERO */
+    .hero {
+      background: linear-gradient(135deg, rgba(26,35,126,0.85), rgba(41,182,246,0.8)),
+        url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 600"><rect fill="%23f0f2f5" width="1200" height="600"/><g fill="%23ddd"><circle cx="200" cy="200" r="100"/><circle cx="1000" cy="400" r="140"/><circle cx="600" cy="100" r="60"/></g></svg>');
+      background-size: cover; background-position: center; background-attachment: fixed;
+      color: white; padding: 150px 20px 100px; text-align: center;
+      margin-top: 80px; min-height: 50vh;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .hero h1 { font-size: clamp(2rem,5vw,3.5rem); font-weight: 800; margin-bottom: 20px; text-shadow: 2px 2px 4px rgba(0,0,0,0.3); letter-spacing: -1px; }
+    .hero p { font-size: clamp(1.1rem,2vw,1.4rem); margin-bottom: 30px; max-width: 600px; margin-left: auto; margin-right: auto; text-shadow: 1px 1px 2px rgba(0,0,0,0.3); }
+    .hero .btn { margin: 0 10px; }
+
+    /* PARTNER NOTICE */
+    .partner-wrap { padding: 32px 20px 0; }
+    .partner-notice {
+      background-color: #e8f5fd; border-left: 4px solid var(--primary-sky);
+      padding: 16px 24px; border-radius: var(--border-radius);
+      display: flex; align-items: center; gap: 14px; flex-wrap: wrap;
+    }
+    .partner-badge { background-color: var(--primary-navy); color: white; font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; padding: 4px 10px; border-radius: 5px; white-space: nowrap; }
+    .partner-notice p { font-size: 0.9rem; color: #333; }
+    .partner-notice a { color: var(--primary-sky); font-weight: 600; text-decoration: none; }
+    .partner-notice a:hover { text-decoration: underline; }
+
+    /* CATEGORIES */
+    .categories { padding: 40px 20px 60px; background-color: white; }
+    .categories h2 { text-align: center; font-size: clamp(1.75rem,4vw,2.5rem); margin-bottom: 40px; color: var(--text-dark); }
+    .category-grid { display: grid; grid-template-columns: repeat(auto-fit,minmax(220px,1fr)); gap: 24px; max-width: var(--max-width); margin: 0 auto; }
+    .cat-card {
+      background-color: white; border: 1px solid #e8e8e4; border-radius: 12px;
+      padding: 28px 20px; text-decoration: none;
+      display: flex; flex-direction: column; gap: 10px;
+      box-shadow: var(--shadow-subtle); transition: var(--transition);
+    }
+    .cat-card:hover { box-shadow: var(--shadow-hover); transform: translateY(-4px); border-color: var(--primary-sky); }
+    .cat-icon { width: 52px; height: 52px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; margin-bottom: 4px; }
+    .icon-green { background: #e1f5ee; }
+    .icon-teal  { background: #e0f7fa; }
+    .icon-coral { background: #fbe9e7; }
+    .icon-amber { background: #fff8e1; }
+    .cat-name { font-size: 1.05rem; font-weight: 700; color: var(--text-dark); }
+    .cat-desc { font-size: 0.875rem; color: var(--text-light); }
+
+    /* WHY SHOP */
+    .why-shop { padding: 60px 20px; background-color: var(--background-light); }
+    .why-shop h2 { text-align: center; font-size: clamp(1.75rem,4vw,2.5rem); margin-bottom: 40px; color: var(--text-dark); }
+    .info-grid { display: grid; grid-template-columns: repeat(auto-fit,minmax(250px,1fr)); gap: 24px; max-width: var(--max-width); margin: 0 auto; }
+    .info-card { background: white; border-radius: var(--border-radius); padding: 24px; display: flex; gap: 16px; align-items: flex-start; box-shadow: var(--shadow-subtle); transition: var(--transition); }
+    .info-card:hover { box-shadow: var(--shadow-hover); transform: translateY(-3px); }
+    .info-icon { width: 52px; height: 52px; background-color: var(--primary-sky); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.4rem; flex-shrink: 0; }
+    .info-title { font-size: 1rem; font-weight: 700; color: var(--text-dark); margin-bottom: 4px; }
+    .info-body  { font-size: 0.875rem; color: var(--text-light); line-height: 1.5; }
+
+    /* CTA BANNER */
+    .cta-section { padding: 60px 20px; background-color: white; }
+    .cta-banner {
+      background: linear-gradient(135deg, #1A237E, #29B6F6);
+      border-radius: 12px; padding: 40px 32px; max-width: var(--max-width); margin: 0 auto;
+      display: flex; align-items: center; justify-content: space-between; gap: 24px; flex-wrap: wrap; color: white;
+    }
+    .cta-banner h2 { font-size: clamp(1.25rem,3vw,1.75rem); font-weight: 700; margin-bottom: 6px; }
+    .cta-banner p  { font-size: 0.95rem; opacity: 0.88; }
+    .btn-white { display: inline-flex; align-items: center; gap: 8px; background: white; color: var(--primary-navy); font-size: 1rem; font-weight: 700; padding: 14px 28px; border-radius: var(--border-radius); text-decoration: none; white-space: nowrap; transition: var(--transition); }
+    .btn-white:hover { opacity: 0.9; transform: translateY(-2px); box-shadow: var(--shadow-hover); }
+
+    /* FOOTER */
+    .footer { background-color: var(--primary-navy); color: white; padding: 30px 20px; text-align: center; }
+    .footer-content { max-width: var(--max-width); margin: 0 auto; }
+    .footer a { color: var(--primary-sky); text-decoration: none; }
+    .footer a:hover { text-decoration: underline; }
+
+    /* RESPONSIVE */
+    @media (max-width: 768px) {
+      .nav { position: fixed; top: 80px; left: 0; right: 0; background-color: white; flex-direction: column; padding: 20px; box-shadow: var(--shadow-subtle); transform: translateX(-100%); transition: var(--transition); gap: 15px; }
+      .nav.active { transform: translateX(0); }
+      .hamburger { display: flex; }
+      .hero { padding: 120px 20px 80px; }
+      .hero .btn { display: block; margin: 10px auto; max-width: 220px; }
+      .cta-banner { flex-direction: column; align-items: flex-start; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      * { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+    }
+  </style>
+</head>
+<body>
+
+  <header class="header">
+    <div class="header-container">
+      <div class="logo">
+        <a href="index.html">
+          <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='60' viewBox='0 0 200 60'%3E%3Ctext x='10' y='40' font-family='Arial, sans-serif' font-size='24' font-weight='bold' fill='%231A237E'%3ERAC Express%3C/text%3E%3Ctext x='10' y='55' font-family='Arial, sans-serif' font-size='12' fill='%2329B6F6'%3EShop%3C/text%3E%3C/svg%3E" alt="RAC Express Shop Logo">
+        </a>
+      </div>
+      <button class="hamburger" id="hamburger" aria-label="Toggle navigation" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+      <nav>
+        <ul class="nav" id="nav">
+          <li><a href="index.html#home">Home</a></li>
+          <li><a href="index.html#features">Features</a></li>
+          <li><a href="index.html#products">Products</a></li>
+          <li><a href="skin-haircare.html" class="active">Skin &amp; Hair Care</a></li>
+          <li><a href="index.html#contact">Contact</a></li>
+          <li><a href="https://amzn.to/4qLJlQg" target="_blank" rel="noopener noreferrer">Visit My Store</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div class="container">
+        <h1>Affordable Skin &amp; Hair Care</h1>
+        <p>Quality beauty products for every routine — at prices that work for everyone.</p>
+        <a href="https://affordableskinandhaircareproducts.com" target="_blank" rel="noopener noreferrer" class="btn btn-primary">Shop Now &#8599;</a>
+        <a href="index.html#contact" class="btn btn-outline">Contact Us</a>
+      </div>
+    </section>
+
+    <div class="partner-wrap">
+      <div class="container">
+        <div class="partner-notice">
+          <span class="partner-badge">Partner Site</span>
+          <p>Products and orders are fulfilled at
+            <a href="https://affordableskinandhaircareproducts.com" target="_blank" rel="noopener noreferrer">affordableskinandhaircareproducts.com</a>
+            — every link below takes you directly there to browse and order.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <section class="categories">
+      <div class="container">
+        <h2>Browse by Category</h2>
+        <div class="category-grid">
+          <a class="cat-card" href="https://affordableskinandhaircareproducts.com" target="_blank" rel="noopener noreferrer">
+            <div class="cat-icon icon-green">&#10024;</div>
+            <div class="cat-name">Skin Care</div>
+            <div class="cat-desc">Moisturizers, serums &amp; cleansers for every skin type.</div>
+          </a>
+          <a class="cat-card" href="https://affordableskinandhaircareproducts.com" target="_blank" rel="noopener noreferrer">
+            <div class="cat-icon icon-teal">&#9986;</div>
+            <div class="cat-name">Hair Care</div>
+            <div class="cat-desc">Shampoos, conditioners &amp; nourishing oils.</div>
+          </a>
+          <a class="cat-card" href="https://affordableskinandhaircareproducts.com" target="_blank" rel="noopener noreferrer">
+            <div class="cat-icon icon-coral">&#128167;</div>
+            <div class="cat-name">Treatments</div>
+            <div class="cat-desc">Masks, exfoliants &amp; targeted care solutions.</div>
+          </a>
+          <a class="cat-card" href="https://affordableskinandhaircareproducts.com" target="_blank" rel="noopener noreferrer">
+            <div class="cat-icon icon-amber">&#127873;</div>
+            <div class="cat-name">Bundles &amp; Sets</div>
+            <div class="cat-desc">Great value bundles &amp; gift-ready sets.</div>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <section class="why-shop">
+      <div class="container">
+        <h2>Why Shop Here?</h2>
+        <div class="info-grid">
+          <div class="info-card">
+            <div class="info-icon">&#127991;</div>
+            <div>
+              <div class="info-title">Affordable Prices</div>
+              <div class="info-body">Quality skin and hair care without the luxury markup — great value for every budget.</div>
+            </div>
+          </div>
+          <div class="info-card">
+            <div class="info-icon">&#128666;</div>
+            <div>
+              <div class="info-title">Easy Ordering</div>
+              <div class="info-body">Place your order directly through our partner site — quick, simple, and secure.</div>
+            </div>
+          </div>
+          <div class="info-card">
+            <div class="info-icon">&#11088;</div>
+            <div>
+              <div class="info-title">Curated Selection</div>
+              <div class="info-body">Carefully chosen skin and hair essentials you can trust for your daily routine.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="cta-section">
+      <div class="container">
+        <div class="cta-banner">
+          <div>
+            <h2>Ready to shop?</h2>
+            <p>Visit Affordable Skin &amp; Hair Care Products to view the full catalog and place your order.</p>
+          </div>
+          <a class="btn-white" href="https://affordableskinandhaircareproducts.com" target="_blank" rel="noopener noreferrer">
+            View &amp; Order Products &#8599;
+          </a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-content">
+      <p>&copy; 2026 RAC Express Shop. All rights reserved. &nbsp;&middot;&nbsp;
+        Partner store: <a href="https://affordableskinandhaircareproducts.com" target="_blank" rel="noopener noreferrer">affordableskinandhaircareproducts.com</a>
+      </p>
+    </div>
+  </footer>
+
+  <script>
+    const hamburger = document.getElementById('hamburger');
+    const nav = document.getElementById('nav');
+    hamburger.addEventListener('click', () => {
+      hamburger.classList.toggle('active');
+      nav.classList.toggle('active');
+      hamburger.setAttribute('aria-expanded', hamburger.classList.contains('active'));
+    });
+    nav.querySelectorAll('a').forEach(link => {
+      link.addEventListener('click', () => {
+        hamburger.classList.remove('active');
+        nav.classList.remove('active');
+        hamburger.setAttribute('aria-expanded', 'false');
+      });
+    });
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        hamburger.classList.remove('active');
+        nav.classList.remove('active');
+        hamburger.setAttribute('aria-expanded', 'false');
+      }
+    });
+    const header = document.querySelector('.header');
+    window.addEventListener('scroll', () => {
+      if (window.scrollY > 100) {
+        header.style.backgroundColor = 'rgba(255,255,255,0.95)';
+        header.style.backdropFilter = 'blur(10px)';
+      } else {
+        header.style.backgroundColor = 'white';
+        header.style.backdropFilter = 'none';
+      }
+    });
+  </script>
+</body>
+</html>

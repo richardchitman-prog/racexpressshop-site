@@ -1,0 +1,987 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="RoboCallMeNot — Report robocalls to the FTC, FCC, and FBI/IC3 in seconds. Stop the spam. Fight back.">
+    <meta name="keywords" content="robocall blocker, report robocalls, FTC robocall, FCC complaint, stop spam calls, RoboCallMeNot">
+    <meta name="author" content="RAC Express Shop">
+    <title>RoboCallMeNot — Stop Robocalls. Fight Back. | RAC Express Shop</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600;700;800&family=Barlow+Condensed:wght@700;800&display=swap" rel="stylesheet">
+
+    <style>
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+        :root {
+            --navy: #0A0F1E;
+            --navy-mid: #111827;
+            --navy-soft: #1E2B40;
+            --cyan: #00D4C8;
+            --cyan-dim: #00B0A6;
+            --cyan-pale: #E0FAF8;
+            --white: #FFFFFF;
+            --off-white: #F6F8FA;
+            --gray-100: #E8ECF0;
+            --gray-300: #C4CDD8;
+            --gray-500: #7A8899;
+            --gray-700: #3D4A5C;
+            --accent-gold: #F5A623;
+            --danger: #E84545;
+            --radius-sm: 6px;
+            --radius-md: 12px;
+            --radius-lg: 20px;
+            --shadow-sm: 0 2px 8px rgba(0,0,0,0.08);
+            --shadow-md: 0 8px 24px rgba(0,0,0,0.12);
+            --shadow-lg: 0 20px 48px rgba(0,0,0,0.18);
+            --transition: 0.22s cubic-bezier(0.25,0.46,0.45,0.94);
+        }
+
+        html { scroll-behavior: smooth; }
+        body {
+            font-family: 'Barlow', sans-serif;
+            background: var(--white);
+            color: var(--navy);
+            line-height: 1.6;
+            font-size: 16px;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* ── ANNOUNCE BAR ── */
+        .announce-bar {
+            background: var(--danger);
+            color: var(--white);
+            text-align: center;
+            padding: 9px 20px;
+            font-size: 13px;
+            font-weight: 600;
+            letter-spacing: 0.03em;
+        }
+
+        /* ── HEADER ── */
+        .header {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            background: var(--navy);
+            border-bottom: 1px solid rgba(255,255,255,0.06);
+            backdrop-filter: blur(8px);
+        }
+        .header-inner {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 24px;
+            height: 68px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 24px;
+        }
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+            flex-shrink: 0;
+        }
+        .logo-mark {
+            width: 38px;
+            height: 38px;
+            background: var(--cyan);
+            border-radius: var(--radius-sm);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Barlow Condensed', sans-serif;
+            font-weight: 800;
+            font-size: 18px;
+            color: var(--navy);
+        }
+        .logo-text { display: flex; flex-direction: column; line-height: 1.1; }
+        .logo-text span:first-child {
+            font-family: 'Barlow Condensed', sans-serif;
+            font-weight: 800;
+            font-size: 17px;
+            color: var(--white);
+            letter-spacing: 0.04em;
+            text-transform: uppercase;
+        }
+        .logo-text span:last-child {
+            font-size: 10px;
+            font-weight: 500;
+            color: var(--cyan);
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+        }
+        nav ul { list-style: none; display: flex; align-items: center; gap: 4px; }
+        nav a {
+            color: var(--gray-300);
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 500;
+            padding: 6px 14px;
+            border-radius: var(--radius-sm);
+            transition: color var(--transition), background var(--transition);
+        }
+        nav a:hover { color: var(--white); background: rgba(255,255,255,0.07); }
+        .nav-cta {
+            background: var(--cyan) !important;
+            color: var(--navy) !important;
+            font-weight: 700 !important;
+            padding: 8px 18px !important;
+        }
+        .nav-cta:hover { background: var(--cyan-dim) !important; }
+
+        /* ── HERO ── */
+        .hero {
+            background: var(--navy);
+            position: relative;
+            overflow: hidden;
+            padding: 80px 24px 100px;
+        }
+        .hero::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, transparent 55%, rgba(232,69,69,0.08) 100%);
+            pointer-events: none;
+        }
+        .hero-stripe { display: none; }
+        .hero-inner {
+            max-width: 1200px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 1;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 60px;
+            align-items: center;
+        }
+        .hero-eyebrow {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(232,69,69,0.12);
+            border: 1px solid rgba(232,69,69,0.25);
+            border-radius: 99px;
+            padding: 5px 14px;
+            font-size: 12px;
+            font-weight: 700;
+            color: #ff8080;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            margin-bottom: 20px;
+        }
+        .hero-title {
+            font-family: 'Barlow Condensed', sans-serif;
+            font-size: clamp(42px, 6vw, 72px);
+            font-weight: 800;
+            color: var(--white);
+            line-height: 1.0;
+            letter-spacing: -0.01em;
+            margin-bottom: 20px;
+        }
+        .hero-title .accent { color: var(--danger); }
+        .hero-sub {
+            font-size: 18px;
+            color: var(--gray-300);
+            margin-bottom: 36px;
+            line-height: 1.65;
+            max-width: 480px;
+        }
+        .hero-actions { display: flex; gap: 14px; flex-wrap: wrap; align-items: center; }
+        .btn-primary {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: var(--danger);
+            color: var(--white);
+            font-family: 'Barlow', sans-serif;
+            font-size: 15px;
+            font-weight: 700;
+            padding: 14px 28px;
+            border-radius: var(--radius-md);
+            text-decoration: none;
+            transition: background var(--transition), transform var(--transition), box-shadow var(--transition);
+            box-shadow: 0 4px 16px rgba(232,69,69,0.35);
+        }
+        .btn-primary:hover {
+            background: #c73232;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(232,69,69,0.45);
+        }
+        .btn-secondary {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(255,255,255,0.07);
+            color: var(--white);
+            font-family: 'Barlow', sans-serif;
+            font-size: 15px;
+            font-weight: 600;
+            padding: 14px 28px;
+            border-radius: var(--radius-md);
+            text-decoration: none;
+            border: 1px solid rgba(255,255,255,0.12);
+            transition: background var(--transition);
+        }
+        .btn-secondary:hover { background: rgba(255,255,255,0.12); }
+        .hero-trust {
+            display: flex;
+            gap: 20px;
+            margin-top: 28px;
+            flex-wrap: wrap;
+        }
+        .trust-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 13px;
+            color: var(--gray-500);
+            font-weight: 500;
+        }
+        .trust-item .dot { color: var(--cyan); font-size: 16px; }
+
+        /* Hero visual */
+        .hero-visual {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .app-mockup {
+            background: var(--navy-soft);
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: var(--radius-lg);
+            padding: 32px;
+            width: 100%;
+            max-width: 360px;
+            box-shadow: var(--shadow-lg);
+        }
+        .mockup-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 24px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid rgba(255,255,255,0.06);
+        }
+        .mockup-icon {
+            width: 48px; height: 48px;
+            background: var(--danger);
+            border-radius: var(--radius-md);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+        }
+        .mockup-title { color: var(--white); font-weight: 700; font-size: 16px; }
+        .mockup-sub { color: var(--gray-500); font-size: 12px; }
+        .mockup-stat {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 14px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.04);
+        }
+        .mockup-stat:last-child { border-bottom: none; }
+        .stat-label { font-size: 13px; color: var(--gray-500); }
+        .stat-value { font-size: 13px; font-weight: 600; }
+        .stat-value.green { color: #4CAF50; }
+        .stat-value.cyan { color: var(--cyan); }
+        .stat-value.red { color: var(--danger); }
+        .agency-badges {
+            display: flex;
+            gap: 8px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+        .badge {
+            background: rgba(0,212,200,0.08);
+            border: 1px solid rgba(0,212,200,0.2);
+            color: var(--cyan);
+            font-size: 11px;
+            font-weight: 700;
+            padding: 4px 10px;
+            border-radius: 99px;
+            letter-spacing: 0.05em;
+        }
+
+        /* ── STATS BAR ── */
+        .stats-bar {
+            background: var(--navy-mid);
+            border-top: 1px solid rgba(255,255,255,0.04);
+            border-bottom: 1px solid rgba(255,255,255,0.04);
+            padding: 28px 24px;
+        }
+        .stats-inner {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 24px;
+            text-align: center;
+        }
+        .stat-block .num {
+            font-family: 'Barlow Condensed', sans-serif;
+            font-size: 36px;
+            font-weight: 800;
+            color: var(--cyan);
+            line-height: 1;
+        }
+        .stat-block .lbl {
+            font-size: 13px;
+            color: var(--gray-500);
+            margin-top: 4px;
+        }
+
+        /* ── SECTION BASE ── */
+        section { padding: 80px 24px; }
+        .section-inner { max-width: 1200px; margin: 0 auto; }
+        .section-label {
+            font-size: 12px;
+            font-weight: 700;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            color: var(--cyan);
+            margin-bottom: 12px;
+        }
+        .section-title {
+            font-family: 'Barlow Condensed', sans-serif;
+            font-size: clamp(32px, 4vw, 48px);
+            font-weight: 800;
+            color: var(--navy);
+            line-height: 1.1;
+            margin-bottom: 16px;
+        }
+        .section-title.white { color: var(--white); }
+        .section-sub {
+            font-size: 17px;
+            color: var(--gray-500);
+            max-width: 560px;
+            line-height: 1.65;
+        }
+        .section-sub.white { color: var(--gray-300); }
+
+        /* ── HOW IT WORKS ── */
+        .how { background: var(--off-white); }
+        .steps {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 32px;
+            margin-top: 52px;
+        }
+        .step-card {
+            background: var(--white);
+            border-radius: var(--radius-lg);
+            padding: 32px 28px;
+            box-shadow: var(--shadow-sm);
+            position: relative;
+        }
+        .step-num {
+            font-family: 'Barlow Condensed', sans-serif;
+            font-size: 48px;
+            font-weight: 800;
+            color: var(--gray-100);
+            line-height: 1;
+            margin-bottom: 16px;
+        }
+        .step-icon {
+            font-size: 32px;
+            margin-bottom: 14px;
+        }
+        .step-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--navy);
+            margin-bottom: 10px;
+        }
+        .step-desc { font-size: 14px; color: var(--gray-500); line-height: 1.65; }
+
+        /* ── AGENCIES ── */
+        .agencies { background: var(--white); }
+        .agency-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 28px;
+            margin-top: 52px;
+        }
+        .agency-card {
+            background: var(--off-white);
+            border-radius: var(--radius-lg);
+            padding: 36px 28px;
+            text-align: center;
+            border: 2px solid transparent;
+            transition: border-color var(--transition), box-shadow var(--transition), transform var(--transition);
+        }
+        .agency-card:hover {
+            border-color: var(--cyan);
+            box-shadow: var(--shadow-md);
+            transform: translateY(-4px);
+        }
+        .agency-logo {
+            font-size: 48px;
+            margin-bottom: 16px;
+        }
+        .agency-name {
+            font-family: 'Barlow Condensed', sans-serif;
+            font-size: 24px;
+            font-weight: 800;
+            color: var(--navy);
+            margin-bottom: 8px;
+        }
+        .agency-full {
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--cyan-dim);
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+            margin-bottom: 12px;
+        }
+        .agency-desc { font-size: 14px; color: var(--gray-500); line-height: 1.6; }
+        .agency-outcome {
+            margin-top: 16px;
+            background: var(--cyan-pale);
+            border-radius: var(--radius-sm);
+            padding: 10px 14px;
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--cyan-dim);
+        }
+
+        /* ── FEATURES ── */
+        .features { background: var(--navy); }
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 24px;
+            margin-top: 52px;
+        }
+        .feature-card {
+            background: rgba(255,255,255,0.04);
+            border: 1px solid rgba(255,255,255,0.07);
+            border-radius: var(--radius-lg);
+            padding: 28px 24px;
+            transition: background var(--transition), border-color var(--transition);
+        }
+        .feature-card:hover {
+            background: rgba(255,255,255,0.07);
+            border-color: rgba(0,212,200,0.2);
+        }
+        .feature-icon { font-size: 28px; margin-bottom: 14px; }
+        .feature-title { font-size: 16px; font-weight: 700; color: var(--white); margin-bottom: 8px; }
+        .feature-desc { font-size: 14px; color: var(--gray-500); line-height: 1.6; }
+
+        /* ── PRICING ── */
+        .pricing { background: var(--off-white); }
+        .pricing-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 28px;
+            margin-top: 52px;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        .pricing-card {
+            background: var(--white);
+            border-radius: var(--radius-lg);
+            padding: 40px 32px;
+            box-shadow: var(--shadow-sm);
+            border: 2px solid var(--gray-100);
+            position: relative;
+            text-align: center;
+        }
+        .pricing-card.featured {
+            border-color: var(--danger);
+            box-shadow: 0 8px 32px rgba(232,69,69,0.15);
+        }
+        .pricing-badge {
+            position: absolute;
+            top: -14px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--danger);
+            color: var(--white);
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            padding: 5px 16px;
+            border-radius: 99px;
+        }
+        .pricing-name {
+            font-family: 'Barlow Condensed', sans-serif;
+            font-size: 22px;
+            font-weight: 800;
+            color: var(--navy);
+            margin-bottom: 8px;
+        }
+        .pricing-price {
+            font-family: 'Barlow Condensed', sans-serif;
+            font-size: 56px;
+            font-weight: 800;
+            color: var(--navy);
+            line-height: 1;
+            margin: 16px 0 4px;
+        }
+        .pricing-price sup { font-size: 24px; vertical-align: super; }
+        .pricing-period { font-size: 14px; color: var(--gray-500); margin-bottom: 28px; }
+        .pricing-features { list-style: none; text-align: left; margin-bottom: 32px; }
+        .pricing-features li {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            font-size: 14px;
+            color: var(--gray-700);
+            padding: 8px 0;
+            border-bottom: 1px solid var(--gray-100);
+        }
+        .pricing-features li:last-child { border-bottom: none; }
+        .pricing-features li::before { content: '✓'; color: var(--cyan-dim); font-weight: 700; flex-shrink: 0; }
+        .btn-buy {
+            display: block;
+            width: 100%;
+            padding: 14px;
+            border-radius: var(--radius-md);
+            font-family: 'Barlow', sans-serif;
+            font-size: 15px;
+            font-weight: 700;
+            text-decoration: none;
+            text-align: center;
+            transition: background var(--transition), transform var(--transition);
+        }
+        .btn-buy.primary {
+            background: var(--danger);
+            color: var(--white);
+            box-shadow: 0 4px 16px rgba(232,69,69,0.3);
+        }
+        .btn-buy.primary:hover { background: #c73232; transform: translateY(-2px); }
+        .btn-buy.outline {
+            background: transparent;
+            color: var(--navy);
+            border: 2px solid var(--gray-300);
+        }
+        .btn-buy.outline:hover { border-color: var(--navy); background: var(--off-white); }
+        .no-refund {
+            font-size: 11px;
+            color: var(--gray-500);
+            margin-top: 12px;
+            text-align: center;
+        }
+
+        /* ── FAQ ── */
+        .faq { background: var(--white); }
+        .faq-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+            margin-top: 52px;
+        }
+        .faq-item {
+            background: var(--off-white);
+            border-radius: var(--radius-md);
+            padding: 24px;
+        }
+        .faq-q { font-size: 15px; font-weight: 700; color: var(--navy); margin-bottom: 10px; }
+        .faq-a { font-size: 14px; color: var(--gray-500); line-height: 1.65; }
+
+        /* ── CTA ── */
+        .cta-section {
+            background: var(--navy);
+            text-align: center;
+            padding: 80px 24px;
+        }
+        .cta-inner { max-width: 640px; margin: 0 auto; }
+        .cta-title {
+            font-family: 'Barlow Condensed', sans-serif;
+            font-size: clamp(36px, 5vw, 56px);
+            font-weight: 800;
+            color: var(--white);
+            line-height: 1.1;
+            margin-bottom: 16px;
+        }
+        .cta-title .accent { color: var(--danger); }
+        .cta-sub { font-size: 17px; color: var(--gray-300); margin-bottom: 36px; line-height: 1.6; }
+        .cta-actions { display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; }
+
+        /* ── FOOTER ── */
+        .footer { background: var(--navy-mid); border-top: 1px solid rgba(255,255,255,0.06); }
+        .footer-inner { max-width: 1200px; margin: 0 auto; padding: 60px 24px 32px; }
+        .footer-bottom {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-top: 32px;
+            border-top: 1px solid rgba(255,255,255,0.06);
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+        .footer-bottom p { font-size: 13px; color: var(--gray-500); }
+        .footer-links { display: flex; gap: 20px; }
+        .footer-links a { font-size: 13px; color: var(--gray-500); text-decoration: none; }
+        .footer-links a:hover { color: var(--gray-300); }
+
+        /* ── FADE UP ── */
+        .fade-up { opacity: 0; transform: translateY(24px); transition: opacity 0.5s ease, transform 0.5s ease; }
+        .fade-up.visible { opacity: 1; transform: none; }
+
+        /* ── RESPONSIVE ── */
+        @media (max-width: 900px) {
+            .hero-inner { grid-template-columns: 1fr; }
+            .hero-visual { display: none; }
+            .stats-inner { grid-template-columns: repeat(2, 1fr); }
+            .steps { grid-template-columns: 1fr; }
+            .agency-grid { grid-template-columns: 1fr; }
+            .features-grid { grid-template-columns: 1fr 1fr; }
+            .pricing-grid { grid-template-columns: 1fr; max-width: 440px; }
+            .faq-grid { grid-template-columns: 1fr; }
+        }
+        @media (max-width: 600px) {
+            .features-grid { grid-template-columns: 1fr; }
+            nav ul { display: none; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- Announce Bar -->
+<div class="announce-bar">
+    🚨 Robocalls cost Americans $29.8 billion a year — Fight back with RoboCallMeNot
+</div>
+
+<!-- Header -->
+<header class="header">
+    <div class="header-inner">
+        <a href="index.html" class="logo" aria-label="RAC Express Shop home">
+            <div class="logo-mark">R</div>
+            <div class="logo-text">
+                <span>RAC Express</span>
+                <span>Shop</span>
+            </div>
+        </a>
+        <nav>
+            <ul>
+                <li><a href="index.html">Home</a></li>
+                <li><a href="#how-it-works">How It Works</a></li>
+                <li><a href="#agencies">Agencies</a></li>
+                <li><a href="#pricing">Pricing</a></li>
+                <li><a href="#pricing" class="nav-cta">Get Started</a></li>
+            </ul>
+        </nav>
+    </div>
+</header>
+
+<!-- Hero -->
+<section class="hero" id="home">
+    <div class="hero-stripe"></div>
+    <div class="hero-inner">
+        <div class="hero-content">
+            <div class="hero-eyebrow">🚫 Stop Robocalls Now</div>
+            <h1 class="hero-title">
+                Report.<br>
+                <span class="accent">Fight Back.</span><br>
+                Win.
+            </h1>
+            <p class="hero-sub">
+                RoboCallMeNot makes it fast and easy to report robocalls directly to the FTC, FCC, and FBI/IC3 — the agencies that actually investigate and fine scammers.
+            </p>
+            <div class="hero-actions">
+                <a href="#pricing" class="btn-primary">🛡️ Get RoboCallMeNot →</a>
+                <a href="#how-it-works" class="btn-secondary">See How It Works</a>
+            </div>
+            <div class="hero-trust">
+                <div class="trust-item"><span class="dot">✓</span> No monthly fees on Lifetime plan</div>
+                <div class="trust-item"><span class="dot">✓</span> Works on any device</div>
+                <div class="trust-item"><span class="dot">✓</span> Your data stays private</div>
+            </div>
+        </div>
+        <div class="hero-visual">
+            <div class="app-mockup">
+                <div class="mockup-header">
+                    <div class="mockup-icon">🤖</div>
+                    <div>
+                        <div class="mockup-title">RoboCallMeNot</div>
+                        <div class="mockup-sub">Report Dashboard</div>
+                    </div>
+                </div>
+                <div class="mockup-stat">
+                    <span class="stat-label">Last Call Reported</span>
+                    <span class="stat-value green">✓ Submitted</span>
+                </div>
+                <div class="mockup-stat">
+                    <span class="stat-label">FTC Complaint</span>
+                    <span class="stat-value cyan">Filed</span>
+                </div>
+                <div class="mockup-stat">
+                    <span class="stat-label">FCC Complaint</span>
+                    <span class="stat-value cyan">Filed</span>
+                </div>
+                <div class="mockup-stat">
+                    <span class="stat-label">FBI/IC3 Report</span>
+                    <span class="stat-value cyan">Filed</span>
+                </div>
+                <div class="mockup-stat">
+                    <span class="stat-label">Caller ID</span>
+                    <span class="stat-value red">+1 (800) SCAMMER</span>
+                </div>
+                <div class="agency-badges">
+                    <span class="badge">FTC</span>
+                    <span class="badge">FCC</span>
+                    <span class="badge">FBI/IC3</span>
+                    <span class="badge">Encrypted</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Stats Bar -->
+<div class="stats-bar">
+    <div class="stats-inner">
+        <div class="stat-block">
+            <div class="num">58B+</div>
+            <div class="lbl">Robocalls in 2023</div>
+        </div>
+        <div class="stat-block">
+            <div class="num">3</div>
+            <div class="lbl">Federal agencies you can report to</div>
+        </div>
+        <div class="stat-block">
+            <div class="num">$10K</div>
+            <div class="lbl">Max FCC fine per violation</div>
+        </div>
+        <div class="stat-block">
+            <div class="num">60s</div>
+            <div class="lbl">Time to file a report</div>
+        </div>
+    </div>
+</div>
+
+<!-- How It Works -->
+<section class="how" id="how-it-works">
+    <div class="section-inner">
+        <div class="fade-up">
+            <p class="section-label">Simple Process</p>
+            <h2 class="section-title">Report a Robocall in 3 Steps</h2>
+            <p class="section-sub">No complicated forms. No hunting for agency websites. Just open the app and report.</p>
+        </div>
+        <div class="steps">
+            <div class="step-card fade-up">
+                <div class="step-num">01</div>
+                <div class="step-icon">📞</div>
+                <div class="step-title">Log the Call</div>
+                <div class="step-desc">Enter the caller's number, call type (IRS scam, Medicare fraud, warranty scam, etc.), and any notes about what they said.</div>
+            </div>
+            <div class="step-card fade-up">
+                <div class="step-num">02</div>
+                <div class="step-icon">🎯</div>
+                <div class="step-title">Choose Your Agency</div>
+                <div class="step-desc">Select FTC, FCC, FBI/IC3 — or all three. RoboCallMeNot routes you directly to the right official complaint portal for each.</div>
+            </div>
+            <div class="step-card fade-up">
+                <div class="step-num">03</div>
+                <div class="step-icon">✅</div>
+                <div class="step-title">Submit & Track</div>
+                <div class="step-desc">Your report is filed. Your history is saved locally and encrypted — only you can access it. No cloud, no data sharing.</div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Agencies -->
+<section class="agencies" id="agencies">
+    <div class="section-inner">
+        <div class="fade-up">
+            <p class="section-label">Reporting Agencies</p>
+            <h2 class="section-title">Three Agencies. Maximum Impact.</h2>
+            <p class="section-sub">Each agency has different enforcement powers. Reporting to all three puts maximum pressure on scammers.</p>
+        </div>
+        <div class="agency-grid">
+            <div class="agency-card fade-up">
+                <div class="agency-logo">🏛️</div>
+                <div class="agency-name">FTC</div>
+                <div class="agency-full">Federal Trade Commission</div>
+                <div class="agency-desc">The FTC maintains the National Do Not Call Registry and takes enforcement action against telemarketers who violate consumer protection laws.</div>
+                <div class="agency-outcome">✓ Can issue fines up to $51,744 per violation</div>
+            </div>
+            <div class="agency-card fade-up">
+                <div class="agency-logo">📡</div>
+                <div class="agency-name">FCC</div>
+                <div class="agency-full">Federal Communications Commission</div>
+                <div class="agency-desc">The FCC regulates communications networks and can take action against carriers that allow illegal robocall traffic, imposing fines up to $10,000 per call.</div>
+                <div class="agency-outcome">✓ Can shut down illegal calling operations</div>
+            </div>
+            <div class="agency-card fade-up">
+                <div class="agency-logo">🔍</div>
+                <div class="agency-name">FBI/IC3</div>
+                <div class="agency-full">Internet Crime Complaint Center</div>
+                <div class="agency-desc">For scam calls involving fraud or identity theft, IC3 collects and refers complaints to federal, state, and local law enforcement agencies for investigation.</div>
+                <div class="agency-outcome">✓ Refers cases for criminal prosecution</div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Features -->
+<section class="features" id="features">
+    <div class="section-inner">
+        <div class="fade-up">
+            <p class="section-label">App Features</p>
+            <h2 class="section-title white">Built for Privacy. Built to Fight.</h2>
+            <p class="section-sub white">Everything you need to report robocalls — nothing you don't. Your data never leaves your device.</p>
+        </div>
+        <div class="features-grid">
+            <div class="feature-card fade-up">
+                <div class="feature-icon">🔒</div>
+                <div class="feature-title">AES-256 Encryption</div>
+                <div class="feature-desc">Your report history is encrypted on your device with military-grade AES-256-GCM encryption. Zero cloud storage.</div>
+            </div>
+            <div class="feature-card fade-up">
+                <div class="feature-icon">📱</div>
+                <div class="feature-title">Works on Any Device</div>
+                <div class="feature-desc">Installable Progressive Web App — works on iPhone, Android, desktop, and tablet. No app store required.</div>
+            </div>
+            <div class="feature-card fade-up">
+                <div class="feature-icon">⚡</div>
+                <div class="feature-title">Report in Seconds</div>
+                <div class="feature-desc">Pre-filled forms and direct agency links mean you can file a complete complaint in under 60 seconds.</div>
+            </div>
+            <div class="feature-card fade-up">
+                <div class="feature-icon">📋</div>
+                <div class="feature-title">Call History</div>
+                <div class="feature-desc">Keep a local encrypted log of every robocall you've received and reported — useful if you need to escalate.</div>
+            </div>
+            <div class="feature-card fade-up">
+                <div class="feature-icon">🛡️</div>
+                <div class="feature-title">Privacy First</div>
+                <div class="feature-desc">No account required. No email collection. Your data is yours alone — protected by a password you set.</div>
+            </div>
+            <div class="feature-card fade-up">
+                <div class="feature-icon">🔑</div>
+                <div class="feature-title">License Key Access</div>
+                <div class="feature-desc">Secure license key activation with server-side validation. One purchase, one key, your access for life.</div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Pricing -->
+<section class="pricing" id="pricing">
+    <div class="section-inner">
+        <div class="fade-up" style="text-align:center;">
+            <p class="section-label">Simple Pricing</p>
+            <h2 class="section-title">Pick Your Plan</h2>
+            <p class="section-sub" style="margin: 0 auto;">No hidden fees. No data selling. Just a fair price to fight back against robocall scammers.</p>
+        </div>
+        <div class="pricing-grid">
+            <div class="pricing-card fade-up">
+                <div class="pricing-name">Monthly</div>
+                <div class="pricing-price"><sup>$</sup>1.99</div>
+                <div class="pricing-period">per month, cancel anytime</div>
+                <ul class="pricing-features">
+                    <li>Full app access</li>
+                    <li>FTC, FCC & FBI/IC3 reporting</li>
+                    <li>Encrypted call history</li>
+                    <li>All device types</li>
+                    <li>Email support</li>
+                </ul>
+                <a href="https://buy.stripe.com/5kQ6oHffO7s74JQ4sB43S01" target="_blank" class="btn-buy outline">Start Monthly →</a>
+                <p class="no-refund">All sales final. See Terms of Sale.</p>
+            </div>
+            <div class="pricing-card featured fade-up">
+                <div class="pricing-badge">Best Value</div>
+                <div class="pricing-name">Lifetime</div>
+                <div class="pricing-price"><sup>$</sup>9.99</div>
+                <div class="pricing-period">one-time payment, yours forever</div>
+                <ul class="pricing-features">
+                    <li>Everything in Monthly</li>
+                    <li>No recurring charges ever</li>
+                    <li>All future updates included</li>
+                    <li>Priority email support</li>
+                    <li>Single license key via email</li>
+                </ul>
+                <a href="https://buy.stripe.com/28E4gzebK27Ngsy6AJ43S00" target="_blank" class="btn-buy primary">Get Lifetime Access →</a>
+                <p class="no-refund">All sales final. See Terms of Sale.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- FAQ -->
+<section class="faq" id="faq">
+    <div class="section-inner">
+        <div class="fade-up">
+            <p class="section-label">FAQ</p>
+            <h2 class="section-title">Common Questions</h2>
+        </div>
+        <div class="faq-grid">
+            <div class="faq-item fade-up">
+                <div class="faq-q">How do I get the app after purchasing?</div>
+                <div class="faq-a">You'll receive a license key by email immediately after purchase. Visit the app, enter your key, and you're in. No download required — it installs from your browser.</div>
+            </div>
+            <div class="faq-item fade-up">
+                <div class="faq-q">Does the app actually stop robocalls?</div>
+                <div class="faq-a">RoboCallMeNot helps you report robocalls to the agencies that can take enforcement action. It doesn't block calls at the carrier level — it helps you fight back through official channels.</div>
+            </div>
+            <div class="faq-item fade-up">
+                <div class="faq-q">Is my data private?</div>
+                <div class="faq-a">Yes. All your report history is stored locally on your device, encrypted with AES-256. We never see your data. No cloud storage. No data sharing.</div>
+            </div>
+            <div class="faq-item fade-up">
+                <div class="faq-q">What devices does it work on?</div>
+                <div class="faq-a">RoboCallMeNot is a Progressive Web App (PWA) that works on iPhone, Android, Windows, and Mac. Install it from your browser — no app store needed.</div>
+            </div>
+            <div class="faq-item fade-up">
+                <div class="faq-q">What's the refund policy?</div>
+                <div class="faq-a">All sales are final for digital products. The license key is delivered immediately upon purchase, which constitutes fulfillment. EU and California residents may have additional statutory rights.</div>
+            </div>
+            <div class="faq-item fade-up">
+                <div class="faq-q">Can I use one license on multiple devices?</div>
+                <div class="faq-a">Your license key is for personal use on your devices. Each key activates one user account. Need multiple users? Purchase a key for each.</div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- CTA -->
+<section class="cta-section">
+    <div class="cta-inner fade-up">
+        <h2 class="cta-title">Stop Letting <span class="accent">Scammers Win.</span></h2>
+        <p class="cta-sub">For less than a cup of coffee, you can file federal complaints against every robocaller who disrupts your day. Start fighting back.</p>
+        <div class="cta-actions">
+            <a href="https://buy.stripe.com/28E4gzebK27Ngsy6AJ43S00" target="_blank" class="btn-primary">🛡️ Get Lifetime Access — $9.99</a>
+            <a href="https://buy.stripe.com/5kQ6oHffO7s74JQ4sB43S01" target="_blank" class="btn-secondary">Start Monthly — $1.99/mo</a>
+        </div>
+    </div>
+</section>
+
+<!-- Footer -->
+<footer class="footer">
+    <div class="footer-inner">
+        <div class="footer-bottom">
+            <p>© 2025 RAC Express Shop, LLC. All rights reserved.</p>
+            <div class="footer-links">
+                <a href="index.html">← Back to RAC Express Shop</a>
+                <a href="mailto:admin@racexpressshop.com">Support</a>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<script>
+    // Fade up on scroll
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('visible');
+                observer.unobserve(entry.target);
+            }
+        });
+    }, { threshold: 0.1 });
+    document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
+</script>
+
+</body>
+</html>
