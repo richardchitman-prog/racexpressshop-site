@@ -1,0 +1,44 @@
+name: Auto-publish RoboCallMeNot blog post
+
+on:
+  schedule:
+    # Mondays and Thursdays at 14:00 UTC (~10am ET). Edit the days/time as you like —
+    # cron format is: minute hour day-of-month month day-of-week (0=Sunday).
+    - cron: '0 14 * * 1,4'
+  workflow_dispatch: {}   # lets you trigger a run manually from the Actions tab, anytime
+
+permissions:
+  contents: write
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: pip install requests
+
+      - name: Generate post
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          BLUESKY_HANDLE: ${{ secrets.BLUESKY_HANDLE }}
+          BLUESKY_APP_PASSWORD: ${{ secrets.BLUESKY_APP_PASSWORD }}
+          MASTODON_BASE_URL: ${{ secrets.MASTODON_BASE_URL }}
+          MASTODON_ACCESS_TOKEN: ${{ secrets.MASTODON_ACCESS_TOKEN }}
+          SITE_BASE_URL: https://racexpressshop.netlify.app/blog
+        run: python automation/generate_post.py
+
+      - name: Commit and push new post
+        run: |
+          git config user.name "RoboCallMeNot Bot"
+          git config user.email "bot@racexpressshop.com"
+          git add blog/ sitemap.xml automation/state.json
+          git diff --cached --quiet || git commit -m "Auto-publish new blog post"
+          git push
