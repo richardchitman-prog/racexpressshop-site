@@ -95,5 +95,63 @@
     ],
     "stat_callout_number": "1 tap",
     "stat_callout_label": "is all it takes to file a report with RoboCallMeNot across multiple agencies"
+  },
+  {
+    "id": "ai-voice-cloning",
+    "slug": "the-voice-on-the-phone-might-not-be-real",
+    "category": "warning",
+    "topic_brief": "How AI voice cloning has supercharged the classic 'grandparent scam,' and why hanging up and calling back on a known number matters more than ever.",
+    "facts": [
+      "AI voice cloning tools can recreate a person's voice from as little as three seconds of audio, based on research first demonstrated in 2023.",
+      "The FBI's 2025 Internet Crime Complaint Center report logged more than 22,000 AI-related fraud complaints with losses exceeding $893 million.",
+      "In August 2025, federal prosecutors charged 13 people in a grandparent-scam ring that used cloned voices and stole more than $5 million from over 400 victims, whose average age was 84.",
+      "The FTC has warned specifically that scammers now use AI to make family-emergency scam calls sound convincingly like a real relative in distress.",
+      "The defense cybersecurity experts consistently point to: hang up and call the family member back directly on a number you already have, rather than trusting the incoming call."
+    ],
+    "stat_callout_number": "3 seconds",
+    "stat_callout_label": "of audio is enough for AI to convincingly clone someone's voice"
+  },
+  {
+    "id": "dnc-registry-limits",
+    "slug": "what-the-do-not-call-registry-actually-covers",
+    "category": "explainer",
+    "topic_brief": "The National Do Not Call Registry helps, but it has real, specific carve-outs people don't expect — worth knowing so the gaps don't feel like the registry 'isn't working.'",
+    "facts": [
+      "The National Do Not Call Registry does not cover political calls, charities calling on their own behalf, or genuine survey calls — these are exempt by law.",
+      "A company you've done business with can still legally call you for up to 18 months after your last purchase, delivery, or payment, even if your number is registered.",
+      "If you've made an inquiry or application with a company, they're permitted to call you for up to 3 months afterward under the registry's rules.",
+      "Violating the registry can cost a telemarketer up to $53,088 per illegal call under current FTC penalty guidelines.",
+      "The FTC reported that consumer complaints about unwanted telemarketing calls fell more than 50% between 2021 and 2024."
+    ],
+    "stat_callout_number": "50%+",
+    "stat_callout_label": "drop in reported unwanted telemarketing calls from 2021 to 2024, per the FTC"
+  },
+  {
+    "id": "one-ring-scam",
+    "slug": "why-you-shouldnt-call-back-that-missed-call",
+    "category": "warning",
+    "topic_brief": "The 'one-ring' or Wangiri scam — a call that rings once and hangs up, hoping curiosity makes you call back a number that charges you.",
+    "facts": [
+      "The 'one-ring' scam, also called 'Wangiri' (Japanese for 'one and cut'), works by calling a number once and hanging up before it can be answered, hoping the recipient calls back out of curiosity.",
+      "The callback numbers used in these scams are often international premium-rate numbers that charge significant per-minute connection fees the moment the call connects.",
+      "The scam requires no personal information to be shared to cause financial harm — the callback itself is what generates the charge.",
+      "The FCC and FTC both advise that if you don't recognize a number that rang once and disconnected, the safest response is simply not to call it back."
+    ],
+    "stat_callout_number": "1 ring",
+    "stat_callout_label": "is all it takes to trigger a Wangiri callback scam — the call never even needs to connect"
+  },
+  {
+    "id": "tcpa-consent-rule",
+    "slug": "the-law-most-robocallers-are-already-breaking",
+    "category": "explainer",
+    "topic_brief": "Federal law already requires most automated sales calls to get written consent first — meaning almost every robocall you get is already illegal before it starts.",
+    "facts": [
+      "Under the Telephone Consumer Protection Act, most automated telemarketing calls and texts require the recipient's prior express written consent before they can legally be sent.",
+      "Telemarketers are only permitted to call between 8 a.m. and 9 p.m. in the recipient's time zone under FTC telemarketing rules.",
+      "Callers are required to clearly identify themselves and the purpose of the call under the FTC's Telemarketing Sales Rule.",
+      "In March 2024, the FTC explicitly affirmed that AI-generated voices used in illegal robocalls are covered by these same existing consumer protection rules."
+    ],
+    "stat_callout_number": "8 AM \u2013 9 PM",
+    "stat_callout_label": "is the only legal window for telemarketing calls under FTC rules \u2014 most robocalls ignore it entirely"
   }
 ]
