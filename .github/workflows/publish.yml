@@ -2,9 +2,10 @@ name: Auto-publish RoboCallMeNot blog post
 
 on:
   schedule:
-    # Mondays and Thursdays at 14:00 UTC (~10am ET). Edit the days/time as you like —
+    # Tuesdays, Wednesdays, Thursdays at 14:00 UTC (10am ET) — the researched peak
+    # engagement window for both Bluesky and Mastodon's chronological feeds.
     # cron format is: minute hour day-of-month month day-of-week (0=Sunday).
-    - cron: '0 14 * * 1,4'
+    - cron: '0 14 * * 2,3,4'
   workflow_dispatch: {}   # lets you trigger a run manually from the Actions tab, anytime
 
 permissions:
