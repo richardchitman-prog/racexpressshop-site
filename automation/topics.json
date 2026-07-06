@@ -25,7 +25,7 @@
       "A single report rarely stops a scammer immediately, but it becomes part of the evidence pattern regulators use to act."
     ],
     "stat_callout_number": "3 agencies",
-    "stat_callout_label": "one RoboCallMeNot report can reach in a single tap"
+"stat_callout_label": "one RoboCallMeNot log can guide you through reporting to"
   },
   {
     "id": "national-scale",
@@ -88,13 +88,11 @@
     "category": "explainer",
     "topic_brief": "Making the case that logging even 'annoying but harmless' robocalls builds a useful pattern over time, not just the scary ones.",
     "facts": [
-      "Regulators and carriers use complaint volume and patterns, not just individual severe cases, to identify which numbers and carriers to act against.",
-      "A single robocall report is a data point; a consistent logging habit turns a phone into a documented case file over time.",
-      "Because only a small fraction of robocalls get reported at all (roughly 1 in 32,571 in 2025), even low-stakes reports meaningfully add to the overall evidence base.",
-      "One-tap reporting removes the main friction that keeps people from filing: deciding in the moment whether a call was 'serious enough' to bother reporting."
-    ],
-    "stat_callout_number": "1 tap",
-    "stat_callout_label": "is all it takes to file a report with RoboCallMeNot across multiple agencies"
+  ...
+  "Logging a call takes one tap and removes the main friction that keeps people from reporting: deciding in the moment whether a call was 'serious enough' to bother with."
+],
+"stat_callout_number": "1 tap",
+"stat_callout_label": "is all it takes to log a call — RoboCallMeNot then walks you through filing it across agencies"
   },
   {
     "id": "ai-voice-cloning",
