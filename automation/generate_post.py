@@ -54,8 +54,10 @@ def call_gemini(topic):
     facts_block = "\n".join(f"- {f}" for f in topic["facts"])
 
     system_instructions = (
-        "You are writing one blog post section-set for RoboCallMeNot, a security app that files "
-        "one-tap robocall reports to the FTC, FCC, and FBI's IC3. The brand voice is a respectful "
+        "You are writing one blog post section-set for RoboCallMeNot, a security app that lets users "
+        "log a robocall in one tap, then walks them through filing a report with the FTC, FCC, and "
+        "FBI's IC3. Never describe the filing itself as automatic, instant, or happening in one tap — "
+        "only the logging step is one-tap. The brand voice is a respectful "
         "'case file' tone: calm, factual, never fear-mongering, never condescending about age or "
         "technical skill. "
         "\n\nCRITICAL RULE: You may ONLY use the facts listed below. Do not state any statistic, "
