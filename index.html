@@ -912,12 +912,12 @@
                                     </div>
                                     <div class="rcmn-price-item">
                                         <span class="amount">$1.99</span>
-                                        <span class="period">/ month</span>
+                                        <span class="period">/ month (3-day free trial)</span>
                                     </div>
                                 </div>
                                 <div class="rcmn-btns">
                                     <button onclick="showDownload('lifetime')" class="btn-rcmn-lifetime">🛡️ Get Lifetime Access — $9.99</button>
-                                    <button onclick="showDownload('monthly')" class="btn-rcmn-monthly">Start Monthly — $1.99/mo</button>
+                                    <button onclick="showDownload('monthly')" class="btn-rcmn-monthly">Try Free for 3 Days — Then $1.99/mo</button>
                                 </div>
                                 <div class="rcmn-learn"><a href="robocallmenot.html">Learn more about RoboCallMeNot →</a></div>
                                 <p class="rcmn-no-refund">All sales final · License key delivered by email</p>
@@ -1196,13 +1196,13 @@
     };
     const PLAN_LABELS = {
         lifetime: '🛡️ Lifetime Access — $9.99',
-        monthly:  '📅 Monthly — $1.99/mo'
+        monthly:  '📅 3-Day Free Trial, then $1.99/mo'
     };
 
     function showDownload(plan){
         document.getElementById('dl-plan-label').textContent = PLAN_LABELS[plan];
         document.getElementById('dl-pay-link').href = STRIPE[plan];
-        document.getElementById('dl-pay-link').textContent = 'Step 2: Buy ' + (plan === 'lifetime' ? 'Lifetime Access — $9.99' : 'Monthly Plan — $1.99') + ' →';
+        document.getElementById('dl-pay-link').textContent = 'Step 2: ' + (plan === 'lifetime' ? 'Buy Lifetime Access — $9.99' : 'Start Free 3-Day Trial') + ' →';
         document.getElementById('download-modal').style.display = 'flex';
     }
 
