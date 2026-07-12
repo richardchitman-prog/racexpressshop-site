@@ -642,6 +642,139 @@
             .features-grid { grid-template-columns: 1fr; }
             nav ul { display: none; }
         }
+        /* ── Download Modal ── */
+        #download-modal {
+            display: none;
+            position: fixed;
+            inset: 0;
+            z-index: 2000;
+            background: rgba(0,0,0,0.6);
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        #download-modal.show { display: flex; }
+        .dl-sheet {
+            background: white;
+            border-radius: 20px;
+            width: 100%;
+            max-width: 420px;
+            padding: 32px 28px 28px;
+            position: relative;
+            box-shadow: 0 24px 64px rgba(0,0,0,0.25);
+            text-align: center;
+        }
+        .dl-close {
+            position: absolute;
+            top: 16px;
+            right: 18px;
+            background: none;
+            border: none;
+            font-size: 22px;
+            cursor: pointer;
+            color: #999;
+            line-height: 1;
+        }
+        .dl-icon { font-size: 52px; margin-bottom: 12px; }
+        .dl-title { font-size: 22px; font-weight: 800; color: #1A237E; margin-bottom: 6px; }
+        .dl-plan {
+            display: inline-block;
+            background: #e8f0fe;
+            color: #1A237E;
+            font-size: 13px;
+            font-weight: 700;
+            padding: 4px 14px;
+            border-radius: 20px;
+            margin-bottom: 20px;
+        }
+        .dl-steps {
+            background: #f8f9fa;
+            border-radius: 12px;
+            padding: 18px;
+            margin-bottom: 20px;
+            text-align: left;
+        }
+        .dl-steps-title {
+            font-size: 12px;
+            font-weight: 800;
+            color: #666;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            margin-bottom: 12px;
+        }
+        .dl-step {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            margin-bottom: 10px;
+            font-size: 14px;
+            color: #333;
+            line-height: 1.5;
+        }
+        .dl-step:last-child { margin-bottom: 0; }
+        .dl-step-num {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: #1A237E;
+            color: white;
+            font-size: 12px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            margin-top: 1px;
+        }
+        .dl-url-box {
+            background: #1A237E;
+            border-radius: 10px;
+            padding: 14px 16px;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+        }
+        .dl-url-text {
+            color: #fff;
+            font-size: 14px;
+            font-weight: 700;
+            word-break: break-all;
+            text-align: left;
+        }
+        .dl-copy-btn {
+            background: rgba(255,255,255,0.2);
+            border: 1.5px solid rgba(255,255,255,0.4);
+            color: white;
+            font-size: 12px;
+            font-weight: 700;
+            padding: 6px 12px;
+            border-radius: 8px;
+            cursor: pointer;
+            white-space: nowrap;
+            flex-shrink: 0;
+            font-family: inherit;
+        }
+        .dl-copy-btn:hover { background: rgba(255,255,255,0.3); }
+        .dl-pay-btn {
+            display: block;
+            width: 100%;
+            padding: 14px;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 700;
+            text-decoration: none;
+            color: white;
+            background: linear-gradient(135deg, #1A237E, #29B6F6);
+            margin-bottom: 10px;
+            transition: opacity 0.2s;
+            font-family: inherit;
+            border: none;
+            cursor: pointer;
+        }
+        .dl-pay-btn:hover { opacity: 0.9; }
+        .dl-note { font-size: 11px; color: #999; line-height: 1.5; }
     </style>
 </head>
 <body>
@@ -664,6 +797,7 @@
         <nav>
             <ul>
                 <li><a href="index.html">Home</a></li>
+                <li><a href="blog/index.html">Blog</a></li>
                 <li><a href="#how-it-works">How It Works</a></li>
                 <li><a href="#agencies">Agencies</a></li>
                 <li><a href="#pricing">Pricing</a></li>
@@ -887,7 +1021,7 @@
                     <li>All device types</li>
                     <li>Email support</li>
                 </ul>
-                <a href="https://buy.stripe.com/5kQ6oHffO7s74JQ4sB43S01" target="_blank" class="btn-buy outline">Start Monthly →</a>
+                <a href="#" onclick="showDownload('monthly'); return false;" class="btn-buy outline">Start Monthly →</a>
                 <p class="no-refund">All sales final. See Terms of Sale.</p>
             </div>
             <div class="pricing-card featured fade-up">
@@ -902,7 +1036,7 @@
                     <li>Priority email support</li>
                     <li>Single license key via email</li>
                 </ul>
-                <a href="https://buy.stripe.com/28E4gzebK27Ngsy6AJ43S00" target="_blank" class="btn-buy primary">Get Lifetime Access →</a>
+                <a href="#" onclick="showDownload('lifetime'); return false;" class="btn-buy primary">Get Lifetime Access →</a>
                 <p class="no-refund">All sales final. See Terms of Sale.</p>
             </div>
         </div>
@@ -951,9 +1085,12 @@
         <h2 class="cta-title">Stop Letting <span class="accent">Scammers Win.</span></h2>
         <p class="cta-sub">For less than a cup of coffee, you can file federal complaints against every robocaller who disrupts your day. Start fighting back.</p>
         <div class="cta-actions">
-            <a href="https://buy.stripe.com/28E4gzebK27Ngsy6AJ43S00" target="_blank" class="btn-primary">🛡️ Get Lifetime Access — $9.99</a>
-            <a href="https://buy.stripe.com/5kQ6oHffO7s74JQ4sB43S01" target="_blank" class="btn-secondary">Start Monthly — $1.99/mo</a>
+            <a href="#" onclick="showDownload('lifetime'); return false;" class="btn-primary">🛡️ Get Lifetime Access — $9.99</a>
+            <a href="#" onclick="showDownload('monthly'); return false;" class="btn-secondary">Start Monthly — $1.99/mo</a>
         </div>
+        <p style="margin-top:18px;">
+            <a href="blog/index.html" style="color:var(--txt3, #666); font-size:14px; text-decoration:underline;">📰 Not ready yet? Read the blog first →</a>
+        </p>
     </div>
 </section>
 
@@ -969,6 +1106,68 @@
         </div>
     </div>
 </footer>
+
+<!-- ══ DOWNLOAD MODAL ══ -->
+<div id="download-modal" style="display:none;position:fixed;inset:0;z-index:2000;background:rgba(0,0,0,0.6);align-items:center;justify-content:center;padding:20px;">
+    <div class="dl-sheet">
+        <button class="dl-close" onclick="closeDownload()">✕</button>
+        <div class="dl-icon">🤖</div>
+        <div class="dl-title">Step 1: Install the App</div>
+        <div class="dl-plan" id="dl-plan-label">Lifetime Access — $9.99</div>
+        <div class="dl-steps">
+            <div class="dl-steps-title">📲 How to install</div>
+            <div class="dl-step"><span class="dl-step-num">1</span><span>Copy the app link below and open it in your browser</span></div>
+            <div class="dl-step"><span class="dl-step-num">2</span><span><strong>iPhone:</strong> Tap Share ↑ → "Add to Home Screen"<br><strong>Android:</strong> Tap ⋮ → "Add to Home Screen"</span></div>
+            <div class="dl-step"><span class="dl-step-num">3</span><span>Once installed, tap <strong>"I've Installed the App"</strong> inside the app</span></div>
+            <div class="dl-step"><span class="dl-step-num">4</span><span>Complete your purchase — your license key will be emailed to you</span></div>
+            <div class="dl-step"><span class="dl-step-num">5</span><span>Enter your license key in the app to unlock full access</span></div>
+        </div>
+        <div class="dl-url-box">
+            <div class="dl-url-text">dancing-entremet-2f50e3.netlify.app</div>
+            <button class="dl-copy-btn" onclick="copyAppUrl()">📋 Copy</button>
+        </div>
+        <a href="#" id="dl-pay-link" target="_blank" class="dl-pay-btn">Step 2: Complete Purchase →</a>
+        <div class="dl-note">Your license key will be emailed after purchase.<br>All sales final · No refunds on digital products.</div>
+    </div>
+</div>
+
+<script>
+    const STRIPE = {
+        lifetime: 'https://buy.stripe.com/28E4gzebK27Ngsy6AJ43S00',
+        monthly:  'https://buy.stripe.com/5kQ6oHffO7s74JQ4sB43S01'
+    };
+    const PLAN_LABELS = {
+        lifetime: '🛡️ Lifetime Access — $9.99',
+        monthly:  '📅 Monthly — $1.99/mo'
+    };
+
+    function showDownload(plan){
+        document.getElementById('dl-plan-label').textContent = PLAN_LABELS[plan];
+        document.getElementById('dl-pay-link').href = STRIPE[plan];
+        document.getElementById('dl-pay-link').textContent = 'Step 2: Buy ' + (plan === 'lifetime' ? 'Lifetime Access — $9.99' : 'Monthly Plan — $1.99') + ' →';
+        document.getElementById('download-modal').style.display = 'flex';
+    }
+
+    function closeDownload(){
+        document.getElementById('download-modal').style.display = 'none';
+    }
+
+    async function copyAppUrl(){
+        const url = 'https://dancing-entremet-2f50e3.netlify.app';
+        try {
+            await navigator.clipboard.writeText(url);
+            const btn = document.querySelector('.dl-copy-btn');
+            btn.textContent = '✓ Copied!';
+            setTimeout(() => btn.textContent = '📋 Copy', 2000);
+        } catch(e){
+            prompt('Copy this link:', url);
+        }
+    }
+
+    document.getElementById('download-modal').addEventListener('click', function(e){
+        if(e.target === this) closeDownload();
+    });
+</script>
 
 <script>
     // Fade up on scroll
