@@ -1011,17 +1011,19 @@
         </div>
         <div class="pricing-grid">
             <div class="pricing-card fade-up">
+                <div class="pricing-badge" style="background:var(--cyan, #00D4C8); color:#0A0F1E;">3-Day Free Trial</div>
                 <div class="pricing-name">Monthly</div>
                 <div class="pricing-price"><sup>$</sup>1.99</div>
-                <div class="pricing-period">per month, cancel anytime</div>
+                <div class="pricing-period">per month after your free 3-day trial, cancel anytime</div>
                 <ul class="pricing-features">
+                    <li>3 days free, then $1.99/mo</li>
                     <li>Full app access</li>
                     <li>FTC, FCC & FBI/IC3 reporting</li>
                     <li>Encrypted call history</li>
                     <li>All device types</li>
                     <li>Email support</li>
                 </ul>
-                <a href="#" onclick="showDownload('monthly'); return false;" class="btn-buy outline">Start Monthly →</a>
+                <a href="#" onclick="showDownload('monthly'); return false;" class="btn-buy outline">Start Free 3-Day Trial →</a>
                 <p class="no-refund">All sales final. See Terms of Sale.</p>
             </div>
             <div class="pricing-card featured fade-up">
@@ -1086,7 +1088,7 @@
         <p class="cta-sub">For less than a cup of coffee, you can file federal complaints against every robocaller who disrupts your day. Start fighting back.</p>
         <div class="cta-actions">
             <a href="#" onclick="showDownload('lifetime'); return false;" class="btn-primary">🛡️ Get Lifetime Access — $9.99</a>
-            <a href="#" onclick="showDownload('monthly'); return false;" class="btn-secondary">Start Monthly — $1.99/mo</a>
+            <a href="#" onclick="showDownload('monthly'); return false;" class="btn-secondary">Try Free for 3 Days — Then $1.99/mo</a>
         </div>
         <p style="margin-top:18px;">
             <a href="blog/index.html" style="color:var(--txt3, #666); font-size:14px; text-decoration:underline;">📰 Not ready yet? Read the blog first →</a>
@@ -1138,13 +1140,13 @@
     };
     const PLAN_LABELS = {
         lifetime: '🛡️ Lifetime Access — $9.99',
-        monthly:  '📅 Monthly — $1.99/mo'
+        monthly:  '📅 3-Day Free Trial, then $1.99/mo'
     };
 
     function showDownload(plan){
         document.getElementById('dl-plan-label').textContent = PLAN_LABELS[plan];
         document.getElementById('dl-pay-link').href = STRIPE[plan];
-        document.getElementById('dl-pay-link').textContent = 'Step 2: Buy ' + (plan === 'lifetime' ? 'Lifetime Access — $9.99' : 'Monthly Plan — $1.99') + ' →';
+        document.getElementById('dl-pay-link').textContent = 'Step 2: ' + (plan === 'lifetime' ? 'Buy Lifetime Access — $9.99' : 'Start Free 3-Day Trial') + ' →';
         document.getElementById('download-modal').style.display = 'flex';
     }
 
