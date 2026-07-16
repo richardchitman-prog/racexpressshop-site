@@ -88,7 +88,7 @@
     "category": "explainer",
     "topic_brief": "Making the case that logging even 'annoying but harmless' robocalls builds a useful pattern over time, not just the scary ones.",
     "facts": [
-  ...
+  
   "Logging a call takes one tap and removes the main friction that keeps people from reporting: deciding in the moment whether a call was 'serious enough' to bother with."
 ],
 "stat_callout_number": "1 tap",
