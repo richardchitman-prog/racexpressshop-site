@@ -1,5 +1,5 @@
 {
-  "next_index": 2,
+  "next_index": 3,
   "published": [
     {
       "slug": "the-reports-that-never-get-filed",
@@ -10,6 +10,11 @@
       "slug": "what-happens-after-you-file",
       "topic_id": "enforcement-is-real",
       "date": "2026-07-04"
+    },
+    {
+      "slug": "how-big-is-the-robocall-problem-really",
+      "topic_id": "national-scale",
+      "date": "2026-07-16"
     }
   ]
 }
