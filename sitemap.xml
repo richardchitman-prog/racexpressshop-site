@@ -42,5 +42,11 @@
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
+  <url>
+    <loc>https://racexpressshop.netlify.app/blog/why-caller-id-cant-be-trusted.html</loc>
+    <lastmod>2026-07-21</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
   <!-- AUTO-SITEMAP-ENTRIES will be appended above this line by automation/generate_post.py -->
 </urlset>
