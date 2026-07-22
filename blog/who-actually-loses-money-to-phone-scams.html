@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Understanding Phone Scams and Older Adults | RoboCallMeNot</title>
+<meta name="description" content="Older adults face significant financial losses from phone-based scams. Learn how RoboCallMeNot helps users log and report these incidents.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Zilla+Slab:wght@400;600;700&family=Public+Sans:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --kraft: #dbd3ba; --kraft-light: #f2ede0; --paper: #f8f5ea;
+    --ink: #202a3a; --ink-soft: #4a5468; --stamp: #a63a2e; --stamp-dark: #822c22;
+    --teal: #2f6e62; --teal-dark: #234f46; --gray: #6b6558; --line: #c9bf9e;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0; background:var(--kraft);
+    background-image:
+      radial-gradient(circle at 15% 8%, rgba(255,255,255,0.35) 0%, transparent 45%),
+      radial-gradient(circle at 85% 92%, rgba(0,0,0,0.05) 0%, transparent 40%);
+    color:var(--ink); font-family:'Public Sans', sans-serif; line-height:1.5;
+  }
+  h1,h2,h3{ font-family:'Zilla Slab', serif; margin:0; color:var(--ink); }
+  .mono{ font-family:'IBM Plex Mono', monospace; }
+  a{ color:inherit; }
+  .wrap{ max-width:820px; margin:0 auto; padding:0 24px; }
+
+  nav{ position:sticky; top:0; z-index:50; background:var(--ink); color:var(--paper); border-bottom:3px solid var(--stamp); }
+  nav .wrap{ max-width:960px; display:flex; align-items:center; justify-content:space-between; padding:14px 24px; }
+  .brand{ font-family:'Zilla Slab', serif; font-weight:700; font-size:1.05rem; }
+  .brand span{ color:#e8b199; }
+  .navlinks{ display:flex; gap:22px; font-size:0.85rem; }
+  .navlinks a{ text-decoration:none; color:var(--paper); opacity:0.8; padding:6px 10px; border-radius:14px 14px 4px 4px; }
+  .navlinks a:hover{ opacity:1; background:rgba(255,255,255,0.08); }
+
+  header.hero{ padding:64px 0 48px; position:relative; overflow:hidden; }
+  header.hero::after{
+    content:""; position:absolute; left:0; right:0; bottom:0; height:14px;
+    background:repeating-linear-gradient(90deg, var(--line) 0 10px, transparent 10px 20px); opacity:0.6;
+  }
+  .hero-grid{ display:grid; grid-template-columns:1.15fr 0.85fr; gap:36px; align-items:center; max-width:960px; margin:0 auto; padding:0 24px; }
+  .eyebrow{
+    display:inline-flex; align-items:center; gap:10px; font-family:'IBM Plex Mono', monospace;
+    font-size:0.78rem; letter-spacing:0.08em; text-transform:uppercase; color:var(--stamp-dark);
+    background:var(--paper); border:1.5px solid var(--stamp); padding:6px 14px; border-radius:3px; margin-bottom:22px;
+  }
+  .eyebrow .dot{ width:7px; height:7px; border-radius:50%; background:var(--stamp); animation:pulse 1.6s infinite; }
+  @keyframes pulse{ 0%,100%{opacity:1;} 50%{opacity:0.25;} }
+  h1.headline{ font-size:clamp(2rem, 4.2vw, 3rem); font-weight:700; line-height:1.1; margin-bottom:20px; }
+  .sub{ font-size:1.05rem; color:var(--ink-soft); margin-bottom:28px; }
+  .hero-illo{ width:100%; height:auto; }
+  .cta-row{ display:flex; gap:14px; flex-wrap:wrap; }
+  .btn{
+    display:inline-block; font-weight:700; font-size:0.95rem; padding:13px 24px; border-radius:4px;
+    text-decoration:none; cursor:pointer; border:2px solid transparent; transition:transform .12s ease, box-shadow .12s ease;
+  }
+  .btn:hover{ transform:translateY(-1px); }
+  .btn-primary{ background:var(--stamp); color:var(--paper); box-shadow:3px 3px 0 var(--stamp-dark); }
+  .btn-primary:hover{ box-shadow:4px 5px 0 var(--stamp-dark); }
+  .btn-ghost{ background:transparent; border-color:var(--ink); color:var(--ink); }
+  .btn-ghost:hover{ background:var(--ink); color:var(--paper); }
+
+  article{ padding:20px 0 8px; }
+  .exhibit-tag{
+    font-family:'IBM Plex Mono', monospace; font-size:0.78rem; letter-spacing:0.08em;
+    text-transform:uppercase; color:var(--teal-dark); margin-bottom:10px; display:block;
+  }
+  .section-title{ font-size:clamp(1.4rem, 2.6vw, 1.9rem); margin-bottom:14px; }
+  section{ padding:40px 0; }
+  section p{ color:var(--ink-soft); font-size:1.02rem; max-width:70ch; margin:0 0 16px; }
+  .inline-app-link{ color:var(--teal-dark); font-weight:700; text-decoration:underline; text-decoration-color:var(--teal); text-underline-offset:3px; }
+  .inline-app-link:hover{ color:var(--stamp-dark); text-decoration-color:var(--stamp); }
+
+  .stat-callout{
+    background:var(--paper); border:1px solid var(--line); border-left:5px solid var(--stamp);
+    border-radius:3px; padding:24px 26px; margin:24px 0;
+  }
+  .stat-callout .num{ font-family:'Zilla Slab', serif; font-weight:700; color:var(--stamp-dark); font-size:clamp(1.8rem, 3.4vw, 2.4rem); display:block; margin-bottom:6px; }
+  .stat-callout .lbl{ color:var(--ink-soft); font-size:0.95rem; }
+
+  .callout{
+    background:var(--ink); color:var(--paper); border-radius:6px; padding:32px 30px; margin-top:20px;
+  }
+  .callout h3{ color:var(--paper); font-size:1.2rem; margin-bottom:10px; }
+  .callout p{ color:#c7cbd6; margin-bottom:18px; }
+
+  .series-nav{ padding:44px 0 8px; }
+  .series-grid{ display:grid; grid-template-columns:repeat(2,1fr); gap:18px; }
+  .series-card{ background:var(--paper); border:1px solid var(--line); border-radius:3px; padding:22px; text-decoration:none; display:block; transition:transform .12s ease; }
+  .series-card:hover{ transform:translateY(-2px); border-color:var(--teal); }
+  .series-card h3{ font-size:1.02rem; margin-bottom:8px; color:var(--ink); }
+  .series-card p{ font-size:0.86rem; color:var(--ink-soft); margin:0; }
+
+  footer{ padding:40px 0 60px; text-align:center; color:var(--gray); font-size:0.82rem; }
+  footer .fine{ max-width:60ch; margin:14px auto 0; font-size:0.75rem; line-height:1.6; }
+
+  @media (max-width:720px){
+    .navlinks{ display:none; }
+    .hero-grid{ grid-template-columns:1fr; }
+    .hero-illo{ max-width:240px; margin:0 auto; }
+    .series-grid{ grid-template-columns:1fr; }
+  }
+  @media (prefers-reduced-motion: reduce){ *{ animation-duration:0.001ms !important; transition-duration:0.001ms !important; } }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="wrap">
+    <div class="brand">ROBOCALL<span>MENOT</span></div>
+    <div class="navlinks">
+      <a href="the-case-against-robocalls.html">The Case</a>
+      <a href="anatomy-of-a-spoofed-call.html">Spot a Spoof</a>
+      <a href="index.html">All Posts</a>
+      <a href="https://dancing-entremet-2f50e3.netlify.app">Open the App</a>
+    </div>
+  </div>
+</nav>
+
+<header class="hero">
+  <div class="hero-grid">
+    <div>
+      <div class="eyebrow"><span class="dot"></span> Case File No. RCN-20260722 — Open</div>
+      <h1 class="headline">Phone Scams: A Targeted Financial Threat</h1>
+      <p class="sub">Analysis of recent data indicates that scams originating via phone calls disproportionately impact older adults. RoboCallMeNot offers a direct method for logging these calls and initiating official reports.</p>
+      <div class="cta-row">
+        <a href="#exhibit-a" class="btn btn-primary">Read the file</a>
+        <a href="https://dancing-entremet-2f50e3.netlify.app" class="btn btn-ghost">Open the app</a>
+      </div>
+    </div>
+    <svg class="hero-illo" viewBox="0 0 380 300" xmlns="http://www.w3.org/2000/svg">
+      <ellipse cx="190" cy="278" rx="150" ry="12" fill="#000" opacity="0.06"/>
+      <g transform="translate(60 60)">
+        <rect x="0" y="0" width="54" height="106" rx="10" fill="#202a3a"/>
+        <rect x="6" y="9" width="42" height="78" rx="2" fill="#f8f5ea"/>
+      </g>
+      <g transform="translate(266 60)">
+        <rect x="0" y="0" width="54" height="106" rx="10" fill="#202a3a"/>
+        <rect x="6" y="9" width="42" height="78" rx="2" fill="#f8f5ea"/>
+      </g>
+      <g transform="translate(146 78)">
+        <path d="M0 10 L88 10 L82 68 Q82 74 74 74 L14 74 Q6 74 6 68 Z" fill="#f2ede0" stroke="#202a3a" stroke-width="2"/>
+        <path d="M0 10 L16 2 L72 2 L88 10 Z" fill="#e4dcc4" stroke="#202a3a" stroke-width="2"/>
+      </g>
+      <path d="M118 100 Q133 96 148 104" stroke="#2f6e62" stroke-width="2" stroke-dasharray="3 4" fill="none"/>
+      <path d="M262 100 Q247 96 232 104" stroke="#2f6e62" stroke-width="2" stroke-dasharray="3 4" fill="none"/>
+      <path d="M190 32 C182 20 168 20 165 32 C162 44 190 60 190 60 C190 60 218 44 215 32 C212 20 198 20 190 32 Z" fill="none" stroke="#a63a2e" stroke-width="2.5"/>
+    </svg>
+  </div>
+</header>
+
+<article>
+  <section id="exhibit-a">
+    <div class="wrap">
+      <span class="exhibit-tag">Exhibit A</span>
+      <h2 class="section-title">Reported Financial Impact</h2>
+      <p>FTC data indicates adults 50 and older reported $4.3 billion lost to fraud in 2025, significantly more than the $2.3 billion reported by younger demographics. Furthermore, total fraud losses for adults 60 and above increased from approximately $600 million in 2020 to $2.4 billion in 2024. Scams initiated by phone calls show a median reported loss of $2,210, notably higher than the $650 for social media-based scams.</p>
+      <div class="stat-callout">
+        <span class="num mono">$2,210</span>
+        <span class="lbl">median reported loss when a scam starts with a phone call, vs. $650 on social media</span>
+      </div>
+    </div>
+  </section>
+
+  <section id="exhibit-b">
+    <div class="wrap">
+      <span class="exhibit-tag">Exhibit B</span>
+      <h2 class="section-title">Understanding the Disparity</h2>
+      <p>The data suggests a particular vulnerability associated with phone-initiated fraud. For instance, 41% of imposter-scam reports from older adults involving losses of $10,000 or more in 2024 began with a phone call. These specific methods of contact contribute to substantial financial impacts on individuals.</p>
+    </div>
+  </section>
+
+  <section id="exhibit-c">
+    <div class="wrap">
+      <span class="exhibit-tag">Exhibit C</span>
+      <h2 class="section-title">Mitigating Risk</h2>
+      <p>Awareness of these targeted methods is a critical first step in prevention. When a suspicious call is received, logging it promptly can assist in tracking fraudulent patterns. RoboCallMeNot simplifies the one-tap logging of robocalls, then guides users through the process of filing official reports with relevant authorities.</p>
+      <div class="callout">
+        <h3>Secure Your Finances From Robocalls</h3>
+        <p>Take control against fraudulent calls and contribute to broader scam prevention efforts with RoboCallMeNot.</p>
+        <div class="cta-row">
+          <a href="../robocallmenot.html" class="btn btn-primary">Get RoboCallMeNot</a>
+          <a href="the-case-against-robocalls.html#exhibit-b" class="btn btn-ghost">See the cost calculator</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="series-nav">
+    <div class="wrap">
+      <span class="exhibit-tag">More From the Case File</span>
+      <div class="series-grid">
+        <a href="index.html" class="series-card">
+          <span class="exhibit-tag">Browse</span>
+          <h3>All Posts</h3>
+          <p>The full case file — every post in the series.</p>
+        </a>
+        <a href="the-case-against-robocalls.html" class="series-card">
+          <span class="exhibit-tag">Read next</span>
+          <h3>The Case Against Robocalls</h3>
+          <p>The national picture, plus a calculator for what robocalls cost you personally.</p>
+        </a>
+      </div>
+    </div>
+  </section>
+</article>
+
+<footer>
+  <div class="wrap">
+    <div class="brand" style="justify-content:center; display:inline-flex;">ROBOCALL<span>MENOT</span></div>
+    <p style="margin-top:8px;">A product of RAC Express Shop</p>
+    <p class="fine">Figures cited above are drawn from a curated set of published FTC, FCC, and YouMail Robocall Index research, reviewed before publication. Questions? <a href="mailto:admin@racexpressshop.com" style="text-decoration:underline;">admin@racexpressshop.com</a></p>
+  </div>
+</footer>
+
+<!-- Cloudflare Web Analytics --><script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "cc3870c186e64c4eb093b93a0c6deff9"}'></script><!-- End Cloudflare Web Analytics -->
+</body>
+</html>
