@@ -1,5 +1,5 @@
 {
-  "next_index": 5,
+  "next_index": 6,
   "published": [
     {
       "slug": "the-reports-that-never-get-filed",
@@ -25,6 +25,11 @@
       "slug": "who-actually-loses-money-to-phone-scams",
       "topic_id": "elder-targeting",
       "date": "2026-07-22"
+    },
+    {
+      "slug": "the-scripts-scammers-keep-reusing",
+      "topic_id": "common-scripts",
+      "date": "2026-07-23"
     }
   ]
 }
