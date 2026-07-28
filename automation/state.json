@@ -1,5 +1,5 @@
 {
-  "next_index": 6,
+  "next_index": 7,
   "published": [
     {
       "slug": "the-reports-that-never-get-filed",
@@ -30,6 +30,11 @@
       "slug": "the-scripts-scammers-keep-reusing",
       "topic_id": "common-scripts",
       "date": "2026-07-23"
+    },
+    {
+      "slug": "why-reporting-every-call-matters-even-boring-ones",
+      "topic_id": "reporting-habit",
+      "date": "2026-07-28"
     }
   ]
 }
