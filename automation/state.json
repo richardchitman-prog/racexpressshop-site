@@ -1,5 +1,5 @@
 {
-  "next_index": 7,
+  "next_index": 8,
   "published": [
     {
       "slug": "the-reports-that-never-get-filed",
@@ -35,6 +35,11 @@
       "slug": "why-reporting-every-call-matters-even-boring-ones",
       "topic_id": "reporting-habit",
       "date": "2026-07-28"
+    },
+    {
+      "slug": "the-voice-on-the-phone-might-not-be-real",
+      "topic_id": "ai-voice-cloning",
+      "date": "2026-07-29"
     }
   ]
 }
