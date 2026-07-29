@@ -67,4 +67,10 @@
     <priority>0.7</priority>
   </url>
   <!-- AUTO-SITEMAP-ENTRIES will be appended above this line by automation/generate_post.py -->
+<url>
+  <loc>https://racexpressshop.netlify.app/welcome.html</loc>
+  <lastmod>2026-07-29</lastmod>
+  <changefreq>monthly</changefreq>
+  <priority>0.8</priority>
+</url>
 </urlset>
