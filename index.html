@@ -385,6 +385,7 @@
             margin: 0 auto;
         }
         .product-grid.single  { grid-template-columns: minmax(0, 480px); justify-content: center; }
+        .product-grid.duo     { grid-template-columns: repeat(2, minmax(0, 480px)); justify-content: center; }
         .product-grid.quad    { grid-template-columns: repeat(4, 1fr); }
         .product-grid.solo    { grid-template-columns: minmax(0, 480px); justify-content: center; }
 
@@ -421,10 +422,11 @@
 
         @media (max-width: 900px) {
             .product-grid.quad { grid-template-columns: repeat(2, 1fr); }
+            .product-grid.duo { grid-template-columns: minmax(0, 480px); justify-content: center; }
         }
         @media (max-width: 560px) {
             .product-grid.quad { grid-template-columns: 1fr; }
-            .product-grid.single, .product-grid.solo { grid-template-columns: 1fr; }
+            .product-grid.single, .product-grid.solo, .product-grid.duo { grid-template-columns: 1fr; }
         }
         
         /* Contact Section */
@@ -685,6 +687,50 @@
             text-align: center;
             margin-top: 8px;
         }
+        /* Receipt Rewards Hub Card */
+        .product-card.rrh-card {
+            border: 3px solid #1B4332;
+            position: relative;
+        }
+        .rrh-badge {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            background: #C9A227;
+            color: white;
+            font-size: 11px;
+            font-weight: 800;
+            letter-spacing: 0.06em;
+            padding: 4px 10px;
+            border-radius: 20px;
+            text-transform: uppercase;
+        }
+        .rrh-image {
+            background: linear-gradient(135deg, #CDEBFA 0%, #A9D8F0 100%) !important;
+        }
+        .rrh-free {
+            display: inline-block;
+            background: #eaf3ee;
+            color: #1B4332;
+            font-weight: 800;
+            font-size: 1rem;
+            padding: 6px 14px;
+            border-radius: 20px;
+            margin-bottom: 14px;
+        }
+        .btn-rrh {
+            background: #1B4332;
+            color: white;
+            text-align: center;
+            padding: 11px 16px;
+            border-radius: 8px;
+            font-weight: 700;
+            font-size: 14px;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            display: block;
+        }
+        .btn-rrh:hover { background: #2D6A4F; transform: translateY(-2px); }
         /* ── Download Modal ── */
         #download-modal {
             display: none;
@@ -838,6 +884,7 @@
                     <li><a href="#features">Features</a></li>
                     <li><a href="#products">Products</a></li>
                     <li><a href="skin-haircare.html">Skin &amp; Hair Care</a></li>
+                    <li><a href="receipt-rewards-landing.html">Receipt Rewards Hub</a></li>
                     <li><a href="#contact">Contact</a></li>
                     <li><a href="https://amzn.to/4qLJlQg" target="_blank" rel="noopener noreferrer">Visit My Store</a></li>
                 </ul>
@@ -898,7 +945,7 @@
                         <div class="cat-divider apps"></div>
                         <span class="cat-title">Digital Tools</span>
                     </div>
-                    <div class="product-grid single">
+                    <div class="product-grid duo">
                         <div class="product-card rcmn-card fade-in">
                             <span class="rcmn-badge">🆕 New App</span>
                             <div class="product-image rcmn-image">🤖</div>
@@ -921,6 +968,18 @@
                                 </div>
                                 <div class="rcmn-learn"><a href="robocallmenot.html">Learn more about RoboCallMeNot →</a></div>
                                 <p class="rcmn-no-refund">All sales final · License key delivered by email</p>
+                            </div>
+                        </div>
+
+                        <div class="product-card rrh-card fade-in">
+                            <span class="rrh-badge">Free Tool</span>
+                            <div class="product-image rrh-image">🧾</div>
+                            <div class="product-info">
+                                <h3>Receipt Rewards Hub</h3>
+                                <p>Log every receipt once and see which cash-back apps you've already submitted it to — Fetch, Ibotta, Swagbucks, Receipt Hog, and more, all tracked in one place.</p>
+                                <div class="rrh-free">Free · No account needed</div>
+                                <a href="receipt-rewards-hub.html" class="btn-rrh">🧾 Open the Hub</a>
+                                <div class="rcmn-learn"><a href="receipt-rewards-landing.html">Learn more about Receipt Rewards Hub →</a></div>
                             </div>
                         </div>
                     </div>
