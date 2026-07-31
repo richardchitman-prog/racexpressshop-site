@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Receipt Rewards Hub — Stack every cash-back app in one place</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap');
+
+  :root{
+    --paper: #CDEBFA;
+    --paper-line: #A9D8F0;
+    --ink: #20261F;
+    --ink-soft: #5B6156;
+    --stamp: #1B4332;
+    --stamp-bright: #2D6A4F;
+    --cash: #C9A227;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0;background:var(--paper);color:var(--ink);font-family:'IBM Plex Mono',monospace;-webkit-font-smoothing:antialiased;}
+  .wrap{max-width:980px;margin:0 auto;padding:0 20px;}
+  a{color:inherit;}
+
+  .hero{ padding:72px 0 56px; border-bottom:1px solid var(--paper-line); }
+  .hero-top{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;flex-wrap:wrap;}
+  .eyebrow{font-size:11px;text-transform:uppercase;letter-spacing:.14em;color:var(--stamp);margin-bottom:16px;}
+  h1{
+    font-family:'Space Grotesk',sans-serif;
+    font-weight:700;
+    font-size:clamp(32px,5vw,52px);
+    line-height:1.05;
+    letter-spacing:-0.02em;
+    margin:0 0 18px;
+  }
+  h1 .accent{color:var(--cash);}
+  .lede{font-size:16px;color:var(--ink-soft);max-width:560px;line-height:1.6;margin-bottom:28px;}
+  .cta-row{display:flex;gap:12px;flex-wrap:wrap;align-items:center;}
+  .cta-primary{
+    display:inline-block;
+    background:var(--stamp);
+    color:#fff;
+    text-decoration:none;
+    font-weight:600;
+    font-size:14px;
+    letter-spacing:.02em;
+    padding:14px 26px;
+    border-radius:2px;
+  }
+  .cta-primary:hover{background:var(--stamp-bright);}
+  .share-btn{
+    display:inline-flex;
+    align-items:center;
+    gap:8px;
+    background:#fff;
+    border:1px solid var(--stamp);
+    color:var(--stamp);
+    font-family:inherit;
+    font-weight:600;
+    font-size:14px;
+    padding:14px 20px;
+    border-radius:2px;
+    cursor:pointer;
+  }
+  .share-btn:hover{background:#eaf3ee;}
+
+  .app-strip{ display:flex; flex-wrap:wrap; gap:10px; margin-top:32px; }
+  .app-pill{
+    border:1px solid var(--paper-line);
+    background:#fff;
+    padding:7px 13px;
+    border-radius:999px;
+    font-size:12px;
+    color:var(--ink-soft);
+  }
+
+  .section-head{padding:48px 0 6px;}
+  .section-head .eyebrow{margin-bottom:10px;}
+  .section-head h2{
+    font-family:'Space Grotesk',sans-serif;
+    font-weight:600;
+    font-size:26px;
+    margin:0;
+    letter-spacing:-0.01em;
+  }
+
+  .feat-grid{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:1px;
+    background:var(--paper-line);
+    border:1px solid var(--paper-line);
+    margin-top:24px;
+  }
+  .feat{background:#fff;padding:22px 20px;}
+  .feat .num{font-family:'Space Grotesk',sans-serif;font-weight:700;color:var(--cash);font-size:13px;margin-bottom:10px;}
+  .feat h3{font-family:'Space Grotesk',sans-serif;font-size:16px;margin:0 0 8px;}
+  .feat p{font-size:13px;color:var(--ink-soft);line-height:1.6;margin:0;}
+
+  .how-steps{ display:grid; grid-template-columns:repeat(3,1fr); gap:20px; margin-top:24px; }
+  .step{border-left:2px solid var(--stamp);padding-left:16px;}
+  .step-num{font-family:'Space Grotesk',sans-serif;font-weight:700;color:var(--stamp);font-size:20px;margin-bottom:8px;}
+  .step h4{font-family:'Space Grotesk',sans-serif;font-size:15px;margin:0 0 6px;}
+  .step p{font-size:13px;color:var(--ink-soft);line-height:1.6;margin:0;}
+
+  .final-cta{
+    text-align:center;
+    padding:64px 0 56px;
+    border-top:1px solid var(--paper-line);
+    margin-top:48px;
+  }
+  .final-cta h2{font-family:'Space Grotesk',sans-serif;font-size:28px;margin:0 0 10px;}
+  .final-cta p{color:var(--ink-soft);font-size:14px;margin-bottom:22px;}
+
+  footer{
+    padding:22px 0 40px;
+    font-size:11px;
+    color:var(--ink-soft);
+    line-height:1.7;
+    border-top:1px solid var(--paper-line);
+  }
+
+  @media (max-width:720px){
+    .feat-grid, .how-steps{grid-template-columns:1fr;}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <section class="hero">
+    <div class="eyebrow">Receipt Rewards Hub</div>
+    <h1>Stop losing track of<br>which app got <span class="accent">which receipt</span>.</h1>
+    <p class="lede">Most people run one or two receipt apps and forget the rest exist. The Hub keeps every account visible in one screen, so you actually submit each receipt everywhere it qualifies — instead of leaving cash back on the table.</p>
+    <div class="cta-row">
+      <a class="cta-primary" href="./receipt-rewards-hub.html">Open the Hub</a>
+      <button class="share-btn" id="shareBtn" type="button">Share</button>
+    </div>
+    <div class="app-strip">
+      <span class="app-pill">Fetch</span>
+      <span class="app-pill">Ibotta</span>
+      <span class="app-pill">CoinOut</span>
+      <span class="app-pill">Receipt Jar</span>
+      <span class="app-pill">ReceiptPal</span>
+      <span class="app-pill">Swagbucks</span>
+      <span class="app-pill">Receipt Hog</span>
+    </div>
+  </section>
+
+  <section>
+    <div class="section-head">
+      <div class="eyebrow">Why it helps</div>
+      <h2>One log, every app you use</h2>
+    </div>
+    <div class="feat-grid">
+      <div class="feat">
+        <div class="num">01</div>
+        <h3>One log, every app</h3>
+        <p>Enter a receipt once, check off which apps you submitted it to, and never lose track of what's been sent where.</p>
+      </div>
+      <div class="feat">
+        <div class="num">02</div>
+        <h3>Running totals</h3>
+        <p>See total receipts logged, this month's count, and estimated earnings across every app without opening each one.</p>
+      </div>
+      <div class="feat">
+        <div class="num">03</div>
+        <h3>One-tap launch</h3>
+        <p>Jump straight into any app to do the actual scanning, then come back to the Hub to log it in seconds.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="how" id="how">
+    <div class="section-head">
+      <div class="eyebrow">How it works</div>
+      <h2>Three steps, every time you shop</h2>
+    </div>
+    <div class="how-steps">
+      <div class="step">
+        <div class="step-num">1</div>
+        <h4>Scan in the app</h4>
+        <p>Open Fetch, Ibotta, or whichever app you're using and submit the receipt there — that's still where the cash back is credited.</p>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <h4>Log it in the Hub</h4>
+        <p>Type in the store, amount, and which apps got the receipt. Takes about ten seconds.</p>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <h4>Watch the tape grow</h4>
+        <p>Your totals, monthly count, and top-earning app update automatically as you go.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="final-cta">
+    <h2>Start your tape today</h2>
+    <p>Free to use — no account needed.</p>
+    <a class="cta-primary" href="./receipt-rewards-hub.html">Open the Hub</a>
+  </section>
+
+  <footer>
+    RAC Express Shop LLC · Receipt Rewards Hub<br>
+    Some app links are referral/affiliate links — we may earn a bonus if you sign up through them, at no cost to you.
+  </footer>
+</div>
+
+<script>
+document.getElementById('shareBtn').addEventListener('click', async () => {
+  const shareData = {
+    title: 'Receipt Rewards Hub',
+    text: 'Log your receipts once and track every cash-back app in one place.',
+    url: window.location.href
+  };
+  try{
+    if(navigator.share){
+      await navigator.share(shareData);
+    } else {
+      await navigator.clipboard.writeText(window.location.href);
+      const btn = document.getElementById('shareBtn');
+      const original = btn.textContent;
+      btn.textContent = 'Link copied!';
+      setTimeout(() => { btn.textContent = original; }, 1800);
+    }
+  }catch(e){
+    // user cancelled share sheet — no action needed
+  }
+});
+</script>
+</body>
+</html>
