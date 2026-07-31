@@ -21,19 +21,45 @@
   .wrap{max-width:980px;margin:0 auto;padding:0 20px;}
   a{color:inherit;}
 
-  .hero{ padding:72px 0 56px; border-bottom:1px solid var(--paper-line); }
+  .hero{ padding:72px 0 56px; border-bottom:1px solid var(--paper-line); overflow:hidden; }
+  .hero-grid{ display:grid; grid-template-columns:1.05fr 0.95fr; gap:36px; align-items:center; }
   .hero-top{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;flex-wrap:wrap;}
   .eyebrow{font-size:11px;text-transform:uppercase;letter-spacing:.14em;color:var(--stamp);margin-bottom:16px;}
   h1{
     font-family:'Space Grotesk',sans-serif;
     font-weight:700;
-    font-size:clamp(32px,5vw,52px);
+    font-size:clamp(32px,4.2vw,50px);
     line-height:1.05;
     letter-spacing:-0.02em;
     margin:0 0 18px;
   }
   h1 .accent{color:var(--cash);}
-  .lede{font-size:16px;color:var(--ink-soft);max-width:560px;line-height:1.6;margin-bottom:28px;}
+  .lede{font-size:16px;color:var(--ink-soft);max-width:520px;line-height:1.6;margin-bottom:22px;}
+
+  .ticker{
+    display:inline-flex;
+    align-items:baseline;
+    gap:8px;
+    background:#fff;
+    border:1px solid var(--paper-line);
+    border-radius:999px;
+    padding:8px 16px;
+    margin-bottom:24px;
+    font-size:12px;
+    color:var(--ink-soft);
+  }
+  .ticker .amt{
+    font-family:'Space Grotesk',sans-serif;
+    font-weight:700;
+    font-size:16px;
+    color:var(--cash);
+  }
+  .ticker .dot{
+    width:7px;height:7px;border-radius:50%;
+    background:var(--stamp-bright);
+    animation: pulseDot 1.6s ease-in-out infinite;
+  }
+
   .cta-row{display:flex;gap:12px;flex-wrap:wrap;align-items:center;}
   .cta-primary{
     display:inline-block;
@@ -45,8 +71,10 @@
     letter-spacing:.02em;
     padding:14px 26px;
     border-radius:2px;
+    position:relative;
+    animation: ctaPulse 2.6s ease-in-out infinite;
   }
-  .cta-primary:hover{background:var(--stamp-bright);}
+  .cta-primary:hover{background:var(--stamp-bright); animation-play-state:paused;}
   .share-btn{
     display:inline-flex;
     align-items:center;
@@ -71,6 +99,69 @@
     border-radius:999px;
     font-size:12px;
     color:var(--ink-soft);
+    opacity:0;
+    animation: pillIn .5s ease forwards;
+  }
+  .app-pill:nth-child(1){animation-delay:.05s;}
+  .app-pill:nth-child(2){animation-delay:.1s;}
+  .app-pill:nth-child(3){animation-delay:.15s;}
+  .app-pill:nth-child(4){animation-delay:.2s;}
+  .app-pill:nth-child(5){animation-delay:.25s;}
+  .app-pill:nth-child(6){animation-delay:.3s;}
+  .app-pill:nth-child(7){animation-delay:.35s;}
+
+  /* ---- Hero illustration: receipt + floating cash ---- */
+  .hero-art{
+    position:relative;
+    height:360px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+  }
+  .hero-art svg{ width:100%; height:100%; overflow:visible; }
+  .float-slow{ animation: floatY 4.5s ease-in-out infinite; }
+  .float-med{ animation: floatY 3.4s ease-in-out infinite; }
+  .float-fast{ animation: floatY 2.6s ease-in-out infinite; }
+  .spin-coin{ animation: coinSpin 3.2s linear infinite; transform-origin:center; transform-box:fill-box; }
+  .rise{ animation: riseUp 3.6s ease-in-out infinite; }
+
+  @keyframes floatY{
+    0%,100%{ transform:translateY(0px); }
+    50%{ transform:translateY(-10px); }
+  }
+  @keyframes coinSpin{
+    0%{ transform:scaleX(1); }
+    50%{ transform:scaleX(0.2); }
+    100%{ transform:scaleX(1); }
+  }
+  @keyframes riseUp{
+    0%{ transform:translateY(10px); opacity:.4; }
+    50%{ transform:translateY(-14px); opacity:1; }
+    100%{ transform:translateY(10px); opacity:.4; }
+  }
+  @keyframes ctaPulse{
+    0%,100%{ box-shadow:0 0 0 0 rgba(27,67,50,0.35); }
+    50%{ box-shadow:0 0 0 8px rgba(27,67,50,0); }
+  }
+  @keyframes pulseDot{
+    0%,100%{ opacity:1; transform:scale(1); }
+    50%{ opacity:.4; transform:scale(0.8); }
+  }
+  @keyframes pillIn{
+    from{ opacity:0; transform:translateY(6px); }
+    to{ opacity:1; transform:translateY(0); }
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    .cta-primary, .float-slow, .float-med, .float-fast, .spin-coin, .rise, .ticker .dot, .app-pill{
+      animation:none !important;
+      opacity:1;
+    }
+  }
+
+  @media (max-width:860px){
+    .hero-grid{ grid-template-columns:1fr; }
+    .hero-art{ height:260px; order:-1; }
   }
 
   .section-head{padding:48px 0 6px;}
@@ -91,7 +182,8 @@
     border:1px solid var(--paper-line);
     margin-top:24px;
   }
-  .feat{background:#fff;padding:22px 20px;}
+  .feat{background:#fff;padding:22px 20px;transition:transform .2s ease, box-shadow .2s ease;}
+  .feat:hover{transform:translateY(-3px);box-shadow:0 8px 20px rgba(27,67,50,0.08);}
   .feat .num{font-family:'Space Grotesk',sans-serif;font-weight:700;color:var(--cash);font-size:13px;margin-bottom:10px;}
   .feat h3{font-family:'Space Grotesk',sans-serif;font-size:16px;margin:0 0 8px;}
   .feat p{font-size:13px;color:var(--ink-soft);line-height:1.6;margin:0;}
@@ -128,21 +220,75 @@
 <div class="wrap">
 
   <section class="hero">
-    <div class="eyebrow">Receipt Rewards Hub</div>
-    <h1>Stop losing track of<br>which app got <span class="accent">which receipt</span>.</h1>
-    <p class="lede">Most people run one or two receipt apps and forget the rest exist. The Hub keeps every account visible in one screen, so you actually submit each receipt everywhere it qualifies — instead of leaving cash back on the table.</p>
-    <div class="cta-row">
-      <a class="cta-primary" href="./receipt-rewards-hub.html">Open the Hub</a>
-      <button class="share-btn" id="shareBtn" type="button">Share</button>
-    </div>
-    <div class="app-strip">
-      <span class="app-pill">Fetch</span>
-      <span class="app-pill">Ibotta</span>
-      <span class="app-pill">CoinOut</span>
-      <span class="app-pill">Receipt Jar</span>
-      <span class="app-pill">ReceiptPal</span>
-      <span class="app-pill">Swagbucks</span>
-      <span class="app-pill">Receipt Hog</span>
+    <div class="hero-grid">
+      <div class="hero-copy">
+        <div class="eyebrow">Receipt Rewards Hub</div>
+        <h1>Stop losing track of<br>which app got <span class="accent">which receipt</span>.</h1>
+        <p class="lede">Most people run one or two receipt apps and forget the rest exist. The Hub keeps every account visible in one screen, so you actually submit each receipt everywhere it qualifies — instead of leaving cash back on the table.</p>
+
+        <div class="ticker">
+          <span class="dot"></span>
+          Community cash-back logged today: <span class="amt" id="tickerAmt">$0.00</span>
+        </div>
+
+        <div class="cta-row">
+          <a class="cta-primary" href="./receipt-rewards-hub.html">Open the Hub — it's free</a>
+          <button class="share-btn" id="shareBtn" type="button">Share</button>
+        </div>
+        <div class="app-strip">
+          <span class="app-pill">Fetch</span>
+          <span class="app-pill">Ibotta</span>
+          <span class="app-pill">CoinOut</span>
+          <span class="app-pill">Receipt Jar</span>
+          <span class="app-pill">ReceiptPal</span>
+          <span class="app-pill">Swagbucks</span>
+          <span class="app-pill">Receipt Hog</span>
+        </div>
+      </div>
+
+      <div class="hero-art" aria-hidden="true">
+        <svg viewBox="0 0 360 360" xmlns="http://www.w3.org/2000/svg">
+          <!-- receipt tape -->
+          <g class="float-slow">
+            <path d="M110 60 L250 60 L250 300 L118 292 L126 278 L114 268 L124 254 L112 244 L122 230 L110 220 L120 206 L108 196 L118 182 L106 172 L116 158 L104 148 L114 134 L102 124 L112 110 L100 100 L110 86 L102 74 Z"
+                  fill="#ffffff" stroke="var(--paper-line)" stroke-width="2"/>
+            <line x1="128" y1="90" x2="232" y2="90" stroke="var(--paper-line)" stroke-width="4"/>
+            <line x1="128" y1="108" x2="220" y2="108" stroke="var(--paper-line)" stroke-width="4"/>
+            <line x1="128" y1="126" x2="232" y2="126" stroke="var(--paper-line)" stroke-width="4"/>
+            <line x1="128" y1="144" x2="205" y2="144" stroke="var(--paper-line)" stroke-width="4"/>
+            <line x1="128" y1="162" x2="232" y2="162" stroke="var(--paper-line)" stroke-width="4"/>
+            <line x1="128" y1="180" x2="215" y2="180" stroke="var(--stamp)" stroke-width="5"/>
+            <!-- stamp checkmark -->
+            <circle cx="200" cy="215" r="26" fill="none" stroke="var(--cash)" stroke-width="3" stroke-dasharray="4 3"/>
+            <path d="M188 216 L197 226 L214 204" fill="none" stroke="var(--cash)" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+          </g>
+
+          <!-- floating cash bills -->
+          <g class="float-med">
+            <rect x="228" y="150" width="70" height="34" rx="3" fill="#eaf7ee" stroke="var(--stamp)" stroke-width="2" transform="rotate(-8 263 167)"/>
+            <circle cx="263" cy="167" r="9" fill="none" stroke="var(--stamp)" stroke-width="2" transform="rotate(-8 263 167)"/>
+          </g>
+          <g class="rise">
+            <rect x="238" y="90" width="64" height="30" rx="3" fill="#eaf7ee" stroke="var(--stamp-bright)" stroke-width="2" transform="rotate(6 270 105)"/>
+            <circle cx="270" cy="105" r="8" fill="none" stroke="var(--stamp-bright)" stroke-width="2" transform="rotate(6 270 105)"/>
+          </g>
+
+          <!-- floating coins -->
+          <g class="float-fast">
+            <circle cx="70" cy="120" r="18" fill="var(--cash)" opacity="0.9"/>
+            <text x="70" y="126" font-size="16" text-anchor="middle" fill="#fff" font-family="Space Grotesk, sans-serif" font-weight="700">$</text>
+          </g>
+          <g class="spin-coin">
+            <circle cx="60" cy="210" r="14" fill="var(--cash)" opacity="0.85"/>
+          </g>
+          <g class="rise">
+            <circle cx="95" cy="260" r="11" fill="var(--cash)" opacity="0.75"/>
+          </g>
+          <g class="float-med">
+            <circle cx="300" cy="245" r="13" fill="var(--cash)" opacity="0.8"/>
+          </g>
+        </svg>
+      </div>
     </div>
   </section>
 
@@ -207,6 +353,22 @@
 </div>
 
 <script>
+// Animate the "community cash-back" ticker counting up on load, then hold.
+(function animateTicker(){
+  const el = document.getElementById('tickerAmt');
+  if(!el) return;
+  const target = 1842.60; // illustrative running total, update anytime
+  const duration = 1600;
+  const start = performance.now();
+  function frame(now){
+    const t = Math.min(1, (now - start) / duration);
+    const eased = 1 - Math.pow(1 - t, 3);
+    el.textContent = '$' + (target * eased).toFixed(2);
+    if(t < 1) requestAnimationFrame(frame);
+  }
+  requestAnimationFrame(frame);
+})();
+
 document.getElementById('shareBtn').addEventListener('click', async () => {
   const shareData = {
     title: 'Receipt Rewards Hub',
