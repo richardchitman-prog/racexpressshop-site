@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Receipt Rewards Hub</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap');
+
+  :root{
+    --paper: #CDEBFA;
+    --paper-line: #A9D8F0;
+    --ink: #20261F;
+    --ink-soft: #5B6156;
+    --stamp: #1B4332;
+    --stamp-bright: #2D6A4F;
+    --cash: #C9A227;
+    --void-red: #B3402A;
+    --radius: 2px;
+  }
+
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background: var(--paper);
+    color: var(--ink);
+    font-family:'IBM Plex Mono', monospace;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{
+    max-width: 980px;
+    margin: 0 auto;
+    padding: 28px 20px 60px;
+  }
+
+  .receipt-head{
+    background:#fff;
+    border:1px solid var(--paper-line);
+    border-bottom:none;
+    padding:22px 24px 18px;
+    position:relative;
+  }
+  .receipt-head::after{
+    content:"";
+    display:block;
+    position:absolute;
+    left:0;right:0;bottom:-9px;
+    height:18px;
+    background:
+      linear-gradient(135deg, transparent 50%, #fff 50%) 0 0/16px 16px,
+      linear-gradient(-135deg, transparent 50%, #fff 50%) 0 0/16px 16px;
+    background-repeat: repeat-x;
+  }
+  .eyebrow{
+    font-family:'Space Grotesk', sans-serif;
+    font-size:11px;
+    letter-spacing:.16em;
+    text-transform:uppercase;
+    color: var(--stamp);
+    font-weight:600;
+  }
+  .brand-row{display:flex;align-items:baseline;justify-content:space-between;flex-wrap:wrap;gap:8px;}
+  h1{
+    font-family:'Space Grotesk', sans-serif;
+    font-size:26px;
+    margin:6px 0 4px;
+    letter-spacing:-0.01em;
+  }
+  .sub{color:var(--ink-soft);font-size:13px;margin:0;}
+  .today{font-size:12px;color:var(--ink-soft);}
+
+  .stats{
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:1px;
+    background:var(--paper-line);
+    border:1px solid var(--paper-line);
+    border-top:none;
+    margin-bottom:26px;
+  }
+  .stat{background:#fff;padding:16px 14px;}
+  .stat .label{font-size:10px;text-transform:uppercase;letter-spacing:.1em;color:var(--ink-soft);margin-bottom:6px;}
+  .stat .value{font-family:'Space Grotesk',sans-serif;font-size:24px;font-weight:700;color:var(--stamp);}
+  .stat.money .value{color:var(--cash);}
+
+  @media (max-width:640px){ .stats{grid-template-columns:repeat(2,1fr);} }
+
+  section{margin-bottom:30px;}
+  .section-title{
+    font-family:'Space Grotesk',sans-serif;
+    font-weight:600;
+    font-size:14px;
+    text-transform:uppercase;
+    letter-spacing:.1em;
+    color:var(--stamp);
+    border-bottom:1px solid var(--paper-line);
+    padding-bottom:8px;
+    margin-bottom:14px;
+  }
+
+  .log-form{
+    background:#fff;
+    border:1px solid var(--paper-line);
+    padding:18px;
+    display:grid;
+    grid-template-columns:1.2fr 0.8fr 0.8fr 0.8fr;
+    gap:14px;
+  }
+  .field label{display:block;font-size:11px;color:var(--ink-soft);text-transform:uppercase;letter-spacing:.08em;margin-bottom:5px;}
+  .field input{
+    width:100%;
+    padding:9px 10px;
+    border:1px solid var(--paper-line);
+    background:var(--paper);
+    font-family:inherit;
+    font-size:14px;
+    color:var(--ink);
+    border-radius:var(--radius);
+  }
+  .field input:focus{outline:2px solid var(--stamp-bright);outline-offset:1px;}
+  .apps-check{ grid-column:1/-1; }
+  .apps-check label.app-label{
+    font-size:11px;color:var(--ink-soft);text-transform:uppercase;letter-spacing:.08em;margin-bottom:8px;display:block;
+  }
+  .chip-row{display:flex;flex-wrap:wrap;gap:8px;}
+  .chip{
+    border:1px solid var(--paper-line);
+    padding:6px 12px;
+    border-radius:999px;
+    font-size:13px;
+    cursor:pointer;
+    background:var(--paper);
+    user-select:none;
+  }
+  .chip.on{border-color:var(--stamp);background:#eaf3ee;color:var(--stamp);font-weight:600;}
+  .log-actions{grid-column:1/-1;display:flex;justify-content:flex-end;}
+  .btn{
+    font-family:inherit;
+    font-weight:600;
+    font-size:13px;
+    letter-spacing:.03em;
+    padding:10px 18px;
+    border:none;
+    border-radius:var(--radius);
+    cursor:pointer;
+    background:var(--stamp);
+    color:#fff;
+    transition:background .15s ease;
+  }
+  .btn:hover{background:var(--stamp-bright);}
+
+  .app-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fill,minmax(210px,1fr));
+    gap:12px;
+  }
+  .app-card{
+    background:#fff;
+    border:1px solid var(--paper-line);
+    padding:14px;
+    display:flex;
+    flex-direction:column;
+    gap:8px;
+  }
+  .app-card .name{font-family:'Space Grotesk',sans-serif;font-weight:600;font-size:15px;}
+  .app-card .sum{font-size:11px;color:var(--ink-soft);}
+  .app-card a.launch{
+    text-align:center;
+    font-size:12px;font-weight:600;
+    padding:7px 8px;
+    border:1px solid var(--stamp);
+    color:var(--stamp);
+    text-decoration:none;
+    border-radius:var(--radius);
+    margin-top:auto;
+  }
+  .app-card a.launch:hover{background:var(--stamp);color:#fff;}
+
+  .tape{ background:#fff; border:1px solid var(--paper-line); }
+  .tape-row{
+    display:grid;
+    grid-template-columns:90px 1fr 80px 80px 1fr 30px;
+    gap:10px;
+    align-items:center;
+    padding:11px 14px;
+    border-bottom:1px dashed var(--paper-line);
+    font-size:13px;
+  }
+  .tape-row:last-child{border-bottom:none;}
+  .tape-row.head{
+    font-size:10px;text-transform:uppercase;letter-spacing:.08em;color:var(--ink-soft);
+    border-bottom:1px solid var(--paper-line);
+  }
+  .tape-row .amt{color:var(--ink);}
+  .tape-row .earn{color:var(--cash);font-weight:600;}
+  .tape-row .apps-list{color:var(--ink-soft);font-size:12px;}
+  .tape-row .del{cursor:pointer;color:var(--void-red);text-align:center;font-weight:700;}
+  .empty{padding:28px 14px;text-align:center;color:var(--ink-soft);font-size:13px;}
+
+  footer{
+    margin-top:36px;
+    padding-top:16px;
+    border-top:1px solid var(--paper-line);
+    font-size:11px;
+    color:var(--ink-soft);
+    line-height:1.6;
+  }
+
+  @media (max-width:720px){
+    .log-form{grid-template-columns:1fr 1fr;}
+    .tape-row{grid-template-columns:70px 1fr 60px 1fr 24px;}
+    .tape-row .earn{display:none;}
+    .tape-row.head > div:nth-child(4){display:none;}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="receipt-head">
+    <div class="brand-row">
+      <div>
+        <div class="eyebrow">Receipt Rewards Hub</div>
+        <h1>Log once. Submit everywhere.</h1>
+      </div>
+      <div class="today" id="todayLabel"></div>
+    </div>
+    <p class="sub">One log, every cash-back app, running totals.</p>
+  </div>
+
+  <div class="stats">
+    <div class="stat"><div class="label">Receipts logged</div><div class="value" id="statTotal">0</div></div>
+    <div class="stat"><div class="label">This month</div><div class="value" id="statMonth">0</div></div>
+    <div class="stat money"><div class="label">Est. earned</div><div class="value" id="statEarnings">$0.00</div></div>
+    <div class="stat"><div class="label">Top app</div><div class="value" id="statTopApp" style="font-size:16px;">—</div></div>
+  </div>
+
+  <section>
+    <div class="section-title">Log a receipt</div>
+    <form class="log-form" id="logForm">
+      <div class="field">
+        <label for="fStore">Store</label>
+        <input id="fStore" type="text" placeholder="e.g. Target" required>
+      </div>
+      <div class="field">
+        <label for="fAmount">Amount ($)</label>
+        <input id="fAmount" type="number" step="0.01" min="0" placeholder="0.00" required>
+      </div>
+      <div class="field">
+        <label for="fEarn">Earned ($)</label>
+        <input id="fEarn" type="number" step="0.01" min="0" placeholder="0.00">
+      </div>
+      <div class="field">
+        <label for="fDate">Date</label>
+        <input id="fDate" type="date">
+      </div>
+      <div class="apps-check">
+        <label class="app-label">Submitted to</label>
+        <div class="chip-row" id="chipRow"></div>
+      </div>
+      <div class="log-actions">
+        <button type="submit" class="btn">Log receipt</button>
+      </div>
+    </form>
+  </section>
+
+  <section>
+    <div class="section-title">Your apps</div>
+    <div class="app-grid" id="appList"></div>
+  </section>
+
+  <section>
+    <div class="section-title">Ledger</div>
+    <div class="tape">
+      <div class="tape-row head">
+        <div>Date</div><div>Store</div><div>Spent</div><div>Earned</div><div>Sent to</div><div></div>
+      </div>
+      <div id="tape"></div>
+    </div>
+  </section>
+
+  <footer>
+    Some app links below are referral/affiliate links — we may earn a bonus if you sign up through them, at no cost to you.<br>
+    This Hub logs your own submissions and stores them for you. It does not connect to or submit receipts on your behalf to any third-party app.
+  </footer>
+</div>
+
+<script>
+// ── REFERRAL LINKS ──────────────────────────────────────────────
+// If a referralUrl is left blank, the app falls back to the plain
+// URL (no referral credit). referralCode is shown on the card when
+// a program only supports a manually-entered code, not a link.
+const APPS = [
+  { key:"fetch",      name:"Fetch Rewards", url:"https://fetch.com",       referralUrl:"https://referral.fetch.com/vvv3/referralsocialpostsnap?code=47TMD3" },
+  { key:"ibotta",     name:"Ibotta",        url:"https://ibotta.com",      referralUrl:"https://ibotta.onelink.me/iUfE/8cc13c64?friend_code=vmspfgb" },
+  { key:"coinout",    name:"CoinOut",       url:"https://coinout.com",     referralUrl:"https://coinout.com/pages/refer_earn?id=4HGRVT3" },
+  { key:"jar",        name:"Receipt Jar",   url:"https://receiptjar.com",  referralUrl:"", referralCode:"RICHCTRDJ" },
+  { key:"receiptpal", name:"ReceiptPal",    url:"https://receiptpal.com",  referralUrl:"" },
+  { key:"swagbucks",  name:"Swagbucks",     url:"https://swagbucks.com",   referralUrl:"https://www.swagbucks.com/p/register?rb=238443013" },
+  { key:"receipthog", name:"Receipt Hog",   url:"https://receipthog.com",  referralUrl:"https://app.receipthog.com/r/drez3609" },
+  // Shopkick removed — shut down March 2026, filed Chapter 7 bankruptcy May 2026.
+];
+
+const STORAGE_KEY = "receipt-hub-entries";
+let entries = [];
+let selectedChips = new Set();
+
+async function loadEntries(){
+  try{
+    if(window.storage){
+      const res = await window.storage.get(STORAGE_KEY, false);
+      entries = res ? JSON.parse(res.value) : [];
+    } else {
+      entries = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
+    }
+  }catch(e){
+    entries = [];
+  }
+}
+
+async function saveEntries(){
+  try{
+    if(window.storage){
+      await window.storage.set(STORAGE_KEY, JSON.stringify(entries), false);
+    } else {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(entries));
+    }
+  }catch(e){
+    console.error("Save failed", e);
+  }
+}
+
+function renderApps(){
+  const list = document.getElementById("appList");
+  const chipRow = document.getElementById("chipRow");
+  list.innerHTML = "";
+  chipRow.innerHTML = "";
+
+  const counts = {};
+  APPS.forEach(a => counts[a.key] = 0);
+  entries.forEach(e => (e.apps||[]).forEach(k => { if(counts[k]!==undefined) counts[k]++; }));
+
+  APPS.forEach(a => {
+    const link = a.referralUrl && a.referralUrl.trim() ? a.referralUrl : a.url;
+    const isReferral = !!(a.referralUrl && a.referralUrl.trim());
+    const hasCodeOnly = !isReferral && a.referralCode && a.referralCode.trim();
+    const card = document.createElement("div");
+    card.className = "app-card";
+    card.innerHTML = `
+      <div class="name">${a.name}</div>
+      <div class="sum">${counts[a.key]} receipt${counts[a.key]===1?"":"s"} sent${isReferral ? " · referral link" : ""}${hasCodeOnly ? ` · code at signup: <strong>${a.referralCode}</strong>` : ""}</div>
+      <a class="launch" href="${link}" target="_blank" rel="noopener sponsored">Open →</a>
+    `;
+    list.appendChild(card);
+
+    const chip = document.createElement("div");
+    chip.className = "chip";
+    chip.textContent = a.name;
+    chip.dataset.key = a.key;
+    chip.onclick = () => {
+      if(selectedChips.has(a.key)) selectedChips.delete(a.key);
+      else selectedChips.add(a.key);
+      chip.classList.toggle("on");
+    };
+    chipRow.appendChild(chip);
+  });
+}
+
+function fmtDate(iso){
+  const d = new Date(iso + "T00:00:00");
+  return d.toLocaleDateString(undefined, { month:'short', day:'numeric' });
+}
+
+function renderTape(){
+  const tape = document.getElementById("tape");
+  tape.innerHTML = "";
+  if(entries.length === 0){
+    tape.innerHTML = '<div class="empty">No receipts logged yet — add your first one above.</div>';
+    return;
+  }
+  entries.slice().reverse().forEach(e => {
+    const row = document.createElement("div");
+    row.className = "tape-row";
+    const appsText = (e.apps||[]).map(k => {
+      const app = APPS.find(a => a.key === k);
+      return app ? app.name : k;
+    }).join(", ");
+    row.innerHTML = `
+      <div>${fmtDate(e.date)}</div>
+      <div>${e.store}</div>
+      <div class="amt">$${Number(e.amount||0).toFixed(2)}</div>
+      <div class="earn">$${Number(e.earn||0).toFixed(2)}</div>
+      <div class="apps-list">${appsText || '—'}</div>
+      <div class="del" data-id="${e.id}">✕</div>
+    `;
+    tape.appendChild(row);
+  });
+  tape.querySelectorAll(".del").forEach(el => {
+    el.addEventListener("click", async () => {
+      entries = entries.filter(e => String(e.id) !== el.dataset.id);
+      await saveEntries();
+      renderAll();
+    });
+  });
+}
+
+function renderStats(){
+  const total = entries.length;
+  const now = new Date();
+  const thisMonth = entries.filter(e => {
+    const d = new Date(e.date + "T00:00:00");
+    return d.getMonth() === now.getMonth() && d.getFullYear() === now.getFullYear();
+  }).length;
+
+  const earnings = entries.reduce((sum, e) => sum + Number(e.earn||0), 0);
+
+  const appCounts = {};
+  entries.forEach(e => (e.apps||[]).forEach(k => { appCounts[k] = (appCounts[k]||0) + 1; }));
+  let topApp = "—", topCount = 0;
+  Object.entries(appCounts).forEach(([k, c]) => {
+    if(c > topCount){ topCount = c; const app = APPS.find(a => a.key===k); topApp = app ? app.name : k; }
+  });
+
+  document.getElementById("statTotal").textContent = total;
+  document.getElementById("statMonth").textContent = thisMonth;
+  document.getElementById("statEarnings").textContent = "$" + earnings.toFixed(2);
+  document.getElementById("statTopApp").textContent = topApp;
+}
+
+function renderAll(){
+  renderApps();
+  renderTape();
+  renderStats();
+}
+
+document.getElementById("logForm").addEventListener("submit", async (e) => {
+  e.preventDefault();
+  const store = document.getElementById("fStore").value.trim();
+  const amount = document.getElementById("fAmount").value;
+  const earn = document.getElementById("fEarn").value;
+  let date = document.getElementById("fDate").value;
+  if(!date) date = new Date().toISOString().slice(0,10);
+  if(!store || amount === "") return;
+
+  entries.push({
+    id: Date.now(),
+    store,
+    amount,
+    earn,
+    date,
+    apps: [...selectedChips]
+  });
+
+  await saveEntries();
+
+  document.getElementById("logForm").reset();
+  selectedChips = new Set();
+
+  renderAll();
+});
+
+document.getElementById("todayLabel").textContent = new Date().toLocaleDateString(undefined, { weekday:'long', month:'long', day:'numeric' });
+
+(async function init(){
+  await loadEntries();
+  renderAll();
+})();
+</script>
+</body>
+</html>
