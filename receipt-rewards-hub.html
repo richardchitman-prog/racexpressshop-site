@@ -85,6 +85,16 @@
 
   @media (max-width:640px){ .stats{grid-template-columns:repeat(2,1fr);} }
 
+  .community-wrap{ margin-bottom:26px; }
+  .community-wrap .stats{ grid-template-columns:repeat(3,1fr); margin-bottom:0; }
+  @media (max-width:640px){ .community-wrap .stats{ grid-template-columns:1fr; } }
+  .community-note{
+    font-size:10px;
+    color:var(--ink-soft);
+    text-align:right;
+    margin:4px 2px 0 0;
+  }
+
   section{margin-bottom:30px;}
   .section-title{
     font-family:'Space Grotesk',sans-serif;
@@ -364,6 +374,15 @@
     <div class="stat"><div class="label">Top app</div><div class="value" id="statTopApp" style="font-size:16px;">—</div></div>
   </div>
 
+  <div class="community-wrap">
+    <div class="stats">
+      <div class="stat"><div class="label">Total visits</div><div class="value" id="communityVisits">—</div></div>
+      <div class="stat"><div class="label">Unique visitors</div><div class="value" id="communityUnique">—</div></div>
+      <div class="stat money"><div class="label">Receipts logged (everyone)</div><div class="value" id="communityReceipts" style="font-size:20px;">—</div></div>
+    </div>
+    <div class="community-note">Shared totals across everyone using this hub</div>
+  </div>
+
   <section>
     <div class="section-title">
       <span>Log a receipt</span>
@@ -530,6 +549,60 @@ const APPS = [
     rate:{type:"flat", value:0.05}, rateBasis:"~10 coins on an average grocery receipt, 1,000 coins = $5" },
   // Shopkick removed — shut down March 2026, filed Chapter 7 bankruptcy May 2026.
 ];
+
+// ── VISITOR / USAGE TRACKING ──────────────────────────────────────
+// Uses countapi.mileshilliard.com (free, no signup) for shared counters
+// across every visitor, and ntfy.sh (free, no signup) to push a
+// notification to you when a NEW unique visitor shows up.
+//
+// IMPORTANT: change COUNTER_NS to something unique to your site so your
+// counts don't collide with anyone else's — the domain is a good choice.
+// Change NTFY_TOPIC to a private, hard-to-guess string, then subscribe
+// to that same topic in the ntfy app or at https://ntfy.sh/<topic> to
+// get the push notifications on your phone or browser.
+const COUNTER_NS = "racexpressshop-receipt-hub";
+const NTFY_TOPIC = "rrh-owner-alerts-8f2k1x";
+
+async function countApiHit(key){
+  try{
+    const res = await fetch(`https://countapi.mileshilliard.com/api/v1/hit/${COUNTER_NS}_${key}`);
+    const data = await res.json();
+    return data.value;
+  }catch(e){ return null; }
+}
+
+async function countApiGet(key){
+  try{
+    const res = await fetch(`https://countapi.mileshilliard.com/api/v1/get/${COUNTER_NS}_${key}`);
+    const data = await res.json();
+    return data.value;
+  }catch(e){ return null; }
+}
+
+async function notifyOwner(message){
+  try{
+    await fetch(`https://ntfy.sh/${NTFY_TOPIC}`, { method: "POST", body: message });
+  }catch(e){ /* notification is best-effort, never block the page on it */ }
+}
+
+async function trackVisit(){
+  const visits = await countApiHit("visits");
+  if(visits !== null) document.getElementById("communityVisits").textContent = visits;
+
+  const isNewVisitor = !localStorage.getItem("rrh_seen");
+  let uniques;
+  if(isNewVisitor){
+    localStorage.setItem("rrh_seen", "1");
+    uniques = await countApiHit("unique");
+    notifyOwner(`👀 New visitor on Receipt Rewards Hub — ${uniques} unique so far`);
+  } else {
+    uniques = await countApiGet("unique");
+  }
+  if(uniques !== null) document.getElementById("communityUnique").textContent = uniques;
+
+  const receiptsTotal = await countApiGet("receipts");
+  if(receiptsTotal !== null) document.getElementById("communityReceipts").textContent = receiptsTotal;
+}
 
 const STORAGE_KEY = "receipt-hub-entries";
 let entries = [];
@@ -768,6 +841,9 @@ document.getElementById("logForm").addEventListener("submit", async (e) => {
   earnManuallyEdited = false;
 
   renderAll();
+
+  const receiptsTotal = await countApiHit("receipts");
+  if(receiptsTotal !== null) document.getElementById("communityReceipts").textContent = receiptsTotal;
 });
 
 document.getElementById("ratesBtn").addEventListener("click", () => {
@@ -826,6 +902,7 @@ document.getElementById("todayLabel").textContent = new Date().toLocaleDateStrin
   await loadEntries();
   renderRatesTable();
   renderAll();
+  trackVisit();
 })();
 </script>
 </body>
