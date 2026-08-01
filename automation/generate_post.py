@@ -11,6 +11,7 @@ import json
 import os
 import re
 import sys
+import time
 from datetime import date, datetime
 from pathlib import Path
 
@@ -89,21 +90,40 @@ def call_gemini(topic):
         f"FACTS YOU MAY USE (and only these):\n{facts_block}\n"
     )
 
-    resp = requests.post(
-        url,
-        json={
-            "contents": [{"parts": [{"text": prompt}]}],
-            "generationConfig": {
-                "responseMimeType": "application/json",
-                "temperature": 0.6,
-            },
+    payload = {
+        "contents": [{"parts": [{"text": prompt}]}],
+        "generationConfig": {
+            "responseMimeType": "application/json",
+            "temperature": 0.6,
         },
-        timeout=60,
-    )
-    resp.raise_for_status()
-    data = resp.json()
-    text = data["candidates"][0]["content"]["parts"][0]["text"]
-    return json.loads(text)
+    }
+
+    max_attempts = 4
+    base_delay = 5  # seconds; doubles each retry -> 5s, 10s, 20s
+
+    for attempt in range(1, max_attempts + 1):
+        try:
+            resp = requests.post(url, json=payload, timeout=60)
+            resp.raise_for_status()
+            data = resp.json()
+            text = data["candidates"][0]["content"]["parts"][0]["text"]
+            return json.loads(text)
+        except (requests.exceptions.HTTPError, requests.exceptions.Timeout,
+                requests.exceptions.ConnectionError) as exc:
+            status = getattr(getattr(exc, "response", None), "status_code", None)
+            # Only retry on transient errors: 429 (rate limit), 5xx (server-side),
+            # timeouts, and connection errors. Anything else (e.g. 400/401/403) is
+            # a real problem and should fail fast instead of retrying uselessly.
+            transient = status is None or status == 429 or status >= 500
+            if not transient or attempt == max_attempts:
+                raise
+            delay = base_delay * (2 ** (attempt - 1))
+            print(
+                f"Gemini call failed (attempt {attempt}/{max_attempts}, "
+                f"status={status}): {exc}. Retrying in {delay}s...",
+                flush=True,
+            )
+            time.sleep(delay)
 
 
 def render_post(topic, content, case_number):
