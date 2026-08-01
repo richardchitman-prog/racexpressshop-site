@@ -284,6 +284,54 @@
     padding-top:14px;
   }
 
+  /* ── Print ledger ─────────────────────────────────────── */
+  #printLedger{ display:none; }
+
+  @media print{
+    body.printing-ledger > .wrap > *{ display:none !important; }
+    body.printing-ledger #printLedger{
+      display:block !important;
+      background:#fff;
+      color:#000;
+      font-family:'IBM Plex Mono', monospace;
+    }
+    body.printing-ledger .modal-overlay{ display:none !important; }
+  }
+
+  #printLedger .print-title{
+    font-family:'Space Grotesk',sans-serif;
+    font-size:20px;
+    font-weight:700;
+    margin:0 0 2px;
+  }
+  #printLedger .print-sub{
+    font-size:11px;
+    color:#555;
+    margin:0 0 16px;
+  }
+  #printLedger table{
+    width:100%;
+    border-collapse:collapse;
+    font-size:12px;
+  }
+  #printLedger th, #printLedger td{
+    text-align:left;
+    padding:6px 8px;
+    border-bottom:1px solid #ccc;
+  }
+  #printLedger th{
+    background:#1B4332;
+    color:#fff;
+    font-size:10px;
+    text-transform:uppercase;
+    letter-spacing:.06em;
+  }
+  #printLedger tfoot td{
+    font-weight:700;
+    border-top:2px solid #000;
+    border-bottom:none;
+  }
+
   @media (max-width:720px){
     .log-form{grid-template-columns:1fr 1fr;}
     .tape-row{grid-template-columns:70px 1fr 60px 1fr 24px;}
@@ -358,7 +406,10 @@
   </section>
 
   <section>
-    <div class="section-title"><span>Ledger</span></div>
+    <div class="section-title">
+      <span>Ledger</span>
+      <button type="button" class="rates-btn" id="printLedgerBtn">🖨️ Print ledger</button>
+    </div>
     <div class="tape">
       <div class="tape-row head">
         <div>Date</div><div>Store</div><div>Spent</div><div>Earned</div><div>Sent to</div><div></div>
@@ -371,6 +422,26 @@
     Some app links below are referral/affiliate links — we may earn a bonus if you sign up through them, at no cost to you.<br>
     This Hub logs your own submissions and stores them for you. It does not connect to or submit receipts on your behalf to any third-party app, and it cannot read your actual balance from any of these apps — the "Est. earned" figure is only an estimate based on published average rates, not a confirmed payout.
   </footer>
+</div>
+
+<!-- ── Print-only ledger (hidden on screen, shown via window.print) ── -->
+<div id="printLedger">
+  <div class="print-title">Receipt Rewards Hub — Ledger</div>
+  <div class="print-sub" id="printGeneratedOn"></div>
+  <table>
+    <thead>
+      <tr><th>Date</th><th>Store</th><th>Spent</th><th>Earned</th><th>Sent to</th></tr>
+    </thead>
+    <tbody id="printLedgerBody"></tbody>
+    <tfoot>
+      <tr>
+        <td colspan="2">Totals</td>
+        <td id="printTotalSpent">$0.00</td>
+        <td id="printTotalEarned">$0.00</td>
+        <td></td>
+      </tr>
+    </tfoot>
+  </table>
 </div>
 
 <!-- ── How-to-use instructions modal ── -->
@@ -630,6 +701,45 @@ function renderAll(){
   renderStats();
 }
 
+function buildPrintLedger(){
+  const body = document.getElementById("printLedgerBody");
+  body.innerHTML = "";
+
+  const sorted = entries.slice().sort((a,b) => new Date(a.date) - new Date(b.date));
+
+  let totalSpent = 0, totalEarned = 0;
+
+  if(sorted.length === 0){
+    body.innerHTML = '<tr><td colspan="5" style="text-align:center;color:#666;">No receipts logged yet.</td></tr>';
+  } else {
+    sorted.forEach(e => {
+      const appsText = (e.apps||[]).map(k => {
+        const app = APPS.find(a => a.key === k);
+        return app ? app.name : k;
+      }).join(", ") || "—";
+      const spent = Number(e.amount||0);
+      const earned = Number(e.earn||0);
+      totalSpent += spent;
+      totalEarned += earned;
+      const row = document.createElement("tr");
+      row.innerHTML = `
+        <td>${fmtDate(e.date)}</td>
+        <td>${e.store}</td>
+        <td>$${spent.toFixed(2)}</td>
+        <td>$${earned.toFixed(2)}</td>
+        <td>${appsText}</td>
+      `;
+      body.appendChild(row);
+    });
+  }
+
+  document.getElementById("printTotalSpent").textContent = "$" + totalSpent.toFixed(2);
+  document.getElementById("printTotalEarned").textContent = "$" + totalEarned.toFixed(2);
+  document.getElementById("printGeneratedOn").textContent =
+    "Generated " + new Date().toLocaleDateString(undefined, { weekday:'long', year:'numeric', month:'long', day:'numeric' }) +
+    " · " + sorted.length + " receipt" + (sorted.length === 1 ? "" : "s");
+}
+
 document.getElementById("fAmount").addEventListener("input", updateEarnEstimate);
 document.getElementById("fEarn").addEventListener("input", () => { earnManuallyEdited = true; });
 
@@ -678,6 +788,15 @@ document.getElementById("howToClose").addEventListener("click", () => {
 });
 document.getElementById("howToOverlay").addEventListener("click", (e) => {
   if(e.target.id === "howToOverlay") document.getElementById("howToOverlay").classList.remove("open");
+});
+
+document.getElementById("printLedgerBtn").addEventListener("click", () => {
+  buildPrintLedger();
+  document.body.classList.add("printing-ledger");
+  window.print();
+});
+window.addEventListener("afterprint", () => {
+  document.body.classList.remove("printing-ledger");
 });
 
 document.getElementById("shareBtn").addEventListener("click", async () => {
