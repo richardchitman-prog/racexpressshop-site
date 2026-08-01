@@ -96,7 +96,27 @@
     border-bottom:1px solid var(--paper-line);
     padding-bottom:8px;
     margin-bottom:14px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:12px;
+    flex-wrap:wrap;
   }
+  .rates-btn{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:11px;
+    font-weight:600;
+    letter-spacing:.03em;
+    text-transform:none;
+    background:#fff;
+    border:1px solid var(--stamp);
+    color:var(--stamp);
+    padding:6px 12px;
+    border-radius:999px;
+    cursor:pointer;
+    white-space:nowrap;
+  }
+  .rates-btn:hover{background:var(--stamp);color:#fff;}
 
   .log-form{
     background:#fff;
@@ -118,6 +138,7 @@
     border-radius:var(--radius);
   }
   .field input:focus{outline:2px solid var(--stamp-bright);outline-offset:1px;}
+  .field .hint{font-size:10px;color:var(--ink-soft);margin-top:4px;}
   .apps-check{ grid-column:1/-1; }
   .apps-check label.app-label{
     font-size:11px;color:var(--ink-soft);text-transform:uppercase;letter-spacing:.08em;margin-bottom:8px;display:block;
@@ -133,7 +154,7 @@
     user-select:none;
   }
   .chip.on{border-color:var(--stamp);background:#eaf3ee;color:var(--stamp);font-weight:600;}
-  .log-actions{grid-column:1/-1;display:flex;justify-content:flex-end;}
+  .log-actions{grid-column:1/-1;display:flex;justify-content:flex-end;align-items:center;gap:10px;}
   .btn{
     font-family:inherit;
     font-weight:600;
@@ -188,8 +209,9 @@
   }
   .tape-row:last-child{border-bottom:none;}
   .tape-row.head{
-    font-size:10px;text-transform:uppercase;letter-spacing:.08em;color:var(--ink-soft);
-    border-bottom:1px solid var(--paper-line);
+    font-size:10px;text-transform:uppercase;letter-spacing:.08em;color:#fff;font-weight:700;
+    background:var(--stamp-bright);
+    border-bottom:1px solid var(--stamp-bright);
   }
   .tape-row .amt{color:var(--ink);}
   .tape-row .earn{color:var(--cash);font-weight:600;}
@@ -204,6 +226,62 @@
     font-size:11px;
     color:var(--ink-soft);
     line-height:1.6;
+  }
+
+  /* ── Rates modal ───────────────────────────────────────── */
+  .modal-overlay{
+    display:none;
+    position:fixed; inset:0;
+    background:rgba(32,38,31,0.45);
+    align-items:center; justify-content:center;
+    padding:20px;
+    z-index:100;
+  }
+  .modal-overlay.open{display:flex;}
+  .modal{
+    background:#fff;
+    max-width:640px;
+    width:100%;
+    max-height:85vh;
+    overflow-y:auto;
+    border:1px solid var(--paper-line);
+    border-radius:4px;
+    padding:24px;
+    position:relative;
+  }
+  .modal h2{
+    font-family:'Space Grotesk',sans-serif;
+    font-size:19px;
+    margin:0 0 4px;
+  }
+  .modal .modal-sub{font-size:12px;color:var(--ink-soft);margin:0 0 18px;line-height:1.5;}
+  .modal-close{
+    position:absolute; top:16px; right:16px;
+    background:none; border:none;
+    font-size:18px; cursor:pointer;
+    color:var(--ink-soft);
+    line-height:1;
+  }
+  .rates-table{width:100%;border-collapse:collapse;font-size:12.5px;}
+  .rates-table th, .rates-table td{
+    text-align:left;
+    padding:9px 8px;
+    border-bottom:1px solid var(--paper-line);
+    vertical-align:top;
+  }
+  .rates-table th{
+    font-size:10px;text-transform:uppercase;letter-spacing:.06em;color:var(--ink-soft);
+    font-weight:600;
+  }
+  .rates-table td.rate{color:var(--cash);font-weight:600;white-space:nowrap;}
+  .rates-table td.basis{color:var(--ink-soft);font-size:11.5px;}
+  .modal-note{
+    margin-top:16px;
+    font-size:11px;
+    color:var(--ink-soft);
+    line-height:1.6;
+    border-top:1px solid var(--paper-line);
+    padding-top:14px;
   }
 
   @media (max-width:720px){
@@ -223,7 +301,10 @@
         <div class="eyebrow">Receipt Rewards Hub</div>
         <h1>Log once. Submit everywhere.</h1>
       </div>
-      <div class="today" id="todayLabel"></div>
+      <div style="display:flex;align-items:center;gap:12px;">
+        <button type="button" class="rates-btn" id="shareBtn">🔗 Share</button>
+        <div class="today" id="todayLabel"></div>
+      </div>
     </div>
     <p class="sub">One log, every cash-back app, running totals.</p>
   </div>
@@ -236,7 +317,13 @@
   </div>
 
   <section>
-    <div class="section-title">Log a receipt</div>
+    <div class="section-title">
+      <span>Log a receipt</span>
+      <div style="display:flex;gap:8px;">
+        <button type="button" class="rates-btn" id="howToBtn">❓ How to use this</button>
+        <button type="button" class="rates-btn" id="ratesBtn">📋 View app rates</button>
+      </div>
+    </div>
     <form class="log-form" id="logForm">
       <div class="field">
         <label for="fStore">Store</label>
@@ -249,6 +336,7 @@
       <div class="field">
         <label for="fEarn">Earned ($)</label>
         <input id="fEarn" type="number" step="0.01" min="0" placeholder="0.00">
+        <div class="hint" id="earnHint">Auto-estimated from apps checked below — edit anytime.</div>
       </div>
       <div class="field">
         <label for="fDate">Date</label>
@@ -265,12 +353,12 @@
   </section>
 
   <section>
-    <div class="section-title">Your apps</div>
+    <div class="section-title"><span>Your apps</span><span style="font-size:15px;color:var(--void-red);text-transform:none;letter-spacing:normal;font-weight:600;">You must complete registration for each rewards site below — click Open</span></div>
     <div class="app-grid" id="appList"></div>
   </section>
 
   <section>
-    <div class="section-title">Ledger</div>
+    <div class="section-title"><span>Ledger</span></div>
     <div class="tape">
       <div class="tape-row head">
         <div>Date</div><div>Store</div><div>Spent</div><div>Earned</div><div>Sent to</div><div></div>
@@ -281,29 +369,101 @@
 
   <footer>
     Some app links below are referral/affiliate links — we may earn a bonus if you sign up through them, at no cost to you.<br>
-    This Hub logs your own submissions and stores them for you. It does not connect to or submit receipts on your behalf to any third-party app.
+    This Hub logs your own submissions and stores them for you. It does not connect to or submit receipts on your behalf to any third-party app, and it cannot read your actual balance from any of these apps — the "Est. earned" figure is only an estimate based on published average rates, not a confirmed payout.
   </footer>
 </div>
 
+<!-- ── How-to-use instructions modal ── -->
+<div class="modal-overlay" id="howToOverlay">
+  <div class="modal">
+    <button type="button" class="modal-close" id="howToClose" aria-label="Close">✕</button>
+    <h2>How to use the Receipt Rewards Hub</h2>
+    <p class="modal-sub">This Hub is your own personal notebook for receipts — it doesn't scan anything or talk to the reward apps for you. Here's what to type into each box.</p>
+
+    <table class="rates-table">
+      <tbody>
+        <tr>
+          <td style="white-space:nowrap;font-weight:600;">Store</td>
+          <td class="basis">Type the name of where you shopped, like "Target" or "Kroger." Just a plain name — no need for an address or receipt number.</td>
+        </tr>
+        <tr>
+          <td style="white-space:nowrap;font-weight:600;">Amount ($)</td>
+          <td class="basis">The total you spent on that receipt, before any rewards. If your receipt says $42.17, type <strong>42.17</strong>.</td>
+        </tr>
+        <tr>
+          <td style="white-space:nowrap;font-weight:600;">Earned ($)</td>
+          <td class="basis">What you expect to get back in cash/points value. This fills in <strong>on its own</strong> once you check off the apps below — you only need to change it if you already know the exact real amount an app gave you.</td>
+        </tr>
+        <tr>
+          <td style="white-space:nowrap;font-weight:600;">Date</td>
+          <td class="basis">The day you actually shopped. If you skip this, it defaults to today's date.</td>
+        </tr>
+        <tr>
+          <td style="white-space:nowrap;font-weight:600;">Submitted to</td>
+          <td class="basis">Tap every app you actually uploaded this receipt to. You can tap more than one — most people submit the same receipt to several apps at once. Tapping a bubble again un-selects it.</td>
+        </tr>
+        <tr>
+          <td style="white-space:nowrap;font-weight:600;">Log receipt</td>
+          <td class="basis">Click this last, once everything above looks right. It saves the entry and adds it to your Ledger at the bottom of the page.</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="modal-note">
+      <strong>Quick walkthrough:</strong> Shop as usual and keep your receipt. Open each rewards app you use and submit the receipt there (that step still has to happen in each app — this Hub can't do it for you). Then come back here, fill in the four boxes, tap the apps you sent it to, and hit "Log receipt." Your running totals at the top of the page — Receipts logged, This month, Est. earned, and Top app — update automatically every time you do this. Made a mistake? Click the red ✕ next to any row in the Ledger to remove it.
+    </div>
+  </div>
+</div>
+
+<!-- ── Rates reference modal ── -->
+<div class="modal-overlay" id="ratesOverlay">
+  <div class="modal">
+    <button type="button" class="modal-close" id="ratesClose" aria-label="Close">✕</button>
+    <h2>What each app typically pays</h2>
+    <p class="modal-sub">Rough averages pulled from each app's own help docs and independent reviews. Actual payouts vary by receipt size, retailer, promotions, and your account tier — use these as ballpark estimates, not guarantees.</p>
+    <table class="rates-table">
+      <thead>
+        <tr><th>App</th><th>Typical rate</th><th>Basis</th></tr>
+      </thead>
+      <tbody id="ratesTableBody"></tbody>
+    </table>
+    <div class="modal-note">
+      Ibotta is the one true percentage-based app in this list, but only on items where you activated a specific offer before shopping — a receipt with no offers activated earns $0 on Ibotta regardless of size. All other apps pay a small flat amount per receipt, roughly independent of how much you spent. These figures are estimates for planning purposes only; always check each app for its current rates.
+    </div>
+  </div>
+</div>
+
 <script>
-// ── REFERRAL LINKS ──────────────────────────────────────────────
+// ── REFERRAL LINKS + EARNINGS RATES ──────────────────────────────
 // If a referralUrl is left blank, the app falls back to the plain
 // URL (no referral credit). referralCode is shown on the card when
 // a program only supports a manually-entered code, not a link.
+//
+// rate: { type:"flat", value: dollars per receipt }
+//     or { type:"percent", value: fraction of receipt amount }
+// rateBasis: short human-readable explanation shown in the rates modal
 const APPS = [
-  { key:"fetch",      name:"Fetch Rewards", url:"https://fetch.com",       referralUrl:"https://referral.fetch.com/vvv3/referralsocialpostsnap?code=47TMD3" },
-  { key:"ibotta",     name:"Ibotta",        url:"https://ibotta.com",      referralUrl:"https://ibotta.onelink.me/iUfE/8cc13c64?friend_code=vmspfgb" },
-  { key:"coinout",    name:"CoinOut",       url:"https://coinout.com",     referralUrl:"https://coinout.com/pages/refer_earn?id=4HGRVT3" },
-  { key:"jar",        name:"Receipt Jar",   url:"https://receiptjar.com",  referralUrl:"", referralCode:"RICHCTRDJ" },
-  { key:"receiptpal", name:"ReceiptPal",    url:"https://receiptpal.com",  referralUrl:"" },
-  { key:"swagbucks",  name:"Swagbucks",     url:"https://swagbucks.com",   referralUrl:"https://www.swagbucks.com/p/register?rb=238443013" },
-  { key:"receipthog", name:"Receipt Hog",   url:"https://receipthog.com",  referralUrl:"https://app.receipthog.com/r/drez3609" },
+  { key:"fetch",      name:"Fetch Rewards", url:"https://fetch.com",       referralUrl:"https://referral.fetch.com/vvv3/referralsocialpostsnap?code=47TMD3",
+    rate:{type:"flat", value:0.025}, rateBasis:"25-point minimum per receipt, ~1,000 pts = $1" },
+  { key:"ibotta",     name:"Ibotta",        url:"https://ibotta.com",      referralUrl:"https://ibotta.onelink.me/iUfE/8cc13c64?friend_code=vmspfgb",
+    rate:{type:"percent", value:0.02}, rateBasis:"Percentage of spend, but only on activated offers — active users report 5–8%, we use a conservative 2% blended estimate" },
+  { key:"coinout",    name:"CoinOut",       url:"https://coinout.com",     referralUrl:"https://coinout.com/pages/refer_earn?id=4HGRVT3",
+    rate:{type:"flat", value:0.02}, rateBasis:"10–50 coins/receipt depending on tier, ~$0.001 per coin" },
+  { key:"jar",        name:"Receipt Jar",   url:"https://receiptjar.com",  referralUrl:"", referralCode:"RICHCTRDJ",
+    rate:{type:"flat", value:0.06}, rateBasis:"10–20 points/receipt, ~$0.005 per point" },
+  { key:"receiptpal", name:"ReceiptPal",    url:"https://receiptpal.com",  referralUrl:"",
+    rate:{type:"flat", value:0.06}, rateBasis:"25 points/receipt, ~$0.0025 per point" },
+  { key:"swagbucks",  name:"Swagbucks",     url:"https://swagbucks.com",   referralUrl:"https://www.swagbucks.com/p/register?rb=238443013",
+    rate:{type:"flat", value:0.02}, rateBasis:"1–5 SB per eligible receipt, 100 SB = $1" },
+  { key:"receipthog", name:"Receipt Hog",   url:"https://receipthog.com",  referralUrl:"https://app.receipthog.com/r/drez3609",
+    rate:{type:"flat", value:0.05}, rateBasis:"~10 coins on an average grocery receipt, 1,000 coins = $5" },
   // Shopkick removed — shut down March 2026, filed Chapter 7 bankruptcy May 2026.
 ];
 
 const STORAGE_KEY = "receipt-hub-entries";
 let entries = [];
 let selectedChips = new Set();
+let earnManuallyEdited = false;
 
 async function loadEntries(){
   try{
@@ -328,6 +488,25 @@ async function saveEntries(){
   }catch(e){
     console.error("Save failed", e);
   }
+}
+
+function estimateEarnings(amount, keys){
+  const amt = Number(amount) || 0;
+  let total = 0;
+  keys.forEach(k => {
+    const app = APPS.find(a => a.key === k);
+    if(!app || !app.rate) return;
+    if(app.rate.type === "flat") total += app.rate.value;
+    else if(app.rate.type === "percent") total += amt * app.rate.value;
+  });
+  return Math.round(total * 100) / 100;
+}
+
+function updateEarnEstimate(){
+  if(earnManuallyEdited) return;
+  const amount = document.getElementById("fAmount").value;
+  const est = estimateEarnings(amount, [...selectedChips]);
+  document.getElementById("fEarn").value = est > 0 ? est.toFixed(2) : "";
 }
 
 function renderApps(){
@@ -361,8 +540,26 @@ function renderApps(){
       if(selectedChips.has(a.key)) selectedChips.delete(a.key);
       else selectedChips.add(a.key);
       chip.classList.toggle("on");
+      updateEarnEstimate();
     };
     chipRow.appendChild(chip);
+  });
+}
+
+function renderRatesTable(){
+  const body = document.getElementById("ratesTableBody");
+  body.innerHTML = "";
+  APPS.forEach(a => {
+    const rateLabel = a.rate
+      ? (a.rate.type === "flat" ? `~$${a.rate.value.toFixed(3).replace(/0+$/,'').replace(/\.$/,'')}/receipt` : `~${(a.rate.value*100).toFixed(0)}% of spend`)
+      : "—";
+    const row = document.createElement("tr");
+    row.innerHTML = `
+      <td>${a.name}</td>
+      <td class="rate">${rateLabel}</td>
+      <td class="basis">${a.rateBasis || ""}</td>
+    `;
+    body.appendChild(row);
   });
 }
 
@@ -433,6 +630,9 @@ function renderAll(){
   renderStats();
 }
 
+document.getElementById("fAmount").addEventListener("input", updateEarnEstimate);
+document.getElementById("fEarn").addEventListener("input", () => { earnManuallyEdited = true; });
+
 document.getElementById("logForm").addEventListener("submit", async (e) => {
   e.preventDefault();
   const store = document.getElementById("fStore").value.trim();
@@ -455,14 +655,57 @@ document.getElementById("logForm").addEventListener("submit", async (e) => {
 
   document.getElementById("logForm").reset();
   selectedChips = new Set();
+  earnManuallyEdited = false;
 
   renderAll();
+});
+
+document.getElementById("ratesBtn").addEventListener("click", () => {
+  document.getElementById("ratesOverlay").classList.add("open");
+});
+document.getElementById("ratesClose").addEventListener("click", () => {
+  document.getElementById("ratesOverlay").classList.remove("open");
+});
+document.getElementById("ratesOverlay").addEventListener("click", (e) => {
+  if(e.target.id === "ratesOverlay") document.getElementById("ratesOverlay").classList.remove("open");
+});
+
+document.getElementById("howToBtn").addEventListener("click", () => {
+  document.getElementById("howToOverlay").classList.add("open");
+});
+document.getElementById("howToClose").addEventListener("click", () => {
+  document.getElementById("howToOverlay").classList.remove("open");
+});
+document.getElementById("howToOverlay").addEventListener("click", (e) => {
+  if(e.target.id === "howToOverlay") document.getElementById("howToOverlay").classList.remove("open");
+});
+
+document.getElementById("shareBtn").addEventListener("click", async () => {
+  const shareData = {
+    title: 'Receipt Rewards Hub',
+    text: 'Log your receipts once and track every cash-back app in one place.',
+    url: window.location.href
+  };
+  try{
+    if(navigator.share){
+      await navigator.share(shareData);
+    } else {
+      await navigator.clipboard.writeText(window.location.href);
+      const btn = document.getElementById('shareBtn');
+      const original = btn.textContent;
+      btn.textContent = 'Link copied!';
+      setTimeout(() => { btn.textContent = original; }, 1800);
+    }
+  }catch(e){
+    // user cancelled share sheet — no action needed
+  }
 });
 
 document.getElementById("todayLabel").textContent = new Date().toLocaleDateString(undefined, { weekday:'long', month:'long', day:'numeric' });
 
 (async function init(){
   await loadEntries();
+  renderRatesTable();
   renderAll();
 })();
 </script>
