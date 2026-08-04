@@ -1,5 +1,5 @@
 {
-  "next_index": 8,
+  "next_index": 9,
   "published": [
     {
       "slug": "the-reports-that-never-get-filed",
@@ -40,6 +40,11 @@
       "slug": "the-voice-on-the-phone-might-not-be-real",
       "topic_id": "ai-voice-cloning",
       "date": "2026-07-29"
+    },
+    {
+      "slug": "what-the-do-not-call-registry-actually-covers",
+      "topic_id": "dnc-registry-limits",
+      "date": "2026-08-04"
     }
   ]
 }
