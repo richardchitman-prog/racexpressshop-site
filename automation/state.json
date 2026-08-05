@@ -1,5 +1,5 @@
 {
-  "next_index": 9,
+  "next_index": 10,
   "published": [
     {
       "slug": "the-reports-that-never-get-filed",
@@ -45,6 +45,11 @@
       "slug": "what-the-do-not-call-registry-actually-covers",
       "topic_id": "dnc-registry-limits",
       "date": "2026-08-04"
+    },
+    {
+      "slug": "why-you-shouldnt-call-back-that-missed-call",
+      "topic_id": "one-ring-scam",
+      "date": "2026-08-05"
     }
   ]
 }
