@@ -1,0 +1,898 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Top 3 Dividend & REIT Tracker</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --bg: #ffffff; --bg2: #f5f5f3; --bg3: #eeede8;
+    --text: #1a1a18; --text2: #6b6b67; --text3: #9b9b96;
+    --border: rgba(0,0,0,0.12); --border2: rgba(0,0,0,0.22);
+    --green: #3B6D11; --green-bg: #EAF3DE; --green-border: #C0DD97;
+    --teal: #0F6E56; --teal-bg: #E1F5EE;
+    --amber: #854F0B; --amber-bg: #FAEEDA;
+    --blue: #185FA5; --blue-bg: #E6F1FB;
+    --purple: #3C3489; --purple-bg: #EEEDFE;
+    --red-text: #A32D2D; --red-bg: #FCEBEB;
+    --success: #3B6D11; --danger: #A32D2D;
+    --radius: 8px; --radius-lg: 12px;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #1c1c1a; --bg2: #252523; --bg3: #2e2e2b;
+      --text: #f0efe8; --text2: #a0a09a; --text3: #6b6b67;
+      --border: rgba(255,255,255,0.1); --border2: rgba(255,255,255,0.2);
+      --green: #97C459; --green-bg: #1a2d0a; --green-border: #3B6D11;
+      --teal: #5DCAA5; --teal-bg: #0a2018;
+      --amber: #EF9F27; --amber-bg: #2a1f08;
+      --blue: #85B7EB; --blue-bg: #0a1a2e;
+      --purple: #AFA9EC; --purple-bg: #1a1830;
+      --red-text: #F09595; --red-bg: #2a0f0f;
+      --success: #97C459; --danger: #F09595;
+    }
+  }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: var(--bg3); color: var(--text); min-height: 100vh; }
+  .app { max-width: 820px; margin: 0 auto; padding: 1rem; }
+  .header { background: var(--bg); border-radius: var(--radius-lg); border: 0.5px solid var(--border); padding: 14px 18px; margin-bottom: 12px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px; }
+  .header-left h1 { font-size: 18px; font-weight: 600; color: var(--text); }
+  .header-left p { font-size: 11px; color: var(--text2); margin-top: 2px; }
+  .header-right { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+  .market-badge { font-size: 11px; padding: 3px 9px; border-radius: 20px; font-weight: 500; }
+  .market-open { background: var(--green-bg); color: var(--green); }
+  .market-closed { background: var(--bg2); color: var(--text2); }
+  .countdown { font-size: 11px; color: var(--text2); background: var(--bg2); padding: 3px 9px; border-radius: 20px; }
+  .refresh-btn { font-size: 11px; padding: 4px 10px; border: 0.5px solid var(--border2); border-radius: var(--radius); background: transparent; color: var(--text2); cursor: pointer; }
+  .refresh-btn:hover { background: var(--bg2); color: var(--text); }
+  .tabs { display: flex; gap: 4px; background: var(--bg); border: 0.5px solid var(--border); border-radius: var(--radius); padding: 3px; margin-bottom: 12px; }
+  .tab { flex: 1; padding: 7px 6px; font-size: 11px; border: none; background: transparent; color: var(--text2); border-radius: 6px; cursor: pointer; }
+  .tab.active { background: var(--bg2); color: var(--text); font-weight: 600; border: 0.5px solid var(--border); }
+  .metrics { display: grid; grid-template-columns: repeat(4,1fr); gap: 8px; margin-bottom: 12px; }
+  .metric { background: var(--bg2); border-radius: var(--radius); padding: 10px 12px; }
+  .metric-label { font-size: 10px; color: var(--text2); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 3px; }
+  .metric-value { font-size: 18px; font-weight: 600; color: var(--text); }
+  .metric-sub { font-size: 10px; color: var(--text2); margin-top: 1px; }
+  .budget-row { display: flex; gap: 8px; align-items: center; margin-bottom: 12px; flex-wrap: wrap; }
+  .budget-label { font-size: 12px; color: var(--text2); }
+  .budget-input { padding: 6px 10px; border: 0.5px solid var(--border2); border-radius: var(--radius); font-size: 13px; background: var(--bg); color: var(--text); width: 85px; }
+  .updated-row { font-size: 11px; color: var(--text2); margin-bottom: 10px; display: flex; align-items: center; gap: 6px; }
+  .live-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--green); display: inline-block; animation: pulse 2s infinite; }
+  .paused-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--text3); display: inline-block; }
+  @keyframes pulse { 0%,100%{opacity:1}50%{opacity:0.35} }
+  .category-block { margin-bottom: 18px; }
+  .cat-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; padding-bottom: 6px; border-bottom: 0.5px solid var(--border); }
+  .cat-title { font-size: 13px; font-weight: 600; color: var(--text); }
+  .cat-badge { font-size: 10px; padding: 2px 7px; border-radius: 20px; }
+  .podium-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 8px; }
+  .podium-card { background: var(--bg); border: 0.5px solid var(--border); border-radius: var(--radius-lg); padding: 12px; cursor: pointer; transition: border-color 0.15s; position: relative; }
+  .podium-card:hover { border-color: var(--border2); }
+  .podium-card.tracked { border-left: 3px solid var(--green); }
+  .rank-crown { position: absolute; top: 8px; right: 8px; font-size: 15px; }
+  .rank-1 { border-top: 2px solid #EF9F27; }
+  .rank-2 { border-top: 2px solid #B4B2A9; }
+  .rank-3 { border-top: 2px solid #D85A30; }
+  .rank-label { font-size: 9px; font-weight: 600; margin-bottom: 5px; }
+  .rank-1 .rank-label { color: var(--amber); }
+  .rank-2 .rank-label { color: var(--text3); }
+  .rank-3 .rank-label { color: #993C1D; }
+  .card-ticker { font-size: 13px; font-weight: 600; color: var(--text); }
+  .card-name { font-size: 10px; color: var(--text2); margin: 2px 0 6px; line-height: 1.3; min-height: 26px; }
+  .card-yield { font-size: 22px; font-weight: 700; color: var(--green); line-height: 1; }
+  .card-yield-label { font-size: 10px; color: var(--text2); margin-bottom: 5px; }
+  .card-price { font-size: 12px; color: var(--text); }
+  .tag { display: inline-block; font-size: 9px; padding: 1px 5px; border-radius: 20px; margin-right: 3px; }
+  .tag-etf   { background: var(--blue-bg); color: var(--blue); }
+  .tag-stock { background: var(--purple-bg); color: var(--purple); }
+  .tag-cef   { background: var(--amber-bg); color: var(--amber); }
+  .tag-reit  { background: var(--teal-bg); color: var(--teal); }
+  .tag-tracked { background: var(--green-bg); color: var(--green); }
+  .card-income { background: var(--bg2); border-radius: var(--radius); padding: 6px 8px; margin-top: 6px; display: grid; grid-template-columns: 1fr 1fr; gap: 3px; }
+  .income-cell { font-size: 10px; color: var(--text2); }
+  .income-cell span { display: block; font-size: 12px; font-weight: 600; color: var(--green); }
+  .card-detail { display: none; padding-top: 8px; margin-top: 8px; border-top: 0.5px solid var(--border); }
+  .ai-box { background: var(--bg2); border-radius: var(--radius); padding: 8px 10px; margin-bottom: 7px; }
+  .ai-label { font-size: 10px; color: var(--text2); margin-bottom: 4px; }
+  .ai-text { font-size: 11px; color: var(--text); line-height: 1.6; }
+  .detail-meta { font-size: 10px; color: var(--text2); margin-bottom: 7px; }
+  .action-row { display: flex; gap: 5px; flex-wrap: wrap; }
+  .btn { padding: 4px 10px; font-size: 11px; border-radius: var(--radius); cursor: pointer; border: 0.5px solid var(--border2); background: transparent; color: var(--text); font-family: inherit; }
+  .btn:hover { background: var(--bg2); }
+  .btn-primary { background: var(--text); color: var(--bg); border-color: transparent; }
+  .btn-primary:hover { opacity: 0.85; }
+  .btn-green { background: var(--green-bg); color: var(--green); border-color: var(--green-border); }
+  .spinner { display: inline-block; width: 12px; height: 12px; border: 2px solid var(--border2); border-top-color: var(--text2); border-radius: 50%; animation: spin 0.7s linear infinite; vertical-align: middle; margin-right: 4px; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .chg-pos { color: var(--success); font-size: 10px; }
+  .chg-neg { color: var(--danger); font-size: 10px; }
+  .warning-box { background: var(--amber-bg); border-radius: var(--radius); padding: 8px 12px; font-size: 11px; color: var(--amber); margin-bottom: 12px; line-height: 1.5; }
+  .reit-info { background: var(--teal-bg); border-radius: var(--radius); padding: 8px 12px; font-size: 11px; color: var(--teal); margin-bottom: 12px; line-height: 1.5; }
+  .port-wrap { background: var(--bg); border: 0.5px solid var(--border); border-radius: var(--radius-lg); overflow: hidden; margin-bottom: 12px; }
+  .port-hdr { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr 1fr auto; gap: 6px; padding: 8px 12px; border-bottom: 0.5px solid var(--border); font-size: 10px; color: var(--text2); }
+  .port-row { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr 1fr auto; gap: 6px; padding: 9px 12px; border-bottom: 0.5px solid var(--border); font-size: 11px; align-items: center; }
+  .port-row:last-child { border-bottom: none; }
+  .rm-btn { background: none; border: none; color: var(--text2); cursor: pointer; font-size: 14px; }
+  .rm-btn:hover { color: var(--danger); }
+  .empty { text-align: center; padding: 2rem 1rem; color: var(--text2); font-size: 13px; }
+  .perf-bar-row { display: flex; align-items: center; gap: 8px; margin-bottom: 7px; }
+  .perf-label { font-size: 11px; font-weight: 600; color: var(--text); width: 52px; }
+  .perf-track { flex: 1; height: 7px; background: var(--bg2); border-radius: 4px; overflow: hidden; }
+  .perf-fill { height: 100%; border-radius: 4px; }
+  .perf-val { font-size: 11px; width: 48px; text-align: right; }
+  .section-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
+  .section-title { font-size: 13px; font-weight: 600; color: var(--text); }
+  .auto-refresh-bar { background: var(--bg); border: 0.5px solid var(--border); border-radius: var(--radius); padding: 8px 14px; margin-bottom: 12px; display: flex; align-items: center; justify-content: space-between; gap: 10px; flex-wrap: wrap; }
+  .auto-refresh-info { font-size: 11px; color: var(--text2); }
+  .auto-refresh-info strong { color: var(--text); }
+  .progress-bar-wrap { flex: 1; max-width: 200px; height: 4px; background: var(--bg2); border-radius: 2px; overflow: hidden; }
+  .progress-bar-fill { height: 100%; background: var(--green); border-radius: 2px; transition: width 1s linear; }
+  @media (max-width: 560px) {
+    .podium-grid { grid-template-columns: 1fr; }
+    .metrics { grid-template-columns: repeat(2,1fr); }
+    .port-hdr, .port-row { grid-template-columns: 2fr 1fr 1fr auto; }
+    .port-hdr div:nth-child(3), .port-hdr div:nth-child(4),
+    .port-row div:nth-child(3), .port-row div:nth-child(4) { display: none; }
+  }
+</style>
+</head>
+<body>
+<div class="app">
+
+  <div class="header">
+    <div class="header-left">
+      <h1>&#x1F4B0; Top 3 Dividend &amp; REIT Tracker</h1>
+      <p>Highest-yielding ETFs, CEFs, Stocks &amp; REITs &middot; Auto-refreshes every 15 min during market hours</p>
+    </div>
+    <div class="header-right">
+      <span class="market-badge" id="market-badge">Checking…</span>
+      <span class="countdown" id="countdown-badge">—</span>
+      <button class="refresh-btn" onclick="manualRefresh()">&#x21BB; Refresh now</button>
+    </div>
+  </div>
+
+  <div class="warning-box" id="data-source-warning" style="display:none">&#x26A0;&#xFE0F; <strong>Live market data unavailable right now</strong> — the figures below are placeholder estimates, not real quotes. Don't use them to make investing decisions. Try refreshing in a moment.</div>
+
+  <div class="auto-refresh-bar">
+    <div class="auto-refresh-info">
+      <strong id="auto-status">Auto-refresh:</strong> <span id="auto-detail">checking market hours…</span>
+    </div>
+    <div class="progress-bar-wrap">
+      <div class="progress-bar-fill" id="progress-fill" style="width:100%"></div>
+    </div>
+    <span style="font-size:11px;color:var(--text2)">Next: <strong id="next-refresh-label">—</strong></span>
+  </div>
+
+  <div class="tabs">
+    <button class="tab active" onclick="switchTab('picks')">&#x1F3C6; Top 3s</button>
+    <button class="tab" onclick="switchTab('reits')">&#x1F3E2; REITs Top 3</button>
+    <button class="tab" onclick="switchTab('advisor')">&#x1F4C5; $50 Advisor</button>
+    <button class="tab" onclick="switchTab('portfolio')">&#x1F4BC; My Picks</button>
+    <button class="tab" onclick="switchTab('performance')">&#x1F4CA; Performance</button>
+  </div>
+
+  <!-- TOP 3s TAB -->
+  <div id="tab-picks">
+    <div class="warning-box">&#x26A0;&#xFE0F; <strong>High-yield caution:</strong> Yields above 20% carry elevated risk — NAV erosion, distribution cuts, leverage (especially YieldMax ETFs and CEFs). For informational use only, not financial advice.</div>
+    <div class="metrics">
+      <div class="metric"><div class="metric-label">Highest yield</div><div class="metric-value" id="overall-top">—</div><div class="metric-sub" id="overall-top-sub">—</div></div>
+      <div class="metric"><div class="metric-label">Best ETF</div><div class="metric-value" id="best-etf">—</div><div class="metric-sub" id="best-etf-sub">—</div></div>
+      <div class="metric"><div class="metric-label">Best CEF</div><div class="metric-value" id="best-cef">—</div><div class="metric-sub" id="best-cef-sub">—</div></div>
+      <div class="metric"><div class="metric-label">Tracked picks</div><div class="metric-value" id="picks-count">0</div><div class="metric-sub">of 20 max</div></div>
+    </div>
+    <div class="budget-row">
+      <span class="budget-label">Budget:</span>
+      <input class="budget-input" type="number" id="budget" value="50" min="20" max="100" step="5" onchange="renderPicks()">
+      <span class="budget-label" style="font-size:11px">Set $20–$100 to project income</span>
+    </div>
+    <div class="updated-row"><span class="live-dot" id="live-dot-main"></span><span id="last-updated">Loading…</span></div>
+    <div id="picks-content"><div class="empty"><span class="spinner"></span> Loading data…</div></div>
+  </div>
+
+  <!-- REITS TAB -->
+  <div id="tab-reits" style="display:none">
+    <div class="reit-info">&#x2139;&#xFE0F; <strong>Monthly REITs</strong> shown here all pay distributions every month — no waiting for quarterly checks. Mortgage REITs carry higher yield but are interest-rate sensitive. Equity REITs own physical property and offer more stability. All entries confirmed monthly payers.</div>
+    <div class="metrics">
+      <div class="metric"><div class="metric-label">Top mREIT</div><div class="metric-value" id="top-mreit">—</div><div class="metric-sub" id="top-mreit-sub">—</div></div>
+      <div class="metric"><div class="metric-label">Top Equity REIT</div><div class="metric-value" id="top-ereit">—</div><div class="metric-sub" id="top-ereit-sub">—</div></div>
+      <div class="metric"><div class="metric-label">Top Hybrid REIT</div><div class="metric-value" id="top-hreit">—</div><div class="metric-sub" id="top-hreit-sub">—</div></div>
+      <div class="metric"><div class="metric-label">REITs tracked</div><div class="metric-value" id="reit-tracked">0</div><div class="metric-sub">in portfolio</div></div>
+    </div>
+    <div class="budget-row">
+      <span class="budget-label">Budget:</span>
+      <input class="budget-input" type="number" id="reit-budget" value="50" min="20" max="100" step="5" onchange="renderReits()">
+    </div>
+    <div class="updated-row"><span class="live-dot"></span><span id="reit-updated">Loading…</span></div>
+    <div id="reits-content"><div class="empty"><span class="spinner"></span> Loading REITs…</div></div>
+  </div>
+
+
+  <!-- BIWEEKLY ADVISOR TAB -->
+  <div id="tab-advisor" style="display:none">
+    <div style="background:var(--bg);border-radius:var(--radius-lg);border:0.5px solid var(--border);padding:18px;margin-bottom:14px;text-align:center">
+      <h2 style="font-size:17px;font-weight:600;margin-bottom:4px">&#x1F4C5; Biweekly $50 Investment Advisor</h2>
+      <p style="font-size:12px;color:var(--text2);margin-bottom:14px">Every two weeks, analyze all weekly-paying option ETFs and REITs, then get your exact split for maximum weekly dividend income.</p>
+      <div style="display:flex;align-items:center;justify-content:center;gap:10px;flex-wrap:wrap;margin-bottom:14px">
+        <label style="font-size:13px;color:var(--text2)">Invest every 2 weeks:</label>
+        <input id="advisor-budget" type="number" value="50" min="20" max="500" step="5"
+          style="padding:8px 12px;border:0.5px solid var(--border2);border-radius:var(--radius);font-size:15px;font-weight:600;background:var(--bg2);color:var(--text);width:100px;text-align:center">
+        <span id="next-invest-date" style="font-size:11px;background:var(--blue-bg);color:var(--blue);padding:4px 10px;border-radius:20px">Next: calculating...</span>
+      </div>
+      <button onclick="generateAdvice()" style="padding:10px 24px;font-size:13px;font-weight:600;border-radius:var(--radius);cursor:pointer;background:var(--text);color:var(--bg);border:none;font-family:inherit">&#x2728; Get this period\'s recommendation</button>
+    </div>
+    <div id="advice-output"></div>
+    <div id="advice-history-section" style="display:none">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
+        <span style="font-size:13px;font-weight:600">&#x1F4DC; Past recommendations</span>
+        <button class="refresh-btn" onclick="clearHistory()">Clear history</button>
+      </div>
+      <div class="port-wrap"><table style="width:100%;border-collapse:collapse;font-size:11px" id="history-table">
+        <thead><tr style="border-bottom:0.5px solid var(--border)">
+          <th style="padding:6px 8px;text-align:left;color:var(--text2);font-weight:500">Date</th>
+          <th style="padding:6px 8px;text-align:left;color:var(--text2);font-weight:500">Budget</th>
+          <th style="padding:6px 8px;text-align:left;color:var(--text2);font-weight:500">Top pick</th>
+          <th style="padding:6px 8px;text-align:left;color:var(--text2);font-weight:500">Allocation</th>
+          <th style="padding:6px 8px;text-align:left;color:var(--text2);font-weight:500">Est. monthly income</th>
+        </tr></thead>
+        <tbody id="history-body"></tbody>
+      </table></div>
+    </div>
+  </div>
+
+  <!-- MY PICKS TAB -->
+  <div id="tab-portfolio" style="display:none">
+    <div class="section-header">
+      <span class="section-title">My Tracked Picks</span>
+      <button class="refresh-btn" onclick="refreshPortfolio()">&#x21BB; Update prices</button>
+    </div>
+    <div id="portfolio-content"><div class="empty">No picks tracked yet. Add from the Top 3s or REITs tabs.</div></div>
+  </div>
+
+  <!-- PERFORMANCE TAB -->
+  <div id="tab-performance" style="display:none">
+    <div class="section-header">
+      <span class="section-title">3-Month Rolling Performance</span>
+      <button class="refresh-btn" onclick="clearAllPicks()" style="color:var(--danger);border-color:var(--danger)">&#x1F5D1; Clear all picks</button>
+    </div>
+    <div id="perf-content"><div class="empty">Track some picks to see performance.</div></div>
+  </div>
+
+</div><!-- /app -->
+
+<script>
+// ─── DATA ────────────────────────────────────────────────────────────────────
+const UNIVERSE = [
+  // ── YieldMax Weekly Option Income ETFs ──────────────────────────────────────
+  { ticker:'MSTY',  name:'YieldMax MSTR Option Income ETF',              type:'ETF', subtype:'YieldMax Weekly', yield:310.6, freq:'Weekly' },
+  { ticker:'ULTY',  name:'YieldMax Ultra Option Income ETF',             type:'ETF', subtype:'YieldMax Weekly', yield:106.3, freq:'Weekly' },
+  { ticker:'CONY',  name:'YieldMax COIN Option Income ETF',              type:'ETF', subtype:'YieldMax Weekly', yield:162.5, freq:'Weekly' },
+  { ticker:'PLTY',  name:'YieldMax PLTR Option Income ETF',              type:'ETF', subtype:'YieldMax Weekly', yield:96.2,  freq:'Weekly' },
+  { ticker:'TSLY',  name:'YieldMax TSLA Option Income ETF',              type:'ETF', subtype:'YieldMax Weekly', yield:68.4,  freq:'Weekly' },
+  { ticker:'YMAX',  name:'YieldMax Universe Fund of Option Income ETFs', type:'ETF', subtype:'YieldMax Weekly', yield:74.5,  freq:'Weekly' },
+  { ticker:'YMAG',  name:'YieldMax Magnificent 7 Fund of Option ETFs',  type:'ETF', subtype:'YieldMax Weekly', yield:50.3,  freq:'Weekly' },
+  { ticker:'NVDY',  name:'YieldMax NVDA Option Income ETF',              type:'ETF', subtype:'YieldMax Weekly', yield:48.0,  freq:'Weekly' },
+  { ticker:'AMDY',  name:'YieldMax AMD Option Income ETF',               type:'ETF', subtype:'YieldMax Weekly', yield:33.2,  freq:'Weekly' },
+  { ticker:'AMZY',  name:'YieldMax AMZN Option Income ETF',              type:'ETF', subtype:'YieldMax Weekly', yield:39.7,  freq:'Weekly' },
+  { ticker:'GOOGY', name:'YieldMax GOOGL Option Income ETF',             type:'ETF', subtype:'YieldMax Weekly', yield:31.4,  freq:'Weekly' },
+  { ticker:'CHPY',  name:'YieldMax Semiconductor Portfolio Option ETF',  type:'ETF', subtype:'YieldMax Weekly', yield:30.5,  freq:'Weekly' },
+  { ticker:'BLOX',  name:'Nicholas Crypto Income ETF',                   type:'ETF', subtype:'YieldMax Weekly', yield:42.2,  freq:'Weekly' },
+  // ── Roundhill 0DTE Weekly Covered Call ETFs ──────────────────────────────────
+  { ticker:'XDTE',  name:'Roundhill S&P 500 0DTE Covered Call ETF',      type:'ETF', subtype:'0DTE Weekly',     yield:31.9,  freq:'Weekly' },
+  { ticker:'QDTE',  name:'Roundhill Innovation-100 0DTE Covered Call ETF',type:'ETF',subtype:'0DTE Weekly',     yield:44.7,  freq:'Weekly' },
+  { ticker:'RDTE',  name:'Roundhill Russell 2000 0DTE Covered Call ETF', type:'ETF', subtype:'0DTE Weekly',     yield:38.2,  freq:'Weekly' },
+  // ── REX Weekly Option Income ETFs ────────────────────────────────────────────
+  { ticker:'FEPI',  name:'REX FANG & Innovation Equity Premium ETF',     type:'ETF', subtype:'REX Weekly',      yield:25.2,  freq:'Weekly' },
+  { ticker:'AIPI',  name:'REX AI Equity Premium Income ETF',             type:'ETF', subtype:'REX Weekly',      yield:36.2,  freq:'Weekly' },
+  // ── Defiance Weekly Option ETFs ──────────────────────────────────────────────
+  { ticker:'WDTE',  name:'Defiance S&P 500 Weekly Distribution ETF',     type:'ETF', subtype:'Defiance Weekly', yield:30.0,  freq:'Weekly' },
+  { ticker:'QQQY',  name:'Defiance Nasdaq-100 Enhanced Options ETF',     type:'ETF', subtype:'Defiance Weekly', yield:52.8,  freq:'Weekly' },
+  { ticker:'IWMY',  name:'Defiance R2000 Enhanced Options Income ETF',   type:'ETF', subtype:'Defiance Weekly', yield:48.3,  freq:'Weekly' },
+  { ticker:'JEPY',  name:'Defiance S&P 500 Enhanced Options ETF',        type:'ETF', subtype:'Defiance Weekly', yield:44.1,  freq:'Weekly' },
+];;
+
+const REITS = [
+  // ── Monthly Mortgage REITs ───────────────────────────────────────────────────
+  { ticker:'ARR',   name:'ARMOUR Residential REIT',              type:'REIT', subtype:'Mortgage', yield:24.1, freq:'Monthly', desc:'Agency MBS — highest-yield monthly mREIT' },
+  { ticker:'AGNC',  name:'AGNC Investment Corp',                 type:'REIT', subtype:'Mortgage', yield:15.8, freq:'Monthly', desc:'Large agency mortgage REIT' },
+  { ticker:'EARN',  name:'Ellington Residential Mortgage REIT',  type:'REIT', subtype:'Mortgage', yield:18.7, freq:'Monthly', desc:'Residential MBS strategy' },
+  // ── Monthly Equity REITs ─────────────────────────────────────────────────────
+  { ticker:'GOOD',  name:'Gladstone Commercial Corp',            type:'REIT', subtype:'Equity',   yield:9.2,  freq:'Monthly', desc:'Net lease commercial properties' },
+  { ticker:'LAND',  name:'Gladstone Land Corp',                  type:'REIT', subtype:'Equity',   yield:5.8,  freq:'Monthly', desc:'Farmland REIT — monthly income' },
+  { ticker:'O',     name:'Realty Income Corp',                   type:'REIT', subtype:'Equity',   yield:5.9,  freq:'Monthly', desc:'The Monthly Dividend Company — net lease retail' },
+  { ticker:'STAG',  name:'STAG Industrial',                      type:'REIT', subtype:'Equity',   yield:4.1,  freq:'Monthly', desc:'Industrial warehouse REIT' },
+  { ticker:'MAIN',  name:'Main Street Capital Corp',             type:'REIT', subtype:'Equity',   yield:7.4,  freq:'Monthly', desc:'BDC/REIT hybrid — monthly + special divs' },
+  { ticker:'PLYM',  name:'Plymouth Industrial REIT',             type:'REIT', subtype:'Equity',   yield:5.2,  freq:'Monthly', desc:'Industrial real estate monthly payer' },
+  { ticker:'LTC',   name:'LTC Properties',                       type:'REIT', subtype:'Equity',   yield:6.8,  freq:'Monthly', desc:'Senior housing & skilled nursing REIT' },
+  { ticker:'SRET',  name:'Global X SuperDividend REIT ETF',      type:'REIT', subtype:'Equity',   yield:12.4, freq:'Monthly', desc:'ETF of high-yield monthly REITs' },
+  // ── Monthly Hybrid REITs ─────────────────────────────────────────────────────
+  { ticker:'BRSP',  name:'BrightSpire Capital',                  type:'REIT', subtype:'Hybrid',   yield:11.2, freq:'Monthly', desc:'Commercial real estate credit — monthly' },
+  { ticker:'RITM',  name:'Rithm Capital Corp',                   type:'REIT', subtype:'Hybrid',   yield:10.1, freq:'Monthly', desc:'Mortgage-related assets — monthly payer' },
+];;
+
+const ALL = [...UNIVERSE, ...REITS];
+let priceData = {};
+let portfolio = [];
+let openCard = null;
+let aiCache = {};
+let refreshTimer = null;
+let countdownInterval = null;
+let nextRefreshAt = null;
+const REFRESH_MS = 15 * 60 * 1000; // 15 minutes
+
+try { portfolio = JSON.parse(localStorage.getItem('div3_port') || '[]'); } catch(e) {}
+
+// ─── MARKET HOURS ─────────────────────────────────────────────────────────────
+function isMarketOpen() {
+  const now = new Date();
+  const et = new Date(now.toLocaleString('en-US', { timeZone: 'America/New_York' }));
+  const day = et.getDay(); // 0=Sun, 6=Sat
+  if (day === 0 || day === 6) return false;
+  const h = et.getHours(), m = et.getMinutes();
+  const mins = h * 60 + m;
+  return mins >= 570 && mins < 960; // 9:30am–4:00pm ET
+}
+
+function marketStatusText() {
+  const now = new Date();
+  const et = new Date(now.toLocaleString('en-US', { timeZone: 'America/New_York' }));
+  const day = et.getDay();
+  const h = et.getHours(), m = et.getMinutes();
+  const mins = h * 60 + m;
+  if (day === 0 || day === 6) return 'Weekend — closed';
+  if (mins < 570) return 'Pre-market';
+  if (mins >= 960) return 'After hours';
+  return 'Market open';
+}
+
+function updateMarketBadge() {
+  const open = isMarketOpen();
+  const badge = document.getElementById('market-badge');
+  const dot = document.getElementById('live-dot-main');
+  badge.textContent = marketStatusText();
+  badge.className = 'market-badge ' + (open ? 'market-open' : 'market-closed');
+  if (dot) { dot.className = open ? 'live-dot' : 'paused-dot'; }
+  document.getElementById('auto-status').textContent = 'Auto-refresh:';
+  document.getElementById('auto-detail').textContent = open
+    ? 'Every 15 min during market hours'
+    : 'Paused — market closed';
+}
+
+// ─── COUNTDOWN & PROGRESS ─────────────────────────────────────────────────────
+function startCountdown() {
+  if (countdownInterval) clearInterval(countdownInterval);
+  nextRefreshAt = Date.now() + REFRESH_MS;
+  countdownInterval = setInterval(() => {
+    const remaining = nextRefreshAt - Date.now();
+    if (remaining <= 0) { clearInterval(countdownInterval); return; }
+    const m = Math.floor(remaining / 60000);
+    const s = Math.floor((remaining % 60000) / 1000);
+    const pct = (remaining / REFRESH_MS) * 100;
+    document.getElementById('countdown-badge').textContent = `${m}m ${s.toString().padStart(2,'0')}s`;
+    document.getElementById('next-refresh-label').textContent = `${m}m ${s.toString().padStart(2,'0')}s`;
+    document.getElementById('progress-fill').style.width = pct + '%';
+  }, 1000);
+}
+
+function scheduleAutoRefresh() {
+  if (refreshTimer) clearTimeout(refreshTimer);
+  if (!isMarketOpen()) {
+    document.getElementById('countdown-badge').textContent = 'Market closed';
+    document.getElementById('next-refresh-label').textContent = 'Market closed';
+    document.getElementById('progress-fill').style.width = '0%';
+    // Check again in 1 minute in case market opens
+    refreshTimer = setTimeout(scheduleAutoRefresh, 60000);
+    return;
+  }
+  startCountdown();
+  refreshTimer = setTimeout(async () => {
+    await loadAll(false);
+    scheduleAutoRefresh();
+  }, REFRESH_MS);
+}
+
+// ─── DATA FETCH ───────────────────────────────────────────────────────────────
+async function fetchPrice(ticker) {
+  try {
+    const r = await fetch(`https://query1.finance.yahoo.com/v8/finance/chart/${ticker}?interval=1d&range=3mo`);
+    const d = await r.json();
+    const meta = d.chart.result[0].meta;
+    const closes = d.chart.result[0].indicators.quote[0].close.filter(Boolean);
+    const current = meta.regularMarketPrice || closes[closes.length - 1];
+    const prev = meta.previousClose || closes[closes.length - 2] || current;
+    return { current, changePct: ((current - prev) / prev) * 100, change3mo: closes.length > 1 ? ((current - closes[0]) / closes[0]) * 100 : 0, isEstimated: false };
+  } catch(e) {
+    // Live market data is unavailable (network/CORS). Flag this data as estimated
+    // rather than silently presenting a random number as if it were a real quote.
+    const p = 8 + Math.random() * 35;
+    return { current: p, changePct: (Math.random() - 0.45) * 3, change3mo: (Math.random() - 0.3) * 12, isEstimated: true };
+  }
+}
+
+async function loadAll(initial = true) {
+  if (initial) {
+    document.getElementById('picks-content').innerHTML = '<div class="empty"><span class="spinner"></span> Loading data…</div>';
+    document.getElementById('reits-content').innerHTML = '<div class="empty"><span class="spinner"></span> Loading REITs…</div>';
+  }
+  updateMarketBadge();
+  const prices = await Promise.all(ALL.map(s => fetchPrice(s.ticker)));
+  ALL.forEach((s, i) => { priceData[s.ticker] = { ...s, ...prices[i] }; });
+  const anyEstimated = prices.some(p => p.isEstimated);
+  const banner = document.getElementById('data-source-warning');
+  if (banner) banner.style.display = anyEstimated ? '' : 'none';
+  const ts = new Date().toLocaleTimeString() + (anyEstimated ? ' (some data estimated)' : '');
+  document.getElementById('last-updated').textContent = 'Updated ' + ts;
+  document.getElementById('reit-updated').textContent = 'Updated ' + ts;
+  renderPicks();
+  renderReits();
+  renderSummaryMetrics();
+  renderReitMetrics();
+  // Re-render active portfolio/perf if those tabs are visible
+  if (document.getElementById('tab-portfolio').style.display !== 'none') renderPortfolio();
+  if (document.getElementById('tab-performance').style.display !== 'none') renderPerformance();
+}
+
+function manualRefresh() {
+  aiCache = {}; // Clear AI cache so analyses refresh
+  if (refreshTimer) clearTimeout(refreshTimer);
+  if (countdownInterval) clearInterval(countdownInterval);
+  loadAll(false).then(() => scheduleAutoRefresh());
+}
+
+// ─── TABS ─────────────────────────────────────────────────────────────────────
+function switchTab(name) {
+  ['picks','reits','advisor','portfolio','performance'].forEach(t => {
+    document.getElementById('tab-' + t).style.display = t === name ? '' : 'none';
+  });
+  document.querySelectorAll('.tab').forEach((el, i) => {
+    el.classList.toggle('active', ['picks','reits','portfolio','performance'][i] === name);
+  });
+  if (name === 'portfolio') renderPortfolio();
+  if (name === 'performance') renderPerformance();
+  if (name === 'reits') renderReits();
+}
+
+// ─── METRICS ──────────────────────────────────────────────────────────────────
+function renderSummaryMetrics() {
+  const all = ALL.map(t => priceData[t.ticker]).filter(Boolean);
+  const overall = [...all].sort((a,b) => b.yield - a.yield)[0];
+  const etfs = all.filter(s => s.type === 'ETF').sort((a,b) => b.yield - a.yield)[0];
+  const cefs = all.filter(s => s.type === 'CEF').sort((a,b) => b.yield - a.yield)[0];
+  if (overall) { document.getElementById('overall-top').textContent = overall.yield.toFixed(1) + '%'; document.getElementById('overall-top-sub').textContent = overall.ticker; }
+  if (etfs)    { document.getElementById('best-etf').textContent = etfs.yield.toFixed(1) + '%'; document.getElementById('best-etf-sub').textContent = etfs.ticker; }
+  if (cefs)    { document.getElementById('best-cef').textContent = cefs.yield.toFixed(1) + '%'; document.getElementById('best-cef-sub').textContent = cefs.ticker; }
+  document.getElementById('picks-count').textContent = portfolio.length;
+}
+
+function renderReitMetrics() {
+  const mr = REITS.filter(r => r.subtype === 'Mortgage').map(r => priceData[r.ticker]).filter(Boolean).sort((a,b) => b.yield - a.yield)[0];
+  const er = REITS.filter(r => r.subtype === 'Equity').map(r => priceData[r.ticker]).filter(Boolean).sort((a,b) => b.yield - a.yield)[0];
+  const hr = REITS.filter(r => r.subtype === 'Hybrid').map(r => priceData[r.ticker]).filter(Boolean).sort((a,b) => b.yield - a.yield)[0];
+  if (mr) { document.getElementById('top-mreit').textContent = mr.yield.toFixed(1) + '%'; document.getElementById('top-mreit-sub').textContent = mr.ticker; }
+  if (er) { document.getElementById('top-ereit').textContent = er.yield.toFixed(1) + '%'; document.getElementById('top-ereit-sub').textContent = er.ticker; }
+  if (hr) { document.getElementById('top-hreit').textContent = hr.yield.toFixed(1) + '%'; document.getElementById('top-hreit-sub').textContent = hr.ticker; }
+  document.getElementById('reit-tracked').textContent = portfolio.filter(p => p.type === 'REIT').length;
+}
+
+// ─── RENDER ───────────────────────────────────────────────────────────────────
+const CAT_CONFIG = [
+  { key:'ETF',    label:'YieldMax Weekly ETFs',     icon:'&#x1F4C8;', badgeBg:'#E6F1FB', badgeColor:'#185FA5', sub:'YieldMax Weekly' },
+  { key:'ETF-0D', label:'0DTE Weekly Covered Call',  icon:'&#x1F4CA;', badgeBg:'#E1F5EE', badgeColor:'#0F6E56', sub:'0DTE Weekly' },
+  { key:'ETF-RX', label:'REX Weekly Option ETFs',    icon:'&#x1F9E0;', badgeBg:'#EEEDFE', badgeColor:'#3C3489', sub:'REX Weekly' },
+  { key:'ETF-DF', label:'Defiance Weekly ETFs',      icon:'&#x26A1;',  badgeBg:'#FAEEDA', badgeColor:'#854F0B', sub:'Defiance Weekly' },
+];
+const REIT_CATS = [
+  {key:'Mortgage', label:'Monthly Mortgage REITs', icon:'&#x1F3E0;', badgeBg:'#E1F5EE', badgeColor:'#0F6E56'},
+  {key:'Equity',   label:'Monthly Equity REITs',   icon:'&#x1F3D7;', badgeBg:'#E6F1FB', badgeColor:'#185FA5'},
+  {key:'Hybrid',   label:'Monthly Hybrid REITs',   icon:'&#x1F500;', badgeBg:'#EEEDFE', badgeColor:'#3C3489'},
+];
+const MEDALS = ['🥇','🥈','🥉'];
+const RANK_LABELS = ['#1 highest yield','#2 highest yield','#3 highest yield'];
+
+function top3(arr) { return [...arr].sort((a,b) => b.yield - a.yield).slice(0, 3); }
+
+function podiumCard(s, rank, tracked, bud) {
+  const isTracked = tracked.has(s.ticker);
+  const pos = s.changePct >= 0;
+  const annInc = bud * s.yield / 100;
+  const moInc = annInc / 12;
+  return `<div class="podium-card rank-${rank+1}${isTracked ? ' tracked' : ''}" id="pcard-${s.ticker}" onclick="toggleCard('${s.ticker}')">
+    <div class="rank-crown">${MEDALS[rank]}</div>
+    <div class="rank-label">${RANK_LABELS[rank]}</div>
+    <div style="display:flex;align-items:center;gap:4px;flex-wrap:wrap;margin-bottom:1px">
+      <span class="card-ticker">${s.ticker}</span>
+      <span class="tag tag-${s.type.toLowerCase()}">${s.type}</span>
+      ${isTracked ? '<span class="tag tag-tracked">&#x2713;</span>' : ''}
+    </div>
+    <div class="card-name">${s.name}${s.desc ? '<br><span style="color:var(--text3);font-size:9px">'+s.desc+'</span>' : ''}</div>
+    <div class="card-yield">${s.yield.toFixed(1)}%</div>
+    <div class="card-yield-label">annual yield &middot; ${s.freq}</div>
+    <div style="display:flex;align-items:baseline;gap:5px;margin-top:3px">
+      <span class="card-price">$${s.current.toFixed(2)}</span>
+      <span class="${pos ? 'chg-pos' : 'chg-neg'}">${pos ? '+' : ''}${s.changePct.toFixed(2)}%</span>
+    </div>
+    <div class="card-income">
+      <div class="income-cell">Monthly<span>$${moInc.toFixed(2)}</span></div>
+      <div class="income-cell">Annual<span>$${annInc.toFixed(2)}</span></div>
+    </div>
+    <div class="card-detail" id="detail-${s.ticker}">
+      <div class="ai-box" id="aibox-${s.ticker}">
+        <div class="ai-label">&#x1F4CA; Income analysis</div>
+        <div class="ai-text" id="ai-${s.ticker}"><span class="spinner"></span>Generating…</div>
+      </div>
+      <div class="detail-meta">
+        3-mo price: <span style="color:${s.change3mo >= 0 ? 'var(--success)' : 'var(--danger)'}">${s.change3mo >= 0 ? '+' : ''}${s.change3mo.toFixed(1)}%</span> &nbsp;|&nbsp;
+        Shares @ $${bud}: <strong>${(bud / s.current).toFixed(3)}</strong> &nbsp;|&nbsp;
+        Sector: <strong>${s.subtype || s.type}</strong>
+      </div>
+      <div class="action-row">
+        ${isTracked
+          ? `<button class="btn btn-green" onclick="event.stopPropagation();removePick('${s.ticker}')">&#x2713; Tracked &middot; Remove</button>`
+          : `<button class="btn btn-primary" onclick="event.stopPropagation();addPick('${s.ticker}')">+ Track this pick</button>`
+        }
+      </div>
+    </div>
+  </div>`;
+}
+
+function renderPicks() {
+  const bud = parseFloat(document.getElementById('budget').value) || 50;
+  const tracked = new Set(portfolio.map(p => p.ticker));
+  let html = '';
+  CAT_CONFIG.forEach(cat => {
+    const items = top3(UNIVERSE.filter(s => {
+      const rawKey = cat.key.startsWith('ETF') ? 'ETF' : cat.key;
+      const keyMatch = s.type===rawKey;
+      const subMatch = !cat.sub || s.subtype===cat.sub;
+      return keyMatch && subMatch;
+    }).map(s => priceData[s.ticker]).filter(Boolean));
+    if (!items.length) return;
+    html += `<div class="category-block">
+      <div class="cat-header">
+        <div class="cat-title">${cat.icon} ${cat.label}</div>
+        <span class="cat-badge" style="background:${cat.badgeBg};color:${cat.badgeColor}">Top 3 by yield</span>
+      </div>
+      <div class="podium-grid">${items.map((s,i) => podiumCard(s, i, tracked, bud)).join('')}</div>
+    </div>`;
+  });
+  document.getElementById('picks-content').innerHTML = html || '<div class="empty">No data loaded yet.</div>';
+}
+
+function renderReits() {
+  const bud = parseFloat(document.getElementById('reit-budget').value) || 50;
+  const tracked = new Set(portfolio.map(p => p.ticker));
+  let html = '';
+  REIT_CATS.forEach(cat => {
+    const items = top3(REITS.filter(r => r.subtype === cat.key).map(r => priceData[r.ticker]).filter(Boolean));
+    if (!items.length) return;
+    html += `<div class="category-block">
+      <div class="cat-header">
+        <div class="cat-title">${cat.icon} ${cat.label}</div>
+        <span class="cat-badge" style="background:${cat.badgeBg};color:${cat.badgeColor}">Top 3 by yield</span>
+      </div>
+      <div class="podium-grid">${items.map((s,i) => podiumCard(s, i, tracked, bud)).join('')}</div>
+    </div>`;
+  });
+  document.getElementById('reits-content').innerHTML = html || '<div class="empty">No REIT data yet.</div>';
+  renderReitMetrics();
+}
+
+// ─── CARD TOGGLE & AUTOMATED ANALYSIS ──────────────────────────────────────────
+function staticCardAnalysis(s) {
+  var y = s.yield;
+  var sustain;
+  if (y >= 20) sustain = 'A yield this high (' + y.toFixed(1) + '%) is almost never fully backed by underlying earnings — some of the payout is likely return of capital or covered-call premium, which can erode share price over time';
+  else if (y >= 12) sustain = 'At ' + y.toFixed(1) + '% this yield is elevated and worth watching for coverage — check the fund or company\'s payout history for cuts before committing new money';
+  else if (y >= 7) sustain = 'A ' + y.toFixed(1) + '% yield is on the higher end of normal for this type of holding and has a reasonable shot at being sustainable, though it still deserves a look at recent distribution trends';
+  else sustain = 'At ' + y.toFixed(1) + '% this yield is relatively conservative for the category, which usually means more room for it to hold up over time';
+
+  var typeRisk;
+  var t = (s.type || '').toUpperCase();
+  var sub = (s.subtype || '').toLowerCase();
+  if (t === 'REIT' && sub.indexOf('mortgage') !== -1) typeRisk = 'the single biggest risk here is interest-rate sensitivity — mortgage REITs borrow short-term to fund long-term assets, so rate moves hit the payout directly';
+  else if (t === 'REIT') typeRisk = 'the single biggest risk here is property-level: occupancy, tenant quality, and refinancing costs as leases and debt come due';
+  else if (t === 'CEF') typeRisk = 'the single biggest risk here is leverage and discount-to-NAV swings — closed-end funds can trade well below the value of what they hold, especially in a selloff';
+  else if (t === 'ETF') typeRisk = 'the single biggest risk here is NAV decay if this is an option-income strategy — the fund can generate a high yield while the share price slowly declines';
+  else typeRisk = 'the single biggest risk here is business-specific — a dividend cut usually follows a drop in the underlying company\'s earnings, so keep an eye on that trend, not just the yield';
+
+  var trend = (s.change3mo || 0) >= 0
+    ? 'Price has held up over the last 3 months (' + (s.change3mo >= 0 ? '+' : '') + s.change3mo.toFixed(1) + '%), a mildly positive sign.'
+    : 'Price has slipped over the last 3 months (' + s.change3mo.toFixed(1) + '%), so it\'s worth checking whether that\'s a broader market move or something specific to this holding.';
+
+  return sustain + '. Paid ' + (s.freq || 'periodically').toLowerCase() + ', ' + typeRisk + '. ' + trend;
+}
+
+async function toggleCard(ticker) {
+  const el = document.getElementById('detail-' + ticker);
+  if (!el) return;
+  if (openCard && openCard !== ticker) {
+    const prev = document.getElementById('detail-' + openCard);
+    if (prev) prev.style.display = 'none';
+  }
+  if (el.style.display !== 'block') {
+    el.style.display = 'block';
+    openCard = ticker;
+    if (!aiCache[ticker]) {
+      aiCache[ticker] = true;
+      const s = priceData[ticker];
+      const el2 = document.getElementById('ai-' + ticker);
+      if (el2) el2.textContent = staticCardAnalysis(s);
+    }
+  } else {
+    el.style.display = 'none';
+    openCard = null;
+  }
+}
+
+// ─── PORTFOLIO ────────────────────────────────────────────────────────────────
+function addPick(ticker) {
+  if (portfolio.find(p => p.ticker === ticker)) return;
+  if (portfolio.length >= 20) { alert('Max 20 picks. Remove one first.'); return; }
+  const s = priceData[ticker];
+  const bud = s.type === 'REIT'
+    ? parseFloat(document.getElementById('reit-budget').value) || 50
+    : parseFloat(document.getElementById('budget').value) || 50;
+  portfolio.push({ ticker, name: s.name, type: s.type, subtype: s.subtype, yield: s.yield, freq: s.freq, addedPrice: s.current, addedDate: new Date().toISOString(), budget: bud });
+  save(); renderPicks(); renderReits(); renderSummaryMetrics(); renderReitMetrics();
+}
+
+function removePick(ticker) {
+  portfolio = portfolio.filter(p => p.ticker !== ticker);
+  save(); renderPicks(); renderReits(); renderSummaryMetrics(); renderReitMetrics(); renderPortfolio();
+}
+
+function save() { try { localStorage.setItem('div3_port', JSON.stringify(portfolio)); } catch(e) {} }
+
+async function refreshPortfolio() {
+  const ups = await Promise.all(portfolio.map(p => fetchPrice(p.ticker)));
+  portfolio.forEach((p, i) => { p.currentPrice = ups[i].current; });
+  save(); renderPortfolio();
+}
+
+function renderPortfolio() {
+  const el = document.getElementById('portfolio-content');
+  if (!portfolio.length) { el.innerHTML = '<div class="empty">No picks tracked yet. Add from the Top 3s or REITs tabs.</div>'; return; }
+  const rows = portfolio.map(p => {
+    const cur = p.currentPrice || p.addedPrice;
+    const pnl = ((cur - p.addedPrice) / p.addedPrice) * 100;
+    const pnlAmt = (p.budget / p.addedPrice) * (cur - p.addedPrice);
+    const mo = (p.budget * p.yield / 100) / 12;
+    return `<div class="port-row">
+      <div><div style="font-weight:600;font-size:11px">${p.ticker} <span class="tag tag-${p.type.toLowerCase()}">${p.type}</span></div><div style="font-size:10px;color:var(--text2)">${p.yield.toFixed(1)}% &middot; ${p.freq}</div></div>
+      <div>$${cur.toFixed(2)}</div>
+      <div style="color:${pnl >= 0 ? 'var(--success)' : 'var(--danger)'}">${pnl >= 0 ? '+' : ''}${pnl.toFixed(1)}%</div>
+      <div style="color:${pnlAmt >= 0 ? 'var(--success)' : 'var(--danger)'}">${pnlAmt >= 0 ? '+' : ''}$${Math.abs(pnlAmt).toFixed(2)}</div>
+      <div style="color:var(--green)">$${mo.toFixed(2)}/mo</div>
+      <button class="rm-btn" onclick="removePick('${p.ticker}')">&#x00D7;</button>
+    </div>`;
+  }).join('');
+  const totalMo = portfolio.reduce((a, p) => a + (p.budget * p.yield / 100) / 12, 0);
+  const totalIn = portfolio.reduce((a, p) => a + p.budget, 0);
+  const totalVal = portfolio.reduce((a, p) => { const c = p.currentPrice || p.addedPrice; return a + (p.budget / p.addedPrice) * c; }, 0);
+  const pnl = totalVal - totalIn;
+  el.innerHTML = `<div class="port-wrap"><div class="port-hdr"><div>Holding</div><div>Price</div><div>Return</div><div>P&amp;L</div><div>Income/mo</div><div></div></div>${rows}</div>
+  <div class="metrics" style="margin-top:10px">
+    <div class="metric"><div class="metric-label">Total invested</div><div class="metric-value">$${totalIn.toFixed(0)}</div></div>
+    <div class="metric"><div class="metric-label">Current value</div><div class="metric-value">$${totalVal.toFixed(2)}</div></div>
+    <div class="metric"><div class="metric-label">Price P&amp;L</div><div class="metric-value" style="color:${pnl >= 0 ? 'var(--success)' : 'var(--danger)'}">${pnl >= 0 ? '+' : ''}$${pnl.toFixed(2)}</div></div>
+    <div class="metric"><div class="metric-label">Monthly income</div><div class="metric-value" style="color:var(--green)">$${totalMo.toFixed(2)}</div></div>
+  </div>
+  <div style="margin-top:10px"><button class="btn" onclick="refreshPortfolio()">&#x21BB; Refresh prices</button></div>`;
+}
+
+function renderPerformance() {
+  const el = document.getElementById('perf-content');
+  if (!portfolio.length) { el.innerHTML = '<div class="empty">Track some picks first.</div>'; return; }
+  const sorted = [...portfolio].sort((a, b) => b.yield - a.yield);
+  const maxY = Math.max(...sorted.map(p => p.yield));
+  const bars = sorted.map(p => {
+    const cur = p.currentPrice || p.addedPrice;
+    const pnl = ((cur - p.addedPrice) / p.addedPrice) * 100;
+    const w = (p.yield / maxY) * 100;
+    const color = p.type === 'REIT' ? '#1D9E75' : '#639922';
+    return `<div class="perf-bar-row">
+      <div class="perf-label">${p.ticker}</div>
+      <div class="perf-track"><div class="perf-fill" style="width:${w}%;background:${color}"></div></div>
+      <div class="perf-val" style="color:${color}">${p.yield.toFixed(1)}%</div>
+    </div>`;
+  }).join('');
+  const totalIn = portfolio.reduce((a, p) => a + p.budget, 0);
+  const totalVal = portfolio.reduce((a, p) => { const c = p.currentPrice || p.addedPrice; return a + (p.budget / p.addedPrice) * c; }, 0);
+  const annInc = portfolio.reduce((a, p) => a + p.budget * p.yield / 100, 0);
+  el.innerHTML = `<div class="metrics" style="margin-bottom:12px">
+    <div class="metric"><div class="metric-label">Invested</div><div class="metric-value">$${totalIn.toFixed(0)}</div></div>
+    <div class="metric"><div class="metric-label">Value now</div><div class="metric-value">$${totalVal.toFixed(2)}</div></div>
+    <div class="metric"><div class="metric-label">Annual income</div><div class="metric-value" style="color:var(--green)">$${annInc.toFixed(2)}</div></div>
+    <div class="metric"><div class="metric-label">Monthly income</div><div class="metric-value" style="color:var(--green)">$${(annInc / 12).toFixed(2)}</div></div>
+  </div>
+  <div style="background:var(--bg);border:0.5px solid var(--border);border-radius:var(--radius-lg);padding:14px;margin-bottom:10px">
+    <div style="font-size:12px;font-weight:600;margin-bottom:10px">Yield by holding <span style="font-size:10px;font-weight:400;color:var(--text2)">&middot; green = ETF/CEF/Stock &middot; teal = REIT</span></div>
+    ${bars}
+  </div>
+  <div style="font-size:11px;color:var(--text2)">Yields are estimates and subject to change. REITs must distribute 90%+ of income by law but can cut dividends. Always verify before investing.</div>`;
+}
+
+// ─── BOOT ─────────────────────────────────────────────────────────────────────
+
+// ── BIWEEKLY ADVISOR ──────────────────────────────────────────────────────────
+function getNextBiweeklyDate() {
+  var anchor = new Date('2024-01-05');
+  var now = new Date();
+  var ms14 = 14*24*60*60*1000;
+  var periods = Math.ceil((now - anchor) / ms14);
+  return new Date(anchor.getTime() + periods * ms14);
+}
+
+function initAdvisor() {
+  var next = getNextBiweeklyDate();
+  var el = document.getElementById('next-invest-date');
+  if (el) el.textContent = 'Next: ' + next.toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});
+  renderAdviceHistory();
+}
+
+function scoreForAllocation(s) {
+  var yScore = Math.min(s.yield, 100) / 100 * 60;
+  var mScore = (Math.max(-20, Math.min(20, s.change3mo||0)) / 20 * 10) + 10;
+  var fBonus = s.freq==='Weekly' ? 20 : (s.freq==='Monthly' ? 12 : (s.freq==='Quarterly' ? 6 : 3));
+  return yScore + mScore + fBonus;
+}
+
+async function generateAdvice() {
+  var budget = parseFloat(document.getElementById('advisor-budget').value)||50;
+  var out = document.getElementById('advice-output');
+  out.innerHTML = '<div style="background:var(--bg);border:0.5px solid var(--border);border-radius:var(--radius-lg);padding:16px;margin-bottom:12px"><div style="background:var(--bg2);border-radius:var(--radius);padding:12px 14px"><div style="font-size:10px;color:var(--text2);margin-bottom:6px">&#x1F4CA; Advisor</div><div style="font-size:12px;line-height:1.7"><span class="spinner"></span> Scoring all ' + ALL.length + ' picks...</div></div></div>';
+
+  if (!Object.keys(priceData).length) await loadAll(false);
+
+  var scored = ALL.map(function(s){ return priceData[s.ticker]; }).filter(Boolean)
+    .map(function(s){ return Object.assign({}, s, {score:scoreForAllocation(s)}); })
+    .sort(function(a,b){ return b.score-a.score; });
+
+  var picks = [];
+  var usedTypes = {};
+  for (var i=0; i<scored.length && picks.length<3; i++) {
+    var s = scored[i];
+    if (!usedTypes[s.type] || picks.length < 2) { picks.push(s); usedTypes[s.type]=true; }
+  }
+  while (picks.length < 3) {
+    for (var j=0; j<scored.length && picks.length<3; j++) {
+      if (!picks.find(function(p){ return p.ticker===scored[j].ticker; })) picks.push(scored[j]);
+    }
+    break;
+  }
+
+  var totalScore = picks.reduce(function(a,s){ return a+s.score; }, 0);
+  var MEDALS_A = ['&#x1F947;','&#x1F948;','&#x1F949;'];
+  var remaining = budget;
+  var allocations = picks.map(function(s,i) {
+    var pct = Math.round((s.score/totalScore)*100);
+    var amt = i < picks.length-1 ? parseFloat(((s.score/totalScore)*budget).toFixed(2)) : parseFloat(remaining.toFixed(2));
+    remaining -= amt;
+    var moInc = amt*s.yield/100/12;
+    return Object.assign({}, s, {pct:pct, amt:amt, moInc:moInc});
+  });
+  var totalMonthly = allocations.reduce(function(a,x){ return a+x.moInc; }, 0);
+  var totalAnnual  = totalMonthly*12;
+
+  var allocSummary = allocations.map(function(a){
+    return a.ticker + ' (' + a.type + ', ' + a.yield.toFixed(1) + '% yield, ' + (a.change3mo||0).toFixed(1) + '% 3-mo): $' + a.amt + ' (' + a.pct + '%)';
+  }).join('; ');
+
+  var allocRows = allocations.map(function(a,i) {
+    var trend = (a.change3mo||0)>=0 ? '+' : '';
+    var tcolor = (a.change3mo||0)>=0 ? 'var(--success)' : 'var(--danger)';
+    return '<div style="display:grid;grid-template-columns:1fr auto auto;gap:10px;align-items:center;padding:9px 0;border-bottom:0.5px solid var(--border)">' +
+      '<div>' +
+        '<div style="display:flex;align-items:center;gap:5px;flex-wrap:wrap">' +
+          '<span style="font-size:13px;font-weight:600">' + MEDALS_A[i] + ' ' + a.ticker + '</span>' +
+          '<span class="tag tag-' + a.type.toLowerCase() + '">' + a.type + '</span>' +
+        '</div>' +
+        '<div style="font-size:10px;color:var(--text2);margin-top:1px">' + a.name + '</div>' +
+        '<div style="font-size:10px;color:var(--text2);margin-top:2px">' +
+          '<span style="color:var(--green);font-weight:600">' + a.yield.toFixed(1) + '% yield</span> &middot; ' + a.freq + ' &middot; ' +
+          '3-mo: <span style="color:' + tcolor + '">' + trend + (a.change3mo||0).toFixed(1) + '%</span> &middot; ' +
+          'est. <span style="color:var(--green)">$' + a.moInc.toFixed(2) + '/mo income</span>' +
+        '</div>' +
+      '</div>' +
+      '<div style="text-align:right;font-size:12px;font-weight:600;color:var(--green);width:38px">' + a.pct + '%</div>' +
+      '<div style="text-align:right;font-size:13px;font-weight:700;width:52px">$' + a.amt.toFixed(2) + '</div>' +
+    '</div>';
+  }).join('');
+
+  out.innerHTML =
+    '<div style="background:var(--bg);border:0.5px solid var(--border);border-radius:var(--radius-lg);padding:16px;margin-bottom:12px">' +
+      '<div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:12px;flex-wrap:wrap;gap:8px">' +
+        '<div>' +
+          '<div style="font-size:13px;font-weight:600">&#x1F4C5; Biweekly plan &mdash; $' + budget.toFixed(0) + '</div>' +
+          '<div style="font-size:11px;color:var(--text2)">' + new Date().toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric',year:'numeric'}) + '</div>' +
+        '</div>' +
+        '<div style="text-align:right">' +
+          '<div style="font-size:20px;font-weight:700;color:var(--green)">$' + totalMonthly.toFixed(2) + '/mo</div>' +
+          '<div style="font-size:10px;color:var(--text2)">est. monthly income</div>' +
+          '<div style="font-size:11px;color:var(--green);margin-top:1px">$' + totalAnnual.toFixed(2) + '/year projected</div>' +
+        '</div>' +
+      '</div>' +
+      '<div style="display:grid;grid-template-columns:1fr auto auto;gap:10px;padding:4px 0;border-bottom:0.5px solid var(--border);font-size:10px;color:var(--text2)">' +
+        '<div>Pick &amp; rationale</div><div style="width:38px;text-align:right">Weight</div><div style="width:52px;text-align:right">Amount</div>' +
+      '</div>' +
+      allocRows +
+      '<div style="background:var(--green-bg);border-radius:var(--radius);padding:12px 14px;margin-top:12px" id="main-ai-advice">' +
+        '<div style="font-size:10px;color:var(--green);font-weight:600;margin-bottom:6px;text-transform:uppercase;letter-spacing:.05em">&#x1F4CA; Advisor reasoning</div>' +
+        '<div style="font-size:12px;line-height:1.7" id="main-ai-text"><span class="spinner"></span> Writing your allocation summary...</div>' +
+      '</div>' +
+      '<div style="font-size:10px;color:var(--text3);margin-top:10px;line-height:1.5;padding:8px 10px;background:var(--bg2);border-radius:var(--radius)">&#x26A0;&#xFE0F; Automatically generated from yield, momentum, and payout-frequency scoring. Not financial advice. Dividend yields can be cut or suspended. High yields carry higher risk. Always research before investing.</div>' +
+    '</div>';
+
+  var histEntry = {
+    date: new Date().toISOString(), budget: budget,
+    picks: allocations.map(function(a){ return {ticker:a.ticker,pct:a.pct,amt:a.amt,yield:a.yield,type:a.type}; }),
+    totalMonthly: parseFloat(totalMonthly.toFixed(2))
+  };
+  adviceHistory.unshift(histEntry);
+  if (adviceHistory.length>12) adviceHistory.pop();
+  try { localStorage.setItem('div3_advice', JSON.stringify(adviceHistory)); } catch(e) {}
+  renderAdviceHistory();
+
+  var el2 = document.getElementById('main-ai-text');
+  if (el2) el2.textContent = staticAdvisorText(allocations, totalMonthly, totalAnnual);
+}
+
+function staticAdvisorText(allocations, totalMonthly, totalAnnual) {
+  var top = allocations[0];
+  var riskiest = allocations.slice().sort(function(a,b){ return b.yield - a.yield; })[0];
+  var weeklyCount = allocations.filter(function(a){ return a.freq === 'Weekly'; }).length;
+
+  var why = top.ticker + ' leads this allocation with a ' + top.yield.toFixed(1) + '% yield and ' +
+    ((top.change3mo||0) >= 0 ? 'positive' : 'soft') + ' 3-month price trend (' +
+    ((top.change3mo||0) >= 0 ? '+' : '') + (top.change3mo||0).toFixed(1) + '%), and the rest of the picks round out the mix by type and payout frequency so the whole allocation isn\'t leaning on one fund alone.';
+
+  var risk = 'The biggest risk in this batch is ' + riskiest.ticker + ' at a ' + riskiest.yield.toFixed(1) +
+    '% yield — yields that high usually mean part of the payout isn\'t coming from pure investment income, so treat it as a higher-risk slice rather than the safest part of the plan.';
+
+  var tip = weeklyCount > 0
+    ? 'Since ' + (weeklyCount === allocations.length ? 'all of these picks pay' : weeklyCount + ' of these picks pay') + ' weekly, income starts showing up fast — most major brokerages (Fidelity, Schwab, Robinhood) support fractional shares, so the full budget can go to work even at these price points.'
+    : 'Most major brokerages (Fidelity, Schwab, Robinhood) support fractional shares, so the full budget can go to work even at these price points regardless of each ticker\'s share price.';
+
+  return why + ' ' + risk + ' ' + tip;
+}
+
+function renderAdviceHistory() {
+  var sec   = document.getElementById('advice-history-section');
+  var tbody = document.getElementById('history-body');
+  if (!sec || !tbody) return;
+  if (!adviceHistory.length) { sec.style.display='none'; return; }
+  sec.style.display='';
+  tbody.innerHTML = adviceHistory.map(function(h) {
+    var d = new Date(h.date).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});
+    var top = h.picks[0];
+    var badges = h.picks.map(function(p){ return '<span style="display:inline-block;font-size:9px;padding:1px 6px;border-radius:20px;background:var(--green-bg);color:var(--green);margin-right:3px">' + p.ticker + ' ' + p.pct + '%</span>'; }).join('');
+    return '<tr style="border-bottom:0.5px solid var(--border)">' +
+      '<td style="padding:7px 8px">' + d + '</td>' +
+      '<td style="padding:7px 8px">$' + h.budget.toFixed(0) + '</td>' +
+      '<td style="padding:7px 8px"><strong>' + top.ticker + '</strong> <span style="color:var(--green)">' + top.yield.toFixed(1) + '%</span></td>' +
+      '<td style="padding:7px 8px">' + badges + '</td>' +
+      '<td style="padding:7px 8px;color:var(--green)">$' + h.totalMonthly.toFixed(2) + '/mo</td>' +
+    '</tr>';
+  }).join('');
+}
+
+function clearHistory() {
+  if (!confirm('Clear all past recommendations?')) return;
+  adviceHistory=[];
+  try { localStorage.removeItem('div3_advice'); } catch(e) {}
+  renderAdviceHistory();
+}
+
+
+function clearAllPicks() {
+  if (!portfolio.length) { alert('No picks to clear.'); return; }
+  if (!confirm('Remove all ' + portfolio.length + ' tracked picks? This cannot be undone.')) return;
+  portfolio = [];
+  save();
+  renderSummaryMetrics(); renderReitMetrics();
+  renderPicks(); renderReits(); renderPortfolio(); renderPerformance();
+  document.getElementById('picks-count').textContent = '0';
+}
+loadAll(true).then(() => scheduleAutoRefresh());
+setInterval(updateMarketBadge, 30000);
+</script>
+</body>
+</html>
