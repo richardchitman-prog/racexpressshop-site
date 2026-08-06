@@ -106,6 +106,16 @@
   .chg-pos { color: var(--success); font-size: 10px; }
   .chg-neg { color: var(--danger); font-size: 10px; }
   .warning-box { background: var(--amber-bg); border-radius: var(--radius); padding: 8px 12px; font-size: 11px; color: var(--amber); margin-bottom: 12px; line-height: 1.5; }
+  .guide-block { background: var(--bg); border: 0.5px solid var(--border); border-radius: var(--radius-lg); padding: 16px 18px; margin-bottom: 14px; }
+  .guide-block h3 { font-size: 14px; font-weight: 600; color: var(--text); margin-bottom: 8px; display: flex; align-items: center; gap: 7px; }
+  .guide-block p { font-size: 12.5px; line-height: 1.7; color: var(--text2); margin-bottom: 10px; }
+  .guide-block p:last-child { margin-bottom: 0; }
+  .guide-block ul { margin: 4px 0 10px 18px; padding: 0; }
+  .guide-block li { font-size: 12.5px; line-height: 1.8; color: var(--text2); margin-bottom: 3px; }
+  .guide-term { font-weight: 600; color: var(--text); }
+  .guide-intro { font-size: 13px; line-height: 1.7; color: var(--text2); margin-bottom: 18px; }
+  .guide-glossary dt { font-size: 12.5px; font-weight: 600; color: var(--text); margin-top: 10px; }
+  .guide-glossary dd { font-size: 12.5px; line-height: 1.6; color: var(--text2); margin: 2px 0 0; }
   .reit-info { background: var(--teal-bg); border-radius: var(--radius); padding: 8px 12px; font-size: 11px; color: var(--teal); margin-bottom: 12px; line-height: 1.5; }
   .port-wrap { background: var(--bg); border: 0.5px solid var(--border); border-radius: var(--radius-lg); overflow: hidden; margin-bottom: 12px; }
   .port-hdr { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr 1fr auto; gap: 6px; padding: 8px 12px; border-bottom: 0.5px solid var(--border); font-size: 10px; color: var(--text2); }
@@ -150,6 +160,8 @@
     </div>
   </div>
 
+  <div class="reit-info" style="margin-bottom:12px">&#x2139;&#xFE0F; <strong>All figures are estimates</strong> pulled from online market data and may lag, differ slightly, or occasionally fail to load. Not a substitute for your brokerage's real-time quotes. See the <a href="#" onclick="switchTab('guide');return false;" style="color:inherit;text-decoration:underline">How to Use</a> tab for details.</div>
+
   <div class="warning-box" id="data-source-warning" style="display:none">&#x26A0;&#xFE0F; <strong>Live market data unavailable right now</strong> — the figures below are placeholder estimates, not real quotes. Don't use them to make investing decisions. Try refreshing in a moment.</div>
 
   <div class="auto-refresh-bar">
@@ -163,11 +175,12 @@
   </div>
 
   <div class="tabs">
-    <button class="tab active" onclick="switchTab('picks')">&#x1F3C6; Top 3s</button>
-    <button class="tab" onclick="switchTab('reits')">&#x1F3E2; REITs Top 3</button>
-    <button class="tab" onclick="switchTab('advisor')">&#x1F4C5; $50 Advisor</button>
-    <button class="tab" onclick="switchTab('portfolio')">&#x1F4BC; My Picks</button>
-    <button class="tab" onclick="switchTab('performance')">&#x1F4CA; Performance</button>
+    <button class="tab active" data-tab="picks" onclick="switchTab('picks')">&#x1F3C6; Top 3s</button>
+    <button class="tab" data-tab="reits" onclick="switchTab('reits')">&#x1F3E2; REITs Top 3</button>
+    <button class="tab" data-tab="advisor" onclick="switchTab('advisor')">&#x1F4C5; $50 Advisor</button>
+    <button class="tab" data-tab="portfolio" onclick="switchTab('portfolio')">&#x1F4BC; My Picks</button>
+    <button class="tab" data-tab="performance" onclick="switchTab('performance')">&#x1F4CA; Performance</button>
+    <button class="tab" data-tab="guide" onclick="switchTab('guide')">&#x2753; How to Use</button>
   </div>
 
   <!-- TOP 3s TAB -->
@@ -254,6 +267,65 @@
       <button class="refresh-btn" onclick="clearAllPicks()" style="color:var(--danger);border-color:var(--danger)">&#x1F5D1; Clear all picks</button>
     </div>
     <div id="perf-content"><div class="empty">Track some picks to see performance.</div></div>
+  </div>
+
+  <!-- HOW TO USE TAB -->
+  <div id="tab-guide" style="display:none">
+    <p class="guide-intro">This tool tracks income-focused ETFs, closed-end funds (CEFs), stocks, and REITs, and helps you think through how a small, regular investment might be allocated across them. Here's what each tab shows and how to read it.</p>
+
+    <div class="guide-block">
+      <h3>&#x1F3C6; Top 3s</h3>
+      <p>Every holding is grouped into a category &mdash; YieldMax weekly ETFs, 0DTE covered-call ETFs, REX weekly ETFs, and so on &mdash; and ranked by <span class="guide-term">annual yield</span>, the percentage of the current share price paid out over a year if the current distribution rate holds. Each card shows:</p>
+      <ul>
+        <li><span class="guide-term">Yield</span> &mdash; annualized, not guaranteed. High-yield funds can and do cut distributions.</li>
+        <li><span class="guide-term">Price &amp; day change</span> &mdash; the live quote and how much it moved today.</li>
+        <li><span class="guide-term">Monthly / Annual income</span> &mdash; what your budget entry would generate at the current yield, assuming it holds steady (it usually won't stay perfectly flat).</li>
+      </ul>
+      <p>Tap a card to expand it for a plain-English read on sustainability and the single biggest risk for that specific holding. The amber banner above the grid flags when yields are running above 20% &mdash; a level where part of the "yield" is often return of capital rather than pure investment income (see glossary below).</p>
+    </div>
+
+    <div class="guide-block">
+      <h3>&#x1F3E2; REITs Top 3</h3>
+      <p>Real Estate Investment Trusts (REITs) are companies that own or finance income-producing real estate and are legally required to distribute at least 90% of taxable income to shareholders. This tab separates them into:</p>
+      <ul>
+        <li><span class="guide-term">Mortgage REITs</span> &mdash; lend money for real estate rather than owning property directly. Higher yield, more sensitive to interest-rate moves.</li>
+        <li><span class="guide-term">Equity REITs</span> &mdash; own physical property (apartments, warehouses, retail). Lower yield, generally steadier.</li>
+      </ul>
+      <p>All entries here pay monthly rather than quarterly, which is why they're grouped separately from the Top 3s tab.</p>
+    </div>
+
+    <div class="guide-block">
+      <h3>&#x1F4C5; $50 Advisor</h3>
+      <p>Enter a budget and get a suggested split across three holdings, chosen by a scoring formula that weighs yield, 3-month price trend, and how often the fund pays (weekly payers score higher, since income compounds faster). The "Advisor reasoning" text underneath explains the top pick, flags the highest-risk holding in the mix, and adds a practical note &mdash; it's generated from that same scoring logic, not written individually for you. Past recommendations are saved locally so you can compare how allocations have shifted over time.</p>
+    </div>
+
+    <div class="guide-block">
+      <h3>&#x1F4BC; My Picks</h3>
+      <p>A watchlist, not a brokerage account &mdash; adding a ticker here doesn't buy anything. It's a way to track specific holdings you're following, see their current price and estimated income at your chosen budget, and remove them any time. Everything is stored locally in your browser; nothing is sent anywhere or tied to an account.</p>
+    </div>
+
+    <div class="guide-block">
+      <h3>&#x1F4CA; Performance</h3>
+      <p>Shows the 3-month price trend for everything in My Picks, side by side, so you can see at a glance which tracked holdings have been rising or falling. This reflects price only, not total return &mdash; it doesn't add back distributions paid out during that period.</p>
+    </div>
+
+    <div class="guide-block">
+      <h3>Glossary</h3>
+      <dl class="guide-glossary">
+        <dt>Yield</dt>
+        <dd>Annual distributions divided by current share price, expressed as a percentage. Moves with both the payout amount and the price &mdash; a falling price can push yield up even if the payout hasn't changed.</dd>
+        <dt>NAV (Net Asset Value)</dt>
+        <dd>What a fund's underlying holdings are actually worth per share. For CEFs, market price can trade above or below NAV. For option-income ETFs, a shrinking NAV over time is the main way a high yield can quietly cost you money even while distributions keep arriving.</dd>
+        <dt>Return of capital</dt>
+        <dd>A distribution that's technically your own invested money being handed back, rather than income the fund earned. Common in option-income and high-yield structures; not inherently bad, but it means the "yield" isn't all profit.</dd>
+        <dt>Distribution frequency</dt>
+        <dd>How often a holding pays out &mdash; weekly, monthly, or quarterly. More frequent payments mean income shows up sooner, not a higher total return.</dd>
+        <dt>Estimated data</dt>
+        <dd>If you see a banner saying data is estimated, live pricing didn't load for enough holdings to trust the numbers on screen. Refresh in a moment rather than acting on figures marked this way.</dd>
+      </dl>
+    </div>
+
+    <div class="warning-box">&#x26A0;&#xFE0F; Everything in this tool &mdash; yields, allocations, risk notes &mdash; is generated from formulas and public price data, not personalized financial advice. High yields carry real risk of capital loss even when the income keeps flowing. Verify anything here against a fund's actual prospectus or a licensed advisor before investing.</div>
   </div>
 
 </div><!-- /app -->
@@ -457,11 +529,11 @@ function manualRefresh() {
 
 // ─── TABS ─────────────────────────────────────────────────────────────────────
 function switchTab(name) {
-  ['picks','reits','advisor','portfolio','performance'].forEach(t => {
+  ['picks','reits','advisor','portfolio','performance','guide'].forEach(t => {
     document.getElementById('tab-' + t).style.display = t === name ? '' : 'none';
   });
-  document.querySelectorAll('.tab').forEach((el, i) => {
-    el.classList.toggle('active', ['picks','reits','portfolio','performance'][i] === name);
+  document.querySelectorAll('.tab').forEach(el => {
+    el.classList.toggle('active', el.dataset.tab === name);
   });
   if (name === 'portfolio') renderPortfolio();
   if (name === 'performance') renderPerformance();
