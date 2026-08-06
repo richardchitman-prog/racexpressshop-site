@@ -390,9 +390,15 @@ function scheduleAutoRefresh() {
 }
 
 // ─── DATA FETCH ───────────────────────────────────────────────────────────────
+// Price data is fetched through a Cloudflare Worker proxy rather than calling
+// Yahoo Finance directly from the browser, since Yahoo's endpoint blocks
+// cross-origin requests from arbitrary domains. Update this URL after
+// deploying the Worker (see worker/dividend-price-proxy.js).
+const PRICE_PROXY_URL = 'https://dividend-price-proxy.richardchitman.workers.dev';
+
 async function fetchPrice(ticker) {
   try {
-    const r = await fetch(`https://query1.finance.yahoo.com/v8/finance/chart/${ticker}?interval=1d&range=3mo`);
+    const r = await fetch(`${PRICE_PROXY_URL}/?ticker=${encodeURIComponent(ticker)}`);
     const d = await r.json();
     const meta = d.chart.result[0].meta;
     const closes = d.chart.result[0].indicators.quote[0].close.filter(Boolean);
@@ -407,15 +413,27 @@ async function fetchPrice(ticker) {
   }
 }
 
+async function fetchPricesBatched(tickers, batchSize = 6, delayMs = 250) {
+  const results = [];
+  for (let i = 0; i < tickers.length; i += batchSize) {
+    const batch = tickers.slice(i, i + batchSize);
+    const batchResults = await Promise.all(batch.map(t => fetchPrice(t)));
+    results.push(...batchResults);
+    if (i + batchSize < tickers.length) await new Promise(r => setTimeout(r, delayMs));
+  }
+  return results;
+}
+
 async function loadAll(initial = true) {
   if (initial) {
     document.getElementById('picks-content').innerHTML = '<div class="empty"><span class="spinner"></span> Loading data…</div>';
     document.getElementById('reits-content').innerHTML = '<div class="empty"><span class="spinner"></span> Loading REITs…</div>';
   }
   updateMarketBadge();
-  const prices = await Promise.all(ALL.map(s => fetchPrice(s.ticker)));
+  const prices = await fetchPricesBatched(ALL.map(s => s.ticker));
   ALL.forEach((s, i) => { priceData[s.ticker] = { ...s, ...prices[i] }; });
-  const anyEstimated = prices.some(p => p.isEstimated);
+  const estimatedCount = prices.filter(p => p.isEstimated).length;
+  const anyEstimated = estimatedCount / prices.length > 0.15; // only warn if >15% of tickers failed
   const banner = document.getElementById('data-source-warning');
   if (banner) banner.style.display = anyEstimated ? '' : 'none';
   const ts = new Date().toLocaleTimeString() + (anyEstimated ? ' (some data estimated)' : '');
@@ -642,7 +660,7 @@ function removePick(ticker) {
 function save() { try { localStorage.setItem('div3_port', JSON.stringify(portfolio)); } catch(e) {} }
 
 async function refreshPortfolio() {
-  const ups = await Promise.all(portfolio.map(p => fetchPrice(p.ticker)));
+  const ups = await fetchPricesBatched(portfolio.map(p => p.ticker));
   portfolio.forEach((p, i) => { p.currentPrice = ups[i].current; });
   save(); renderPortfolio();
 }
