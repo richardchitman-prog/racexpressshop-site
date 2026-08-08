@@ -156,6 +156,8 @@
     <div class="header-right">
       <span class="market-badge" id="market-badge">Checking…</span>
       <span class="countdown" id="countdown-badge">—</span>
+      <button class="refresh-btn" id="share-btn" onclick="shareApp()">&#x1F517; Share</button>
+      <span class="countdown" id="share-count-badge" title="Times this tool has been shared">—</span>
       <button class="refresh-btn" onclick="manualRefresh()">&#x21BB; Refresh now</button>
     </div>
   </div>
@@ -525,6 +527,63 @@ function manualRefresh() {
   if (refreshTimer) clearTimeout(refreshTimer);
   if (countdownInterval) clearInterval(countdownInterval);
   loadAll(false).then(() => scheduleAutoRefresh());
+}
+
+async function shareApp() {
+  const shareUrl = window.location.origin + window.location.pathname;
+  const shareData = {
+    title: 'Top 3 Dividend & REIT Tracker',
+    text: 'Free tool that tracks the highest-yielding ETFs, CEFs, stocks & REITs \u2014 from RAC Express Shop.',
+    url: shareUrl
+  };
+  const btn = document.getElementById('share-btn');
+  const originalLabel = btn.innerHTML;
+  const flash = (label, ms) => { btn.innerHTML = label; setTimeout(() => { btn.innerHTML = originalLabel; }, ms); };
+
+  if (navigator.share) {
+    try {
+      await navigator.share(shareData);
+      recordShare();
+    } catch (e) {
+      // User cancelled the native share sheet \u2014 don't count it, no other action needed.
+    }
+    return;
+  }
+
+  try {
+    await navigator.clipboard.writeText(shareUrl);
+    flash('&#x2705; Link copied!', 2000);
+    recordShare();
+  } catch (e) {
+    window.prompt('Copy this link to share:', shareUrl);
+  }
+}
+
+async function recordShare() {
+  try {
+    const res = await fetch(`${PRICE_PROXY_URL}/share-count`, { method: 'POST' });
+    const data = await res.json();
+    updateShareCountBadge(data.count);
+  } catch (e) {
+    // Non-critical \u2014 the share itself already succeeded either way.
+  }
+}
+
+async function loadShareCount() {
+  try {
+    const res = await fetch(`${PRICE_PROXY_URL}/share-count`);
+    const data = await res.json();
+    updateShareCountBadge(data.count);
+  } catch (e) {
+    const el = document.getElementById('share-count-badge');
+    if (el) el.textContent = '';
+  }
+}
+
+function updateShareCountBadge(count) {
+  const el = document.getElementById('share-count-badge');
+  if (!el) return;
+  el.textContent = count === 1 ? '1 share' : `${count.toLocaleString()} shares`;
 }
 
 // ─── TABS ─────────────────────────────────────────────────────────────────────
@@ -982,6 +1041,7 @@ function clearAllPicks() {
   document.getElementById('picks-count').textContent = '0';
 }
 loadAll(true).then(() => scheduleAutoRefresh());
+loadShareCount();
 setInterval(updateMarketBadge, 30000);
 </script>
 </body>
