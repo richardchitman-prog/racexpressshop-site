@@ -1,5 +1,5 @@
 {
-  "next_index": 10,
+  "next_index": 11,
   "published": [
     {
       "slug": "the-reports-that-never-get-filed",
@@ -50,6 +50,11 @@
       "slug": "why-you-shouldnt-call-back-that-missed-call",
       "topic_id": "one-ring-scam",
       "date": "2026-08-05"
+    },
+    {
+      "slug": "the-law-most-robocallers-are-already-breaking",
+      "topic_id": "tcpa-consent-rule",
+      "date": "2026-08-11"
     }
   ]
 }
