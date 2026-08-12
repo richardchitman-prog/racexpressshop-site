@@ -1,5 +1,5 @@
 {
-  "next_index": 11,
+  "next_index": 1,
   "published": [
     {
       "slug": "the-reports-that-never-get-filed",
@@ -55,6 +55,11 @@
       "slug": "the-law-most-robocallers-are-already-breaking",
       "topic_id": "tcpa-consent-rule",
       "date": "2026-08-11"
+    },
+    {
+      "slug": "the-reports-that-never-get-filed",
+      "topic_id": "underreporting-gap",
+      "date": "2026-08-12"
     }
   ]
 }
