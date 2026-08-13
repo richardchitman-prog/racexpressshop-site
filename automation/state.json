@@ -1,5 +1,5 @@
 {
-  "next_index": 1,
+  "next_index": 2,
   "published": [
     {
       "slug": "the-reports-that-never-get-filed",
@@ -60,6 +60,11 @@
       "slug": "the-reports-that-never-get-filed",
       "topic_id": "underreporting-gap",
       "date": "2026-08-12"
+    },
+    {
+      "slug": "what-happens-after-you-file",
+      "topic_id": "enforcement-is-real",
+      "date": "2026-08-13"
     }
   ]
 }
