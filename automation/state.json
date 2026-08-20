@@ -1,5 +1,5 @@
 {
-  "next_index": 4,
+  "next_index": 5,
   "published": [
     {
       "slug": "the-reports-that-never-get-filed",
@@ -75,6 +75,11 @@
       "slug": "why-caller-id-cant-be-trusted",
       "topic_id": "spoofing-mechanics",
       "date": "2026-08-19"
+    },
+    {
+      "slug": "who-actually-loses-money-to-phone-scams",
+      "topic_id": "elder-targeting",
+      "date": "2026-08-20"
     }
   ]
 }
