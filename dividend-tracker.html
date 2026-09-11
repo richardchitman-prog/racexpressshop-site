@@ -117,6 +117,9 @@
   .guide-glossary dt { font-size: 12.5px; font-weight: 600; color: var(--text); margin-top: 10px; }
   .guide-glossary dd { font-size: 12.5px; line-height: 1.6; color: var(--text2); margin: 2px 0 0; }
   .reit-info { background: var(--teal-bg); border-radius: var(--radius); padding: 8px 12px; font-size: 11px; color: var(--teal); margin-bottom: 12px; line-height: 1.5; }
+  .all-reit-hdr { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr auto; gap: 6px; padding: 8px 12px; border-bottom: 0.5px solid var(--border); font-size: 10px; color: var(--text2); }
+  .all-reit-row { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr auto; gap: 6px; padding: 9px 12px; border-bottom: 0.5px solid var(--border); font-size: 11px; align-items: center; }
+  .all-reit-row:last-child { border-bottom: none; }
   .port-wrap { background: var(--bg); border: 0.5px solid var(--border); border-radius: var(--radius-lg); overflow: hidden; margin-bottom: 12px; }
   .port-hdr { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr 1fr auto; gap: 6px; padding: 8px 12px; border-bottom: 0.5px solid var(--border); font-size: 10px; color: var(--text2); }
   .port-row { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr 1fr auto; gap: 6px; padding: 9px 12px; border-bottom: 0.5px solid var(--border); font-size: 11px; align-items: center; }
@@ -142,6 +145,9 @@
     .port-hdr, .port-row { grid-template-columns: 2fr 1fr 1fr auto; }
     .port-hdr div:nth-child(3), .port-hdr div:nth-child(4),
     .port-row div:nth-child(3), .port-row div:nth-child(4) { display: none; }
+    .all-reit-hdr, .all-reit-row { grid-template-columns: 2fr 1fr auto; }
+    .all-reit-hdr div:nth-child(3), .all-reit-hdr div:nth-child(4),
+    .all-reit-row div:nth-child(3), .all-reit-row div:nth-child(4) { display: none; }
   }
 </style>
 </head>
@@ -218,6 +224,13 @@
     </div>
     <div class="updated-row"><span class="live-dot"></span><span id="reit-updated">Loading…</span></div>
     <div id="reits-content"><div class="empty"><span class="spinner"></span> Loading REITs…</div></div>
+
+    <div class="section-header" style="margin-top:18px">
+      <span class="section-title">&#x1F4CB; All REITs &middot; 5%+ Yield</span>
+      <span class="cat-badge" style="background:var(--teal-bg);color:var(--teal)" id="all-reits-count">— results</span>
+    </div>
+    <div class="reit-info">&#x2139;&#xFE0F; Full REIT universe &mdash; Mortgage, Equity &amp; Hybrid, monthly and quarterly payers &mdash; filtered to 5%+ dividend yield and sorted highest to lowest.</div>
+    <div id="all-reits-content"><div class="empty"><span class="spinner"></span> Loading…</div></div>
   </div>
 
 
@@ -382,7 +395,29 @@ const REITS = [
   { ticker:'RITM',  name:'Rithm Capital Corp',                   type:'REIT', subtype:'Hybrid',   yield:10.1, freq:'Monthly', desc:'Mortgage-related assets — monthly payer' },
 ];;
 
-const ALL = [...UNIVERSE, ...REITS];
+const QUARTERLY_REITS = [
+  // ── Quarterly Mortgage REITs ─────────────────────────────────────────────────
+  { ticker:'NLY',   name:'Annaly Capital Management',            type:'REIT', subtype:'Mortgage', yield:12.5, freq:'Quarterly', desc:'Largest agency mortgage REIT — quarterly payer' },
+  { ticker:'TWO',   name:'Two Harbors Investment Corp',           type:'REIT', subtype:'Mortgage', yield:13.8, freq:'Quarterly', desc:'Agency MBS & MSR strategy' },
+  { ticker:'MFA',   name:'MFA Financial',                         type:'REIT', subtype:'Mortgage', yield:11.2, freq:'Quarterly', desc:'Residential mortgage credit REIT' },
+  { ticker:'CIM',   name:'Chimera Investment Corp',                type:'REIT', subtype:'Mortgage', yield:10.9, freq:'Quarterly', desc:'Residential mortgage loans & securities' },
+  { ticker:'PMT',   name:'PennyMac Mortgage Investment Trust',     type:'REIT', subtype:'Mortgage', yield:11.6, freq:'Quarterly', desc:'Mortgage credit & servicing REIT' },
+  { ticker:'RC',    name:'Ready Capital Corp',                    type:'REIT', subtype:'Mortgage', yield:13.1, freq:'Quarterly', desc:'Commercial mortgage lender' },
+  // ── Quarterly Equity REITs ───────────────────────────────────────────────────
+  { ticker:'SPG',   name:'Simon Property Group',                  type:'REIT', subtype:'Equity',   yield:5.1,  freq:'Quarterly', desc:'Premier mall & outlet REIT' },
+  { ticker:'VICI',  name:'VICI Properties',                       type:'REIT', subtype:'Equity',   yield:5.4,  freq:'Quarterly', desc:'Casino & experiential net lease REIT' },
+  { ticker:'NNN',   name:'National Retail Properties',            type:'REIT', subtype:'Equity',   yield:5.2,  freq:'Quarterly', desc:'Single-tenant net lease retail' },
+  { ticker:'WPC',   name:'W. P. Carey',                           type:'REIT', subtype:'Equity',   yield:6.1,  freq:'Quarterly', desc:'Diversified net lease REIT' },
+  { ticker:'OHI',   name:'Omega Healthcare Investors',            type:'REIT', subtype:'Equity',   yield:7.3,  freq:'Quarterly', desc:'Skilled nursing & senior housing REIT' },
+  { ticker:'KIM',   name:'Kimco Realty Corp',                     type:'REIT', subtype:'Equity',   yield:4.0,  freq:'Quarterly', desc:'Grocery-anchored shopping center REIT' },
+  // ── Quarterly Hybrid REITs ───────────────────────────────────────────────────
+  { ticker:'ABR',   name:'Arbor Realty Trust',                    type:'REIT', subtype:'Hybrid',   yield:12.4, freq:'Quarterly', desc:'Bridge & agency multifamily lending' },
+  { ticker:'BXMT',  name:'Blackstone Mortgage Trust',              type:'REIT', subtype:'Hybrid',   yield:9.6,  freq:'Quarterly', desc:'Commercial real estate senior loans' },
+  { ticker:'LADR',  name:'Ladder Capital Corp',                    type:'REIT', subtype:'Hybrid',   yield:8.3,  freq:'Quarterly', desc:'Commercial real estate credit & lending' },
+];;
+
+const ALL_REITS = [...REITS, ...QUARTERLY_REITS];
+const ALL = [...UNIVERSE, ...ALL_REITS];
 let priceData = {};
 let portfolio = [];
 let openCard = null;
@@ -722,6 +757,39 @@ function renderReits() {
   });
   document.getElementById('reits-content').innerHTML = html || '<div class="empty">No REIT data yet.</div>';
   renderReitMetrics();
+  renderAllReits();
+}
+
+function renderAllReits() {
+  const bud = parseFloat(document.getElementById('reit-budget').value) || 100;
+  const tracked = new Set(portfolio.map(p => p.ticker));
+  const items = ALL_REITS.map(r => priceData[r.ticker]).filter(Boolean)
+    .filter(s => s.yield >= 5)
+    .sort((a, b) => b.yield - a.yield);
+  const countEl = document.getElementById('all-reits-count');
+  if (countEl) countEl.textContent = items.length + ' result' + (items.length === 1 ? '' : 's');
+  const el = document.getElementById('all-reits-content');
+  if (!el) return;
+  if (!items.length) { el.innerHTML = '<div class="empty">No REITs at 5%+ yield yet.</div>'; return; }
+  const rows = items.map(s => {
+    const isTracked = tracked.has(s.ticker);
+    const pos = s.changePct >= 0;
+    const moInc = (bud * s.yield / 100) / 12;
+    return `<div class="all-reit-row">
+      <div>
+        <div style="font-weight:600;font-size:11px">${s.ticker} <span class="tag tag-reit">${s.subtype || 'REIT'}</span>${isTracked ? ' <span class="tag tag-tracked">&#x2713;</span>' : ''}</div>
+        <div style="font-size:10px;color:var(--text2)">${s.name} &middot; ${s.freq}</div>
+      </div>
+      <div style="font-weight:600;color:var(--green)">${s.yield.toFixed(1)}%</div>
+      <div>$${s.current.toFixed(2)} <span class="${pos ? 'chg-pos' : 'chg-neg'}">${pos ? '+' : ''}${s.changePct.toFixed(2)}%</span></div>
+      <div style="color:var(--green)">$${moInc.toFixed(2)}/mo</div>
+      <div>${isTracked
+        ? `<button class="btn btn-green" style="font-size:10px;padding:3px 8px" onclick="removePick('${s.ticker}')">&#x2713; Tracked</button>`
+        : `<button class="btn btn-primary" style="font-size:10px;padding:3px 8px" onclick="addPick('${s.ticker}')">+ Track</button>`
+      }</div>
+    </div>`;
+  }).join('');
+  el.innerHTML = `<div class="port-wrap"><div class="all-reit-hdr"><div>REIT</div><div>Yield</div><div>Price</div><div>Income</div><div></div></div>${rows}</div>`;
 }
 
 // ─── CARD TOGGLE & AUTOMATED ANALYSIS ──────────────────────────────────────────
