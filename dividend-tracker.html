@@ -179,7 +179,7 @@
   <div class="tabs">
     <button class="tab active" data-tab="picks" onclick="switchTab('picks')">&#x1F3C6; Top 3s</button>
     <button class="tab" data-tab="reits" onclick="switchTab('reits')">&#x1F3E2; REITs Top 3</button>
-    <button class="tab" data-tab="advisor" onclick="switchTab('advisor')">&#x1F4C5; $50 Advisor</button>
+    <button class="tab" data-tab="advisor" onclick="switchTab('advisor')">&#x1F4C5; $1,000 Advisor</button>
     <button class="tab" data-tab="portfolio" onclick="switchTab('portfolio')">&#x1F4BC; My Picks</button>
     <button class="tab" data-tab="performance" onclick="switchTab('performance')">&#x1F4CA; Performance</button>
     <button class="tab" data-tab="guide" onclick="switchTab('guide')">&#x2753; How to Use</button>
@@ -196,8 +196,8 @@
     </div>
     <div class="budget-row">
       <span class="budget-label">Budget:</span>
-      <input class="budget-input" type="number" id="budget" value="50" min="20" max="100" step="5" onchange="renderPicks()">
-      <span class="budget-label" style="font-size:11px">Set $20–$100 to project income</span>
+      <input class="budget-input" type="number" id="budget" value="100" min="20" max="1000" step="25" onchange="renderPicks()">
+      <span class="budget-label" style="font-size:11px">Set $20–$1,000 to project income</span>
     </div>
     <div class="updated-row"><span class="live-dot" id="live-dot-main"></span><span id="last-updated">Loading…</span></div>
     <div id="picks-content"><div class="empty"><span class="spinner"></span> Loading data…</div></div>
@@ -214,7 +214,7 @@
     </div>
     <div class="budget-row">
       <span class="budget-label">Budget:</span>
-      <input class="budget-input" type="number" id="reit-budget" value="50" min="20" max="100" step="5" onchange="renderReits()">
+      <input class="budget-input" type="number" id="reit-budget" value="100" min="20" max="1000" step="25" onchange="renderReits()">
     </div>
     <div class="updated-row"><span class="live-dot"></span><span id="reit-updated">Loading…</span></div>
     <div id="reits-content"><div class="empty"><span class="spinner"></span> Loading REITs…</div></div>
@@ -224,11 +224,11 @@
   <!-- BIWEEKLY ADVISOR TAB -->
   <div id="tab-advisor" style="display:none">
     <div style="background:var(--bg);border-radius:var(--radius-lg);border:0.5px solid var(--border);padding:18px;margin-bottom:14px;text-align:center">
-      <h2 style="font-size:17px;font-weight:600;margin-bottom:4px">&#x1F4C5; Biweekly $50 Investment Advisor</h2>
+      <h2 style="font-size:17px;font-weight:600;margin-bottom:4px">&#x1F4C5; Biweekly $1,000 Investment Advisor</h2>
       <p style="font-size:12px;color:var(--text2);margin-bottom:14px">Every two weeks, analyze all weekly-paying option ETFs and REITs, then get your exact split for maximum weekly dividend income.</p>
       <div style="display:flex;align-items:center;justify-content:center;gap:10px;flex-wrap:wrap;margin-bottom:14px">
         <label style="font-size:13px;color:var(--text2)">Invest every 2 weeks:</label>
-        <input id="advisor-budget" type="number" value="50" min="20" max="500" step="5"
+        <input id="advisor-budget" type="number" value="1000" min="20" max="5000" step="25"
           style="padding:8px 12px;border:0.5px solid var(--border2);border-radius:var(--radius);font-size:15px;font-weight:600;background:var(--bg2);color:var(--text);width:100px;text-align:center">
         <span id="next-invest-date" style="font-size:11px;background:var(--blue-bg);color:var(--blue);padding:4px 10px;border-radius:20px">Next: calculating...</span>
       </div>
@@ -297,7 +297,7 @@
     </div>
 
     <div class="guide-block">
-      <h3>&#x1F4C5; $50 Advisor</h3>
+      <h3>&#x1F4C5; $1,000 Advisor</h3>
       <p>Enter a budget and get a suggested split across three holdings, chosen by a scoring formula that weighs yield, 3-month price trend, and how often the fund pays (weekly payers score higher, since income compounds faster). The "Advisor reasoning" text underneath explains the top pick, flags the highest-risk holding in the mix, and adds a practical note &mdash; it's generated from that same scoring logic, not written individually for you. Past recommendations are saved locally so you can compare how allocations have shifted over time.</p>
     </div>
 
@@ -683,7 +683,7 @@ function podiumCard(s, rank, tracked, bud) {
 }
 
 function renderPicks() {
-  const bud = parseFloat(document.getElementById('budget').value) || 50;
+  const bud = parseFloat(document.getElementById('budget').value) || 100;
   const tracked = new Set(portfolio.map(p => p.ticker));
   let html = '';
   CAT_CONFIG.forEach(cat => {
@@ -706,7 +706,7 @@ function renderPicks() {
 }
 
 function renderReits() {
-  const bud = parseFloat(document.getElementById('reit-budget').value) || 50;
+  const bud = parseFloat(document.getElementById('reit-budget').value) || 100;
   const tracked = new Set(portfolio.map(p => p.ticker));
   let html = '';
   REIT_CATS.forEach(cat => {
@@ -777,8 +777,8 @@ function addPick(ticker) {
   if (portfolio.length >= 20) { alert('Max 20 picks. Remove one first.'); return; }
   const s = priceData[ticker];
   const bud = s.type === 'REIT'
-    ? parseFloat(document.getElementById('reit-budget').value) || 50
-    : parseFloat(document.getElementById('budget').value) || 50;
+    ? parseFloat(document.getElementById('reit-budget').value) || 100
+    : parseFloat(document.getElementById('budget').value) || 100;
   portfolio.push({ ticker, name: s.name, type: s.type, subtype: s.subtype, yield: s.yield, freq: s.freq, addedPrice: s.current, addedDate: new Date().toISOString(), budget: bud });
   save(); renderPicks(); renderReits(); renderSummaryMetrics(); renderReitMetrics();
 }
@@ -877,6 +877,46 @@ function initAdvisor() {
   renderAdviceHistory();
 }
 
+function polarPoint(cx, cy, r, angleDeg) {
+  var rad = (angleDeg - 90) * Math.PI / 180;
+  return { x: cx + r * Math.cos(rad), y: cy + r * Math.sin(rad) };
+}
+
+function buildAllocPie(allocations, budget) {
+  var colors = ['var(--green)', 'var(--blue)', 'var(--teal)', 'var(--purple)'];
+  var cx = 60, cy = 60, r = 56;
+  var angle = 0;
+  var slices = allocations.map(function(a, i) {
+    var frac = budget > 0 ? (a.amt / budget) : 0;
+    var sweep = frac * 360;
+    var path;
+    if (sweep >= 359.999) {
+      path = '<circle cx="' + cx + '" cy="' + cy + '" r="' + r + '" style="fill:' + colors[i % colors.length] + '"></circle>';
+    } else {
+      var start = polarPoint(cx, cy, r, angle);
+      var end = polarPoint(cx, cy, r, angle + sweep);
+      var largeArc = sweep > 180 ? 1 : 0;
+      path = '<path d="M ' + cx + ' ' + cy + ' L ' + start.x.toFixed(2) + ' ' + start.y.toFixed(2) +
+        ' A ' + r + ' ' + r + ' 0 ' + largeArc + ' 1 ' + end.x.toFixed(2) + ' ' + end.y.toFixed(2) + ' Z" style="fill:' + colors[i % colors.length] + '"></path>';
+    }
+    angle += sweep;
+    return path;
+  }).join('');
+
+  var legend = allocations.map(function(a, i) {
+    return '<div style="display:flex;align-items:center;gap:6px;font-size:11px;padding:3px 0">' +
+      '<span style="width:9px;height:9px;border-radius:50%;background:' + colors[i % colors.length] + ';flex-shrink:0"></span>' +
+      '<span style="font-weight:600">' + a.ticker + '</span>' +
+      '<span style="color:var(--text2)">' + a.pct + '% &middot; $' + a.amt.toFixed(2) + '</span>' +
+    '</div>';
+  }).join('');
+
+  return '<div style="display:flex;align-items:center;gap:18px;flex-wrap:wrap;padding:10px 0 14px;border-bottom:0.5px solid var(--border);margin-bottom:4px">' +
+    '<svg width="120" height="120" viewBox="0 0 120 120" style="flex-shrink:0">' + slices + '</svg>' +
+    '<div style="flex:1;min-width:120px">' + legend + '</div>' +
+  '</div>';
+}
+
 function scoreForAllocation(s) {
   var yScore = Math.min(s.yield, 100) / 100 * 60;
   var mScore = (Math.max(-20, Math.min(20, s.change3mo||0)) / 20 * 10) + 10;
@@ -885,7 +925,7 @@ function scoreForAllocation(s) {
 }
 
 async function generateAdvice() {
-  var budget = parseFloat(document.getElementById('advisor-budget').value)||50;
+  var budget = parseFloat(document.getElementById('advisor-budget').value)||1000;
   var out = document.getElementById('advice-output');
   out.innerHTML = '<div style="background:var(--bg);border:0.5px solid var(--border);border-radius:var(--radius-lg);padding:16px;margin-bottom:12px"><div style="background:var(--bg2);border-radius:var(--radius);padding:12px 14px"><div style="font-size:10px;color:var(--text2);margin-bottom:6px">&#x1F4CA; Advisor</div><div style="font-size:12px;line-height:1.7"><span class="spinner"></span> Scoring all ' + ALL.length + ' picks...</div></div></div>';
 
@@ -959,6 +999,7 @@ async function generateAdvice() {
           '<div style="font-size:11px;color:var(--green);margin-top:1px">$' + totalAnnual.toFixed(2) + '/year projected</div>' +
         '</div>' +
       '</div>' +
+      buildAllocPie(allocations, budget) +
       '<div style="display:grid;grid-template-columns:1fr auto auto;gap:10px;padding:4px 0;border-bottom:0.5px solid var(--border);font-size:10px;color:var(--text2)">' +
         '<div>Pick &amp; rationale</div><div style="width:38px;text-align:right">Weight</div><div style="width:52px;text-align:right">Amount</div>' +
       '</div>' +
